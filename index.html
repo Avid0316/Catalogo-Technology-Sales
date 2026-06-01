@@ -459,7 +459,8 @@ async function login(role){
     cantidad: Number(row["Cantidad"]) || 0,
     precioMayorista: row["Precio Mayorista"] || "",
     precioReventa: row["Precio Reventa"] || "",
-    estado: row["Estado"] || ""
+    estado: row["Estado"] || "",
+    imagen: row["Imagen"] || "img/default.png"
   }));
 
   document.getElementById("home")
