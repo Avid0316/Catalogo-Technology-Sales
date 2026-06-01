@@ -413,7 +413,7 @@ async function login(role){
     precioMayorista: row["Precio Mayorista"] || "",
     precioReventa: row["Precio Reventa"] || "",
     estado: row["Estado"] || "",
-    imagen: row["Imagen"] || "img/default.png"
+    imagen: row["Imagen"] || ""
   }));
 
   document.getElementById("home").classList.add("hidden");
@@ -518,10 +518,12 @@ function renderCards(){
     grid.innerHTML += `
       <div class="product-card" onclick="openDetail('${product.key}')">
 
-        <img src="${product.imagen}"
-             class="product-img"
-             alt="${product.modelo}"
-             onerror="this.src='img/default.png'">
+${product.imagen ? `
+  <img src="${product.imagen}"
+       class="product-img"
+       alt="${product.modelo}"
+       onerror="this.style.display='none'">
+` : ""}
 
         <div class="product-title">
           ${product.modelo}
