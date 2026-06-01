@@ -333,6 +333,10 @@ th{
     <div class="filters">
       <input id="searchInput" placeholder="Buscar modelo...">
 
+      <select id="brandFilter">
+        <option value="">Todas las marcas</option>
+      </select>
+
       <select id="statusFilter">
         <option value="">Todos los estados</option>
         <option>Nuevo</option>
@@ -378,10 +382,12 @@ let currentRole = "";
 let currentCategory = "";
 
 const searchInput = document.getElementById("searchInput");
+const brandFilter = document.getElementById("brandFilter");
 const statusFilter = document.getElementById("statusFilter");
 const branchFilter = document.getElementById("branchFilter");
 
 searchInput.addEventListener("input", renderCards);
+brandFilter.addEventListener("change", renderCards);
 statusFilter.addEventListener("change", renderCards);
 branchFilter.addEventListener("change", renderCards);
 
@@ -430,6 +436,7 @@ async function login(role){
     "Última actualización: " + new Date().toLocaleString("es-HN");
 
   loadBranches();
+  loadBrands();
   renderCards();
 }
 
@@ -446,6 +453,7 @@ function setCategory(category, event){
 
 function getFilteredData(){
   const search = searchInput.value.trim().toLowerCase();
+  const brand = brandFilter.value.trim().toLowerCase();
   const status = statusFilter.value.trim().toLowerCase();
   const branch = branchFilter.value.trim().toLowerCase();
 
@@ -453,6 +461,7 @@ function getFilteredData(){
     const text = `${item.modelo} ${item.marca} ${item.color} ${item.capacidad}`.toLowerCase();
 
     return text.includes(search)
+      && (!brand || item.marca.trim().toLowerCase() === brand)
       && (!status || item.estado.trim().toLowerCase() === status)
       && (!branch || item.sucursal.trim().toLowerCase() === branch)
       && (!currentCategory || item.categoria.trim().toLowerCase() === currentCategory.trim().toLowerCase());
@@ -608,6 +617,21 @@ function loadBranches(){
     branchFilter.innerHTML += `<option>${branch}</option>`;
   });
 }
+
+function loadBrands(){
+  brandFilter.innerHTML = `<option value="">Todas las marcas</option>`;
+
+  const brands = [...new Set(
+    inventoryData
+      .map(i => i.marca)
+      .filter(Boolean)
+  )].sort();
+
+  brands.forEach(brand => {
+    brandFilter.innerHTML += `<option>${brand}</option>`;
+  });
+}
+
 </script>
 
 </body>
