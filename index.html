@@ -32,11 +32,12 @@ body{
 }
 
 .logo{
-  width:180px;
+  width:240px;
   height:auto;
   object-fit:contain;
   background:none;
   padding:0;
+  margin-bottom:10px;
 }
 
 .tag{
@@ -65,8 +66,6 @@ body{
 @media(max-width:650px){
   .hero{
     padding:22px 15px;
-    border-bottom-left-radius:0;
-    border-bottom-right-radius:0;
   }
 
   .hero-content{
@@ -76,7 +75,7 @@ body{
   }
 
   .logo{
-    width:800px;
+    width:240px;
   }
 
   .hero h1{
@@ -86,11 +85,6 @@ body{
   .hero p{
     font-size:14px;
   }
-}
-
-.logo{
-  width:240px;
-  margin-bottom:10px;
 }
 
 .container{
@@ -127,19 +121,9 @@ body{
   cursor:pointer;
 }
 
-.role-btn:nth-child(1){
-  background:#111827;
-}
-
-.role-btn:nth-child(2){
-  background:#38bdf8;
-  color:#111827;
-}
-
-.role-btn:nth-child(3){
-  background:#facc15;
-  color:#111827;
-}
+.role-btn:nth-child(1){background:#111827;}
+.role-btn:nth-child(2){background:#38bdf8;color:#111827;}
+.role-btn:nth-child(3){background:#facc15;color:#111827;}
 
 input,select{
   width:100%;
@@ -191,8 +175,9 @@ input,select{
   padding:18px;
   box-shadow:0 4px 12px rgba(0,0,0,.06);
   cursor:pointer;
-  transition:2s;
+  transition:.2s;
 }
+
 .product-img{
   width:100%;
   height:180px;
@@ -201,7 +186,9 @@ input,select{
   border-radius:14px;
   margin-bottom:12px;
   padding:10px;
+  box-sizing:border-box;
 }
+
 .product-card:hover{
   transform:translateY(-4px);
   box-shadow:0 10px 25px rgba(56,189,248,.18);
@@ -221,8 +208,8 @@ input,select{
 
 .qty{
   display:inline-block;
-  background:#dcfce7;
-  color:#166534;
+  background:#dbeafe;
+  color:#1e40af;
   padding:6px 12px;
   border-radius:999px;
   font-weight:bold;
@@ -244,7 +231,7 @@ input,select{
 
 .nuevo{background:#16a34a;}
 .usado{background:#f59e0b;}
-.caja{background:#2563eb;}
+.encaja{background:#2563eb;}
 
 .modal{
   position:fixed;
@@ -302,7 +289,6 @@ th{
 <header class="hero">
   <div class="hero-content">
     <img src="logo.png" class="logo" alt="Technology Sales">
-
     <div>
       <span class="tag">Inventario actualizado para clientes</span>
       <h1>Catálogo de Inventario</h1>
@@ -317,17 +303,9 @@ th{
   <h2>Selecciona tu acceso</h2>
 
   <div class="roles">
-    <button class="role-btn" onclick="login('mayorista')">
-      Mayoristas
-    </button>
-
-    <button class="role-btn" onclick="login('revendedor')">
-      Revendedores
-    </button>
-
-    <button class="role-btn" onclick="login('administracion')">
-      Administracion
-    </button>
+    <button class="role-btn" onclick="login('mayorista')">Mayoristas</button>
+    <button class="role-btn" onclick="login('revendedor')">Revendedores</button>
+    <button class="role-btn" onclick="login('administracion')">Administración</button>
   </div>
 </section>
 
@@ -340,14 +318,14 @@ th{
 
   <div class="card">
     <div class="categories">
-      <button class="cat-btn active" onclick="setCategory('')">Todos</button>
-      <button class="cat-btn" onclick="setCategory('Celulares')">📱 Celulares</button>
-      <button class="cat-btn" onclick="setCategory('Tablets')">📲 Tablets</button>
-      <button class="cat-btn" onclick="setCategory('Laptops')">💻 Laptops</button>
-      <button class="cat-btn" onclick="setCategory('Relojes')">⌚ Relojes</button>
-      <button class="cat-btn" onclick="setCategory('Consolas')">🎮 Consolas</button>
-      <button class="cat-btn" onclick="setCategory('Televisores')">📺 Televisores</button>
-      <button class="cat-btn" onclick="setCategory('Accesorios')">🎧 Accesorios</button>
+      <button class="cat-btn active" onclick="setCategory('', event)">Todos</button>
+      <button class="cat-btn" onclick="setCategory('Celulares', event)">📱 Celulares</button>
+      <button class="cat-btn" onclick="setCategory('Tablets', event)">📲 Tablets</button>
+      <button class="cat-btn" onclick="setCategory('Laptops', event)">💻 Laptops</button>
+      <button class="cat-btn" onclick="setCategory('Relojes', event)">⌚ Relojes</button>
+      <button class="cat-btn" onclick="setCategory('Consolas', event)">🎮 Consolas</button>
+      <button class="cat-btn" onclick="setCategory('Televisores', event)">📺 Televisores</button>
+      <button class="cat-btn" onclick="setCategory('Accesorios', event)">🎧 Accesorios</button>
     </div>
   </div>
 
@@ -377,7 +355,6 @@ th{
 <div id="detailModal" class="modal">
   <div class="modal-content">
     <button class="close" onclick="closeModal()">Cerrar</button>
-
     <h2 id="modalTitle"></h2>
 
     <table>
@@ -390,14 +367,12 @@ th{
           <th>Estado</th>
         </tr>
       </thead>
-
       <tbody id="modalBody"></tbody>
     </table>
   </div>
 </div>
 
 <script>
-
 let inventoryData = [];
 let currentRole = "";
 let currentCategory = "";
@@ -410,42 +385,12 @@ searchInput.addEventListener("input", renderCards);
 statusFilter.addEventListener("change", renderCards);
 branchFilter.addEventListener("change", renderCards);
 
-async function loadInventory(){
-
-  const res = await fetch(API_URL);
-  const data = await res.json();
-
-  inventoryData = data.map(row => ({
-    categoria: row["Categoria"] || "",
-    marca: row["Marca"] || "",
-    modelo: row["Modelo"] || "",
-    capacidad: row["Capacidad"] || "",
-    color: row["Color"] || "",
-    sucursal: row["Sucursal"] || "",
-    cantidad: Number(row["Cantidad"]) || 0,
-    precioMayorista: row["Precio Mayorista"] || "",
-    precioReventa: row["Precio Reventa"] || "",
-    estado: row["Estado"] || ""
-  }));
-
-  document.getElementById("updatedText").textContent =
-    "Última actualización: " +
-    new Date().toLocaleString("es-HN");
-
-  loadBranches();
-  renderCards();
-}
-
 async function login(role){
-
   const password = prompt("Ingrese contraseña");
 
   const res = await fetch("/.netlify/functions/inventario", {
     method:"POST",
-    body:JSON.stringify({
-      role,
-      password
-    })
+    body:JSON.stringify({ role, password })
   });
 
   const result = await res.json();
@@ -471,17 +416,24 @@ async function login(role){
     imagen: row["Imagen"] || "img/default.png"
   }));
 
-  document.getElementById("home")
-    .classList.add("hidden");
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("portal").classList.remove("hidden");
 
-  document.getElementById("portal")
-    .classList.remove("hidden");
+  const titles = {
+    mayorista:"Catálogo Mayorista",
+    revendedor:"Catálogo Revendedor",
+    administracion:"Panel Administración"
+  };
 
+  document.getElementById("roleTitle").textContent = titles[role] || "Catálogo";
+  document.getElementById("updatedText").textContent =
+    "Última actualización: " + new Date().toLocaleString("es-HN");
+
+  loadBranches();
   renderCards();
 }
 
-function setCategory(category){
-
+function setCategory(category, event){
   currentCategory = category;
 
   document.querySelectorAll(".cat-btn")
@@ -493,41 +445,33 @@ function setCategory(category){
 }
 
 function getFilteredData(){
-
-  const search = searchInput.value.toLowerCase();
-  const status = statusFilter.value;
-  const branch = branchFilter.value;
+  const search = searchInput.value.trim().toLowerCase();
+  const status = statusFilter.value.trim().toLowerCase();
+  const branch = branchFilter.value.trim().toLowerCase();
 
   return inventoryData.filter(item => {
-
-    const text =
-      `${item.modelo} ${item.marca} ${item.color}`.toLowerCase();
+    const text = `${item.modelo} ${item.marca} ${item.color} ${item.capacidad}`.toLowerCase();
 
     return text.includes(search)
-      && (!status || item.estado.trim().toLowerCase() === status.trim().toLowerCase())
-      && (!branch || item.sucursal === branch)
-      && (!currentCategory || item.categoria === currentCategory);
-
+      && (!status || item.estado.trim().toLowerCase() === status)
+      && (!branch || item.sucursal.trim().toLowerCase() === branch)
+      && (!currentCategory || item.categoria.trim().toLowerCase() === currentCategory.trim().toLowerCase());
   });
 }
 
 function groupProducts(data){
-
   const grouped = {};
 
   data.forEach(item => {
-
-    const key =
-      `${item.marca}|${item.modelo}|${item.capacidad}`;
+    const key = `${item.marca}|${item.modelo}|${item.capacidad}`;
 
     if(!grouped[key]){
-
       grouped[key] = {
         key,
         marca:item.marca,
         modelo:item.modelo,
-        imagen:item.imagen,
         capacidad:item.capacidad,
+        imagen:item.imagen,
         cantidad:0,
         colores:{},
         precioMayorista:item.precioMayorista,
@@ -539,48 +483,45 @@ function groupProducts(data){
     grouped[key].cantidad += item.cantidad;
 
     grouped[key].colores[item.color] =
-      (grouped[key].colores[item.color] || 0)
-      + item.cantidad;
+      (grouped[key].colores[item.color] || 0) + item.cantidad;
 
     grouped[key].items.push(item);
-
   });
 
-  return Object.values(grouped);
+  return Object.values(grouped).sort((a,b) => a.modelo.localeCompare(b.modelo));
 }
 
 function renderCards(){
-
-  const products =
-    groupProducts(getFilteredData());
-
-  const grid =
-    document.getElementById("productGrid");
+  const products = groupProducts(getFilteredData());
+  const grid = document.getElementById("productGrid");
 
   grid.innerHTML = "";
 
-  products.forEach(product => {
+  if(products.length === 0){
+    grid.innerHTML = `<div class="card">No hay productos para mostrar.</div>`;
+    return;
+  }
 
-    const colores =
-      Object.entries(product.colores)
+  products.forEach(product => {
+    const colores = Object.entries(product.colores)
       .map(([c,q]) => `${c}: ${q}`)
       .join(", ");
 
     let precio = "";
 
-    if(currentRole === "mayorista")
-      precio = product.precioMayorista;
-
-    if(currentRole === "revendedor")
-      precio = product.precioReventa;
-
-    if(currentRole === "administracion")
-      precio =
-        `M: ${product.precioMayorista} | R: ${product.precioReventa}`;
+    if(currentRole === "mayorista") precio = product.precioMayorista;
+    if(currentRole === "revendedor") precio = product.precioReventa;
+    if(currentRole === "administracion") {
+      precio = `M: ${product.precioMayorista} | R: ${product.precioReventa}`;
+    }
 
     grid.innerHTML += `
-      <div class="product-card"
-           onclick="openDetail('${product.key}')">
+      <div class="product-card" onclick="openDetail('${product.key}')">
+
+        <img src="${product.imagen}"
+             class="product-img"
+             alt="${product.modelo}"
+             onerror="this.src='img/default.png'">
 
         <div class="product-title">
           ${product.modelo}
@@ -609,34 +550,28 @@ function renderCards(){
 }
 
 function openDetail(key){
+  const products = groupProducts(getFilteredData());
+  const product = products.find(p => p.key === key);
 
-  const products =
-    groupProducts(getFilteredData());
+  if(!product) return;
 
-  const product =
-    products.find(p => p.key === key);
-
-  document.getElementById("detailModal")
-    .style.display = "flex";
-
-  document.getElementById("modalTitle")
-    .textContent =
-      `${product.modelo} ${product.capacidad}`;
+  document.getElementById("detailModal").style.display = "flex";
+  document.getElementById("modalTitle").textContent =
+    `${product.modelo} ${product.capacidad}`;
 
   document.getElementById("modalBody").innerHTML =
     product.items.map(item => {
-
       let precio = "";
 
-      if(currentRole === "mayorista")
-        precio = item.precioMayorista;
+      if(currentRole === "mayorista") precio = item.precioMayorista;
+      if(currentRole === "revendedor") precio = item.precioReventa;
+      if(currentRole === "administracion") {
+        precio = `${item.precioMayorista} / ${item.precioReventa}`;
+      }
 
-      if(currentRole === "revendedor")
-        precio = item.precioReventa;
-
-      if(currentRole === "administracion")
-        precio =
-          `${item.precioMayorista} / ${item.precioReventa}`;
+      const estadoClass = item.estado
+        .toLowerCase()
+        .replace(/\s/g,"");
 
       return `
         <tr>
@@ -645,7 +580,7 @@ function openDetail(key){
           <td>${item.cantidad}</td>
           <td>${precio}</td>
           <td>
-            <span class="badge ${item.estado.toLowerCase().replace(" ","")}">
+            <span class="badge ${estadoClass}">
               ${item.estado}
             </span>
           </td>
@@ -655,23 +590,22 @@ function openDetail(key){
 }
 
 function closeModal(){
-  document.getElementById("detailModal")
-    .style.display = "none";
+  document.getElementById("detailModal").style.display = "none";
 }
 
 function loadBranches(){
+  branchFilter.innerHTML = `<option value="">Todas las sucursales</option>`;
 
-  const branches =
-    [...new Set(inventoryData.map(i => i.sucursal))];
+  const branches = [...new Set(
+    inventoryData
+      .map(i => i.sucursal)
+      .filter(Boolean)
+  )].sort();
 
   branches.forEach(branch => {
-
-    branchFilter.innerHTML += `
-      <option>${branch}</option>
-    `;
+    branchFilter.innerHTML += `<option>${branch}</option>`;
   });
 }
-
 </script>
 
 </body>
