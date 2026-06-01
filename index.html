@@ -193,7 +193,15 @@ input,select{
   cursor:pointer;
   transition:2s;
 }
-
+.product-img{
+  width:100%;
+  height:180px;
+  object-fit:contain;
+  background:#f8fafc;
+  border-radius:14px;
+  margin-bottom:12px;
+  padding:10px;
+}
 .product-card:hover{
   transform:translateY(-4px);
   box-shadow:0 10px 25px rgba(56,189,248,.18);
@@ -518,6 +526,7 @@ function groupProducts(data){
         key,
         marca:item.marca,
         modelo:item.modelo,
+        imagen:item.imagen,
         capacidad:item.capacidad,
         cantidad:0,
         colores:{},
