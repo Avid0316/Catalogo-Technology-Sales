@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Inventario</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#eef3f9;
+  color:#111827;
+}
+
+.hero{
+  background:#ffffff;
+  color:#111827;
+  padding:28px 18px;
+  border-bottom:4px solid #facc15;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
+}
+
+.hero-content{
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  text-align:left;
+}
+
+.logo{
+  width:180px;
+  height:auto;
+  object-fit:contain;
+  background:none;
+  padding:0;
+}
+
+.tag{
+  display:inline-block;
+  background:#e0f2fe;
+  color:#0369a1;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.hero h1{
+  margin:0;
+  font-size:34px;
+  color:#111827;
+}
+
+.hero p{
+  margin-top:6px;
+  color:#4b5563;
+  font-size:15px;
+}
+
+@media(max-width:650px){
+  .hero{
+    padding:22px 15px;
+    border-bottom-left-radius:0;
+    border-bottom-right-radius:0;
+  }
+
+  .hero-content{
+    flex-direction:column;
+    text-align:center;
+    gap:10px;
+  }
+
+  .logo{
+    width:800px;
+  }
+
+  .hero h1{
+    font-size:28px;
+  }
+
+  .hero p{
+    font-size:14px;
+  }
+}
+
+.logo{
+  width:240px;
+  margin-bottom:10px;
+}
+
+.container{
+  max-width:1200px;
+  margin:25px auto;
+  padding:0 15px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 5px 16px rgba(0,0,0,.08);
+  margin-bottom:18px;
+}
+
+.hidden{
+  display:none;
+}
+
+.roles{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+
+.role-btn{
+  border:none;
+  padding:22px;
+  border-radius:18px;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.role-btn:nth-child(1){
+  background:#111827;
+}
+
+.role-btn:nth-child(2){
+  background:#38bdf8;
+  color:#111827;
+}
+
+.role-btn:nth-child(3){
+  background:#facc15;
+  color:#111827;
+}
+
+input,select{
+  width:100%;
+  padding:13px;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  font-size:15px;
+  box-sizing:border-box;
+}
+
+.filters{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+}
+
+.categories{
+  display:flex;
+  gap:10px;
+  overflow:auto;
+  padding-bottom:5px;
+}
+
+.cat-btn{
+  border:none;
+  background:#e5e7eb;
+  padding:10px 16px;
+  border-radius:999px;
+  cursor:pointer;
+  white-space:nowrap;
+  font-weight:bold;
+}
+
+.cat-btn.active{
+  background:#38bdf8;
+  color:#111827;
+}
+
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:15px;
+}
+
+.product-card{
+  background:white;
+  border:1px solid #dbe7f5;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 4px 12px rgba(0,0,0,.06);
+  cursor:pointer;
+  transition:2s;
+}
+
+.product-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 25px rgba(56,189,248,.18);
+}
+
+.product-title{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+.product-meta{
+  color:#6b7280;
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.qty{
+  display:inline-block;
+  background:#dcfce7;
+  color:#166534;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+.price{
+  margin-top:12px;
+  font-weight:bold;
+}
+
+.badge{
+  padding:5px 10px;
+  border-radius:999px;
+  color:white;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.nuevo{background:#16a34a;}
+.usado{background:#f59e0b;}
+.caja{background:#2563eb;}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  z-index:999;
+}
+
+.modal-content{
+  background:white;
+  border-radius:20px;
+  max-width:850px;
+  width:100%;
+  max-height:85vh;
+  overflow:auto;
+  padding:20px;
+}
+
+.close{
+  float:right;
+  border:none;
+  background:#111827;
+  color:white;
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+th,td{
+  padding:11px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+  font-size:14px;
+}
+
+th{
+  background:#111827;
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<header class="hero">
+  <div class="hero-content">
+    <img src="logo.png" class="logo" alt="Technology Sales">
+
+    <div>
+      <span class="tag">Inventario actualizado para clientes</span>
+      <h1>Catálogo de Inventario</h1>
+      <p>Consulta disponibilidad, precios, colores y sucursales en tiempo real.</p>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<section id="home" class="card">
+  <h2>Selecciona tu acceso</h2>
+
+  <div class="roles">
+    <button class="role-btn" onclick="login('mayorista')">
+      Mayoristas
+    </button>
+
+    <button class="role-btn" onclick="login('revendedor')">
+      Revendedores
+    </button>
+
+    <button class="role-btn" onclick="login('administracion')">
+      Administracion
+    </button>
+  </div>
+</section>
+
+<section id="portal" class="hidden">
+
+  <div class="card">
+    <h2 id="roleTitle"></h2>
+    <p id="updatedText">Cargando inventario...</p>
+  </div>
+
+  <div class="card">
+    <div class="categories">
+      <button class="cat-btn active" onclick="setCategory('')">Todos</button>
+      <button class="cat-btn" onclick="setCategory('Celulares')">📱 Celulares</button>
+      <button class="cat-btn" onclick="setCategory('Tablets')">📲 Tablets</button>
+      <button class="cat-btn" onclick="setCategory('Laptops')">💻 Laptops</button>
+      <button class="cat-btn" onclick="setCategory('Relojes')">⌚ Relojes</button>
+      <button class="cat-btn" onclick="setCategory('Consolas')">🎮 Consolas</button>
+      <button class="cat-btn" onclick="setCategory('Televisores')">📺 Televisores</button>
+      <button class="cat-btn" onclick="setCategory('Accesorios')">🎧 Accesorios</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="filters">
+      <input id="searchInput" placeholder="Buscar modelo...">
+
+      <select id="statusFilter">
+        <option value="">Todos los estados</option>
+        <option>Nuevo</option>
+        <option>Usado</option>
+        <option>En caja</option>
+      </select>
+
+      <select id="branchFilter">
+        <option value="">Todas las sucursales</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="productGrid" class="product-grid"></div>
+
+</section>
+
+</div>
+
+<div id="detailModal" class="modal">
+  <div class="modal-content">
+    <button class="close" onclick="closeModal()">Cerrar</button>
+
+    <h2 id="modalTitle"></h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Sucursal</th>
+          <th>Color</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+
+      <tbody id="modalBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbyO1hzcv7fvk0vwDgphPvl6TMvq8ptHYJ1cEbizdWeWUQYLKadeosJ179t5-OBEifLS/exec";
+
+const PASSWORDS = {
+  mayorista:"MAYOR2026",
+  revendedor:"REVENTA2026",
+  administracion:"STAFF2026"
+};
+
+let inventoryData = [];
+let currentRole = "";
+let currentCategory = "";
+
+const searchInput = document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
+const branchFilter = document.getElementById("branchFilter");
+
+searchInput.addEventListener("input", renderCards);
+statusFilter.addEventListener("change", renderCards);
+branchFilter.addEventListener("change", renderCards);
+
+async function loadInventory(){
+
+  const res = await fetch(API_URL);
+  const data = await res.json();
+
+  inventoryData = data.map(row => ({
+    categoria: row["Categoria"] || "",
+    marca: row["Marca"] || "",
+    modelo: row["Modelo"] || "",
+    capacidad: row["Capacidad"] || "",
+    color: row["Color"] || "",
+    sucursal: row["Sucursal"] || "",
+    cantidad: Number(row["Cantidad"]) || 0,
+    precioMayorista: row["Precio Mayorista"] || "",
+    precioReventa: row["Precio Reventa"] || "",
+    estado: row["Estado"] || ""
+  }));
+
+  document.getElementById("updatedText").textContent =
+    "Última actualización: " +
+    new Date().toLocaleString("es-HN");
+
+  loadBranches();
+  renderCards();
+}
+
+function login(role){
+
+  const pass = prompt("Ingrese contraseña");
+
+  if(pass !== PASSWORDS[role]){
+    alert("Contraseña incorrecta");
+    return;
+  }
+
+  currentRole = role;
+
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("portal").classList.remove("hidden");
+
+  const titles = {
+    mayorista:"Catálogo Mayorista",
+    revendedor:"Catálogo Revendedor",
+    administracion:"Panel de Administracion"
+  };
+
+  document.getElementById("roleTitle").textContent =
+    titles[role];
+}
+
+function setCategory(category){
+
+  currentCategory = category;
+
+  document.querySelectorAll(".cat-btn")
+    .forEach(btn => btn.classList.remove("active"));
+
+  event.target.classList.add("active");
+
+  renderCards();
+}
+
+function getFilteredData(){
+
+  const search = searchInput.value.toLowerCase();
+  const status = statusFilter.value;
+  const branch = branchFilter.value;
+
+  return inventoryData.filter(item => {
+
+    const text =
+      `${item.modelo} ${item.marca} ${item.color}`.toLowerCase();
+
+    return text.includes(search)
+      && (!status || item.estado.trim().toLowerCase() === status.trim().toLowerCase())
+      && (!branch || item.sucursal === branch)
+      && (!currentCategory || item.categoria === currentCategory);
+
+  });
+}
+
+function groupProducts(data){
+
+  const grouped = {};
+
+  data.forEach(item => {
+
+    const key =
+      `${item.marca}|${item.modelo}|${item.capacidad}`;
+
+    if(!grouped[key]){
+
+      grouped[key] = {
+        key,
+        marca:item.marca,
+        modelo:item.modelo,
+        capacidad:item.capacidad,
+        cantidad:0,
+        colores:{},
+        precioMayorista:item.precioMayorista,
+        precioReventa:item.precioReventa,
+        items:[]
+      };
+    }
+
+    grouped[key].cantidad += item.cantidad;
+
+    grouped[key].colores[item.color] =
+      (grouped[key].colores[item.color] || 0)
+      + item.cantidad;
+
+    grouped[key].items.push(item);
+
+  });
+
+  return Object.values(grouped);
+}
+
+function renderCards(){
+
+  const products =
+    groupProducts(getFilteredData());
+
+  const grid =
+    document.getElementById("productGrid");
+
+  grid.innerHTML = "";
+
+  products.forEach(product => {
+
+    const colores =
+      Object.entries(product.colores)
+      .map(([c,q]) => `${c}: ${q}`)
+      .join(", ");
+
+    let precio = "";
+
+    if(currentRole === "mayorista")
+      precio = product.precioMayorista;
+
+    if(currentRole === "revendedor")
+      precio = product.precioReventa;
+
+    if(currentRole === "administracion")
+      precio =
+        `M: ${product.precioMayorista} | R: ${product.precioReventa}`;
+
+    grid.innerHTML += `
+      <div class="product-card"
+           onclick="openDetail('${product.key}')">
+
+        <div class="product-title">
+          ${product.modelo}
+        </div>
+
+        <div class="product-meta">
+          ${product.marca} · ${product.capacidad}
+        </div>
+
+        <div>
+          <strong>Colores:</strong>
+          ${colores}
+        </div>
+
+        <div class="qty">
+          ${product.cantidad} unidades
+        </div>
+
+        <div class="price">
+          ${precio}
+        </div>
+
+      </div>
+    `;
+  });
+}
+
+function openDetail(key){
+
+  const products =
+    groupProducts(getFilteredData());
+
+  const product =
+    products.find(p => p.key === key);
+
+  document.getElementById("detailModal")
+    .style.display = "flex";
+
+  document.getElementById("modalTitle")
+    .textContent =
+      `${product.modelo} ${product.capacidad}`;
+
+  document.getElementById("modalBody").innerHTML =
+    product.items.map(item => {
+
+      let precio = "";
+
+      if(currentRole === "mayorista")
+        precio = item.precioMayorista;
+
+      if(currentRole === "revendedor")
+        precio = item.precioReventa;
+
+      if(currentRole === "administracion")
+        precio =
+          `${item.precioMayorista} / ${item.precioReventa}`;
+
+      return `
+        <tr>
+          <td>${item.sucursal}</td>
+          <td>${item.color}</td>
+          <td>${item.cantidad}</td>
+          <td>${precio}</td>
+          <td>
+            <span class="badge ${item.estado.toLowerCase().replace(" ","")}">
+              ${item.estado}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join("");
+}
+
+function closeModal(){
+  document.getElementById("detailModal")
+    .style.display = "none";
+}
+
+function loadBranches(){
+
+  const branches =
+    [...new Set(inventoryData.map(i => i.sucursal))];
+
+  branches.forEach(branch => {
+
+    branchFilter.innerHTML += `
+      <option>${branch}</option>
+    `;
+  });
+}
+
+loadInventory();
+setInterval(loadInventory,60000);
+</script>
+
+</body>
+</html>
