@@ -8,46 +8,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Plus Jakarta Sans',sans-serif;
-}
-
-body{
-  background:#eef2f7;
-  color:#111827;
-}
-
-.hidden{
-  display:none !important;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif}
+body{background:#eef2f7;color:#111827}
+.hidden{display:none!important}
 
 .hero{
   background:white;
   padding:24px 20px;
   border-bottom:4px solid #e4c441;
 }
-
 .hero-inner{
   max-width:1200px;
   margin:auto;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:80px;
+  gap:70px;
 }
-
-.logo{
-  width:220px;
-  max-width:90%;
-}
-
-.hero-text{
-  text-align:left;
-}
-
+.logo{width:220px;max-width:90%}
+.hero-text{text-align:left}
 .hero-badge{
   display:inline-flex;
   align-items:center;
@@ -60,7 +39,6 @@ body{
   margin-bottom:10px;
   font-size:14px;
 }
-
 .hero-badge::before{
   content:"";
   width:10px;
@@ -69,120 +47,61 @@ body{
   background:#36c56d;
   box-shadow:0 0 10px #36c56d;
 }
+.hero h1{font-size:34px;margin-bottom:6px}
+.hero p{color:#4b5563;font-size:16px}
 
-.hero h1{
-  font-size:34px;
-  margin-bottom:6px;
-}
-
-.hero p{
-  color:#4b5563;
-  font-size:16px;
-}
-
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:22px;
-}
-
-.access-card{
+.container{max-width:1200px;margin:auto;padding:22px}
+.card{
   background:white;
-  border-radius:24px;
-  padding:28px;
-  box-shadow:0 8px 30px rgba(0,0,0,.05);
+  border-radius:22px;
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:0 6px 18px rgba(0,0,0,.04);
 }
-
-.access-title{
-  font-size:34px;
-  font-weight:800;
-  margin-bottom:24px;
-}
-
-.access-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-}
-
+.access-title{font-size:34px;font-weight:800;margin-bottom:8px}
+.access-sub{color:#6b7280;margin-bottom:22px}
+.access-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .access-btn{
   border:none;
-  border-radius:22px;
-  padding:24px;
-  font-size:24px;
+  border-radius:20px;
+  padding:22px;
+  font-size:22px;
   font-weight:800;
   cursor:pointer;
   transition:.25s;
 }
+.access-btn:hover{transform:translateY(-3px)}
+.btn-mayorista{background:#0f172a;color:white}
+.btn-revendedor{background:#5dade2;color:#0f172a}
+.btn-admin{background:#e8c547;color:#111827}
 
-.access-btn:hover{
-  transform:translateY(-4px);
-}
-
-.btn-mayorista{
-  background:#0f172a;
-  color:white;
-}
-
-.btn-revendedor{
-  background:#5dade2;
-  color:#0f172a;
-}
-
-.btn-admin{
-  background:#e8c547;
-  color:#111827;
-}
-
-.card{
-  background:white;
-  border-radius:22px;
-  padding:20px;
-  margin-top:22px;
-  box-shadow:0 6px 18px rgba(0,0,0,.04);
-}
-
-.filters{
-  display:grid;
-  grid-template-columns:2fr 1fr 1fr 1fr;
-  gap:14px;
-}
-
-input,select{
-  padding:15px;
-  border-radius:15px;
-  border:1px solid #d1d5db;
-  font-size:15px;
-  width:100%;
-}
-
-.categories{
-  display:flex;
-  gap:12px;
-  overflow:auto;
-}
-
+.categories{display:flex;gap:10px;overflow:auto}
 .cat-btn{
   border:none;
-  padding:12px 20px;
+  padding:11px 18px;
   border-radius:999px;
   background:#e5e7eb;
   font-weight:700;
   cursor:pointer;
   white-space:nowrap;
 }
+.cat-btn.active{background:#38bdf8;color:#111827}
 
-.cat-btn.active{
-  background:#38bdf8;
-  color:white;
-}
-
-.stats{
+.filters{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:14px;
+}
+input,select{
+  width:100%;
+  padding:15px;
+  border-radius:15px;
+  border:1px solid #d1d5db;
+  font-size:15px;
+  background:white;
 }
 
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .stat-box{
   background:white;
   border-radius:22px;
@@ -190,16 +109,8 @@ input,select{
   text-align:center;
   box-shadow:0 6px 18px rgba(0,0,0,.04);
 }
-
-.stat-box h3{
-  font-size:30px;
-  margin-bottom:5px;
-}
-
-.stat-box p{
-  color:#6b7280;
-  font-weight:600;
-}
+.stat-box h3{font-size:30px;margin-bottom:5px}
+.stat-box p{color:#6b7280;font-weight:600}
 
 .grid{
   margin-top:22px;
@@ -207,7 +118,6 @@ input,select{
   grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
   gap:18px;
 }
-
 .product-card{
   background:white;
   border-radius:20px;
@@ -216,11 +126,7 @@ input,select{
   transition:.2s;
   cursor:pointer;
 }
-
-.product-card:hover{
-  transform:translateY(-4px);
-}
-
+.product-card:hover{transform:translateY(-4px)}
 .product-img{
   width:100%;
   height:160px;
@@ -229,19 +135,8 @@ input,select{
   background:#f5f7fb;
   margin-bottom:14px;
 }
-
-.product-title{
-  font-size:20px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-
-.product-meta{
-  color:#6b7280;
-  margin-bottom:10px;
-  font-size:14px;
-}
-
+.product-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.product-meta{color:#6b7280;margin-bottom:10px;font-size:14px}
 .qty{
   display:inline-block;
   margin-top:12px;
@@ -251,12 +146,7 @@ input,select{
   border-radius:999px;
   font-weight:700;
 }
-
-.price{
-  margin-top:12px;
-  font-size:20px;
-  font-weight:800;
-}
+.price{margin-top:12px;font-size:20px;font-weight:800}
 
 .modal{
   position:fixed;
@@ -268,7 +158,6 @@ input,select{
   padding:20px;
   z-index:100;
 }
-
 .modal-content{
   background:white;
   width:100%;
@@ -278,14 +167,12 @@ input,select{
   max-height:90vh;
   overflow:auto;
 }
-
 .modal-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:20px;
 }
-
 .close-btn{
   border:none;
   background:#ef4444;
@@ -296,88 +183,18 @@ input,select{
   cursor:pointer;
   font-size:18px;
 }
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td{
-  padding:13px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:left;
-}
+table{width:100%;border-collapse:collapse}
+th,td{padding:13px;border-bottom:1px solid #e5e7eb;text-align:left}
 
 @media(max-width:900px){
-  .access-grid{
-    grid-template-columns:1fr;
-  }
-
-  .filters{
-    grid-template-columns:1fr;
-  }
-
-  .stats{
-    grid-template-columns:1fr;
-  }
-}
-
-@media(max-width:650px){
-  .hero-inner{
-    flex-direction:column;
-    gap:16px;
-    text-align:center;
-  }
-
-  .hero-text{
-    text-align:center;
-  }
-
-  .logo{
-    width:190px;
-  }
-
-  .hero h1{
-    font-size:32px;
-  }
-
-  .hero p{
-    font-size:15px;
-  }
-}
-
-  .container{
-    padding:18px;
-  }
-
-  .access-card{
-    padding:24px;
-    border-radius:24px;
-  }
-
-  .access-title{
-    font-size:32px;
-    line-height:1.1;
-    margin-bottom:22px;
-  }
-
-  .access-btn{
-    font-size:21px;
-    padding:22px;
-    border-radius:22px;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .product-img{
-    height:150px;
-  }
-
-  .product-title{
-    font-size:19px;
-  }
+  .hero-inner{flex-direction:column;gap:16px;text-align:center}
+  .hero-text{text-align:center}
+  .logo{width:190px}
+  .hero h1{font-size:32px}
+  .hero p{font-size:15px}
+  .access-grid{grid-template-columns:1fr}
+  .filters{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -386,66 +203,30 @@ th,td{
 
 <section id="home">
   <div class="hero">
-    <img src="logo.png" class="logo" alt="Technology Sales">
-
-    <div class="hero-badge">
-      Inventario actualizado para clientes
+    <div class="hero-inner">
+      <img src="logo.png" class="logo" alt="Technology Sales">
+      <div class="hero-text">
+        <div class="hero-badge">Inventario actualizado para clientes</div>
+        <h1>Catálogo de Inventario</h1>
+        <p>Consulta disponibilidad, precios, colores y sucursales en tiempo real.</p>
+      </div>
     </div>
-
-    <h1>Catálogo de Inventario</h1>
-
-    <p>
-      Consulta disponibilidad, precios, colores y sucursales en tiempo real.
-    </p>
   </div>
 
   <div class="container">
-    <div class="access-card">
-      <div class="access-title">
-        Selecciona tu acceso
-      </div>
+    <div class="card">
+      <h2 class="access-title">Selecciona tu acceso</h2>
+      <p class="access-sub">Ingresa al catálogo según tu tipo de cliente o administración.</p>
 
       <div class="access-grid">
-        <button class="access-btn btn-mayorista" onclick="login('mayorista')">
-          📦 Mayoristas
-        </button>
-
-        <button class="access-btn btn-revendedor" onclick="login('revendedor')">
-          🛒 Revendedores
-        </button>
-
-        <button class="access-btn btn-admin" onclick="login('administracion')">
-          ⚙️ Administración
-        </button>
+        <button class="access-btn btn-mayorista" onclick="login('mayorista')">📦 Mayoristas</button>
+        <button class="access-btn btn-revendedor" onclick="login('revendedor')">🛒 Revendedores</button>
+        <button class="access-btn btn-admin" onclick="login('administracion')">⚙️ Administración</button>
       </div>
     </div>
   </div>
 </section>
 
-<div class="hero">
-  <div class="hero-inner">
-
-    <img src="logo.png" class="logo" alt="Technology Sales">
-
-    <div class="hero-text">
-
-      <div class="hero-badge">
-        Inventario actualizado para clientes
-      </div>
-
-      <h1>Catálogo de Inventario</h1>
-
-      <p>
-        Consulta disponibilidad, precios, colores y sucursales en tiempo real.
-      </p>
-
-    </div>
-
-  </div>
-</div>
-
-<section id="portal" class="hidden">
-  
 <section id="portal" class="hidden">
   <div class="container">
 
@@ -493,12 +274,10 @@ th,td{
         <h3 id="statModels">0</h3>
         <p>Modelos</p>
       </div>
-
       <div class="stat-box">
         <h3 id="statUnits">0</h3>
         <p>Unidades</p>
       </div>
-
       <div class="stat-box">
         <h3 id="statBranches">0</h3>
         <p>Sucursales</p>
@@ -506,7 +285,6 @@ th,td{
     </div>
 
     <div class="grid" id="productGrid"></div>
-
   </div>
 </section>
 
@@ -514,10 +292,7 @@ th,td{
   <div class="modal-content">
     <div class="modal-header">
       <h2 id="modalTitle"></h2>
-
-      <button class="close-btn" onclick="closeModal()">
-        ✕
-      </button>
+      <button class="close-btn" onclick="closeModal()">✕</button>
     </div>
 
     <table>
@@ -530,7 +305,6 @@ th,td{
           <th>Estado</th>
         </tr>
       </thead>
-
       <tbody id="modalBody"></tbody>
     </table>
   </div>
@@ -597,7 +371,6 @@ async function login(role){
     };
 
     document.getElementById("roleTitle").textContent = titles[role] || "Catálogo";
-
     document.getElementById("updatedText").textContent =
       "Última actualización: " + new Date().toLocaleString("es-HN");
 
@@ -629,8 +402,7 @@ function getFilteredData(){
   const branch = branchFilter.value.trim().toLowerCase();
 
   return inventoryData.filter(item => {
-    const text =
-      `${item.modelo} ${item.marca} ${item.color} ${item.capacidad}`.toLowerCase();
+    const text = `${item.modelo} ${item.marca} ${item.color} ${item.capacidad}`.toLowerCase();
 
     return text.includes(search)
       && (!brand || item.marca.toLowerCase() === brand)
@@ -662,15 +434,13 @@ function groupProducts(data){
     }
 
     grouped[key].cantidad += item.cantidad;
-
     grouped[key].colores[item.color] =
       (grouped[key].colores[item.color] || 0) + item.cantidad;
 
     grouped[key].items.push(item);
   });
 
-  return Object.values(grouped)
-    .sort((a,b) => a.modelo.localeCompare(b.modelo));
+  return Object.values(grouped).sort((a,b) => a.modelo.localeCompare(b.modelo));
 }
 
 function renderCards(){
@@ -680,7 +450,6 @@ function renderCards(){
   renderSummary(filteredData,products);
 
   const grid = document.getElementById("productGrid");
-
   grid.innerHTML = "";
 
   if(products.length === 0){
@@ -689,35 +458,22 @@ function renderCards(){
   }
 
   products.forEach(product => {
-    const colores =
-      Object.entries(product.colores)
+    const colores = Object.entries(product.colores)
       .map(([c,q]) => `${c}: ${q}`)
       .join(", ");
 
     let precio = "";
 
-    if(currentRole === "mayorista"){
-      precio = product.precioMayorista;
-    }
-
-    if(currentRole === "revendedor"){
-      precio = product.precioReventa;
-    }
-
-    if(currentRole === "administracion"){
+    if(currentRole === "mayorista") precio = product.precioMayorista;
+    if(currentRole === "revendedor") precio = product.precioReventa;
+    if(currentRole === "administracion") {
       precio = `M: ${product.precioMayorista} | R: ${product.precioReventa}`;
     }
 
     grid.innerHTML += `
       <div class="product-card" onclick="openDetail('${product.key}')">
-
         ${product.imagen ? `
-          <img
-            src="${product.imagen}"
-            class="product-img"
-            alt="${product.modelo}"
-            onerror="this.style.display='none'"
-          >
+          <img src="${product.imagen}" class="product-img" alt="${product.modelo}" onerror="this.style.display='none'">
         ` : ""}
 
         <div class="product-title">${product.modelo}</div>
@@ -737,7 +493,6 @@ function renderCards(){
         <div class="price">
           ${precio}
         </div>
-
       </div>
     `;
   });
@@ -750,7 +505,6 @@ function openDetail(key){
   if(!product) return;
 
   document.getElementById("detailModal").style.display = "flex";
-
   document.getElementById("modalTitle").textContent =
     `${product.modelo} ${product.capacidad}`;
 
@@ -758,15 +512,9 @@ function openDetail(key){
     product.items.map(item => {
       let precio = "";
 
-      if(currentRole === "mayorista"){
-        precio = item.precioMayorista;
-      }
-
-      if(currentRole === "revendedor"){
-        precio = item.precioReventa;
-      }
-
-      if(currentRole === "administracion"){
+      if(currentRole === "mayorista") precio = item.precioMayorista;
+      if(currentRole === "revendedor") precio = item.precioReventa;
+      if(currentRole === "administracion") {
         precio = `${item.precioMayorista} / ${item.precioReventa}`;
       }
 
@@ -787,11 +535,8 @@ function closeModal(){
 }
 
 function renderSummary(data,products){
-  const branches =
-    [...new Set(data.map(i => i.sucursal).filter(Boolean))];
-
-  const totalUnits =
-    data.reduce((sum,item) => sum + (Number(item.cantidad) || 0),0);
+  const branches = [...new Set(data.map(i => i.sucursal).filter(Boolean))];
+  const totalUnits = data.reduce((sum,item) => sum + (Number(item.cantidad) || 0),0);
 
   document.getElementById("statModels").textContent = products.length;
   document.getElementById("statUnits").textContent = totalUnits;
@@ -801,8 +546,7 @@ function renderSummary(data,products){
 function loadBranches(){
   branchFilter.innerHTML = `<option value="">Todas las sucursales</option>`;
 
-  const branches =
-    [...new Set(inventoryData.map(i => i.sucursal).filter(Boolean))].sort();
+  const branches = [...new Set(inventoryData.map(i => i.sucursal).filter(Boolean))].sort();
 
   branches.forEach(branch => {
     branchFilter.innerHTML += `<option>${branch}</option>`;
@@ -812,8 +556,7 @@ function loadBranches(){
 function loadBrands(){
   brandFilter.innerHTML = `<option value="">Todas las marcas</option>`;
 
-  const brands =
-    [...new Set(inventoryData.map(i => i.marca).filter(Boolean))].sort();
+  const brands = [...new Set(inventoryData.map(i => i.marca).filter(Boolean))].sort();
 
   brands.forEach(brand => {
     brandFilter.innerHTML += `<option>${brand}</option>`;
