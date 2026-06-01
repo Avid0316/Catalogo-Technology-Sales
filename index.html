@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Technology Sales - Catálogo</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-
 *{
   margin:0;
   padding:0;
@@ -28,80 +26,82 @@ body{
 
 .hero{
   background:white;
-  padding:40px 20px;
-  border-bottom:5px solid #e4c441;
+  padding:26px 18px;
+  border-bottom:4px solid #e4c441;
   text-align:center;
 }
 
 .logo{
-  width:230px;
+  width:185px;
   max-width:90%;
-  margin-bottom:20px;
+  margin-bottom:14px;
 }
 
 .hero-badge{
   display:inline-flex;
   align-items:center;
-  gap:10px;
+  gap:9px;
   background:#dbeafe;
   color:#1d4f91;
-  padding:12px 22px;
+  padding:9px 17px;
   border-radius:999px;
   font-weight:700;
-  margin-bottom:20px;
+  margin-bottom:15px;
+  font-size:15px;
 }
 
 .hero-badge::before{
   content:"";
-  width:14px;
-  height:14px;
+  width:11px;
+  height:11px;
   border-radius:50%;
   background:#36c56d;
   box-shadow:0 0 10px #36c56d;
 }
 
 .hero h1{
-  font-size:54px;
-  margin-bottom:10px;
+  font-size:40px;
+  margin-bottom:8px;
+  line-height:1.08;
 }
 
 .hero p{
   color:#4b5563;
-  font-size:22px;
-  max-width:850px;
+  font-size:18px;
+  max-width:760px;
   margin:auto;
 }
 
 .container{
-  max-width:1500px;
+  max-width:1200px;
   margin:auto;
-  padding:30px;
+  padding:22px;
 }
 
 .access-card{
   background:white;
-  border-radius:28px;
-  padding:35px;
+  border-radius:24px;
+  padding:28px;
   box-shadow:0 8px 30px rgba(0,0,0,.05);
 }
 
 .access-title{
-  font-size:42px;
+  font-size:34px;
   font-weight:800;
-  margin-bottom:30px;
+  margin-bottom:24px;
 }
 
 .access-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:20px;
+  gap:18px;
 }
 
 .access-btn{
   border:none;
-  border-radius:24px;
-  padding:28px;
-  font-size:30px;
+  border-radius:22px;
+  padding:24px;
+  font-size:24px;
   font-weight:800;
   cursor:pointer;
   transition:.25s;
@@ -128,23 +128,23 @@ body{
 
 .card{
   background:white;
-  border-radius:24px;
-  padding:25px;
-  margin-top:25px;
+  border-radius:22px;
+  padding:20px;
+  margin-top:22px;
   box-shadow:0 6px 18px rgba(0,0,0,.04);
 }
 
 .filters{
   display:grid;
   grid-template-columns:2fr 1fr 1fr 1fr;
-  gap:15px;
+  gap:14px;
 }
 
 input,select{
-  padding:18px;
-  border-radius:16px;
+  padding:15px;
+  border-radius:15px;
   border:1px solid #d1d5db;
-  font-size:16px;
+  font-size:15px;
   width:100%;
 }
 
@@ -156,7 +156,7 @@ input,select{
 
 .cat-btn{
   border:none;
-  padding:14px 22px;
+  padding:12px 20px;
   border-radius:999px;
   background:#e5e7eb;
   font-weight:700;
@@ -172,20 +172,20 @@ input,select{
 .stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:18px;
+  gap:16px;
 }
 
 .stat-box{
   background:white;
-  border-radius:24px;
-  padding:25px;
+  border-radius:22px;
+  padding:18px;
   text-align:center;
   box-shadow:0 6px 18px rgba(0,0,0,.04);
 }
 
 .stat-box h3{
-  font-size:38px;
-  margin-bottom:8px;
+  font-size:30px;
+  margin-bottom:5px;
 }
 
 .stat-box p{
@@ -194,58 +194,59 @@ input,select{
 }
 
 .grid{
-  margin-top:25px;
+  margin-top:22px;
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:22px;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:18px;
 }
 
 .product-card{
   background:white;
-  border-radius:24px;
-  padding:20px;
+  border-radius:20px;
+  padding:16px;
   box-shadow:0 5px 16px rgba(0,0,0,.05);
   transition:.2s;
   cursor:pointer;
 }
 
 .product-card:hover{
-  transform:translateY(-5px);
+  transform:translateY(-4px);
 }
 
 .product-img{
   width:100%;
-  height:220px;
+  height:160px;
   object-fit:contain;
-  border-radius:18px;
+  border-radius:16px;
   background:#f5f7fb;
-  margin-bottom:18px;
+  margin-bottom:14px;
 }
 
 .product-title{
-  font-size:25px;
+  font-size:20px;
   font-weight:800;
   margin-bottom:6px;
 }
 
 .product-meta{
   color:#6b7280;
-  margin-bottom:12px;
+  margin-bottom:10px;
+  font-size:14px;
 }
 
 .qty{
   display:inline-block;
-  margin-top:15px;
+  margin-top:12px;
   background:#eef2ff;
   color:#4338ca;
-  padding:8px 14px;
+  padding:7px 13px;
   border-radius:999px;
   font-weight:700;
 }
 
 .price{
-  margin-top:15px;
-  font-size:24px;
+  margin-top:12px;
+  font-size:20px;
   font-weight:800;
 }
 
@@ -263,9 +264,9 @@ input,select{
 .modal-content{
   background:white;
   width:100%;
-  max-width:1000px;
-  border-radius:26px;
-  padding:25px;
+  max-width:900px;
+  border-radius:24px;
+  padding:24px;
   max-height:90vh;
   overflow:auto;
 }
@@ -294,28 +295,12 @@ table{
 }
 
 th,td{
-  padding:14px;
+  padding:13px;
   border-bottom:1px solid #e5e7eb;
   text-align:left;
 }
 
-.badge{
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:700;
-}
-
 @media(max-width:900px){
-
-  .hero h1{
-    font-size:42px;
-  }
-
-  .hero p{
-    font-size:18px;
-  }
-
   .access-grid{
     grid-template-columns:1fr;
   }
@@ -327,23 +312,75 @@ th,td{
   .stats{
     grid-template-columns:1fr;
   }
-
-  .access-btn{
-    font-size:24px;
-  }
-
 }
 
+@media(max-width:650px){
+  .hero{
+    padding:18px 14px;
+  }
+
+  .logo{
+    width:150px;
+    margin-bottom:10px;
+  }
+
+  .hero-badge{
+    font-size:14px;
+    padding:9px 15px;
+    margin-bottom:14px;
+  }
+
+  .hero h1{
+    font-size:35px;
+    line-height:1.08;
+  }
+
+  .hero p{
+    font-size:16px;
+    line-height:1.35;
+  }
+
+  .container{
+    padding:18px;
+  }
+
+  .access-card{
+    padding:24px;
+    border-radius:24px;
+  }
+
+  .access-title{
+    font-size:32px;
+    line-height:1.1;
+    margin-bottom:22px;
+  }
+
+  .access-btn{
+    font-size:21px;
+    padding:22px;
+    border-radius:22px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .product-img{
+    height:150px;
+  }
+
+  .product-title{
+    font-size:19px;
+  }
+}
 </style>
 </head>
 
 <body>
 
 <section id="home">
-
   <div class="hero">
-
-    <img src="logo.png" class="logo">
+    <img src="logo.png" class="logo" alt="Technology Sales">
 
     <div class="hero-badge">
       Inventario actualizado para clientes
@@ -354,44 +391,32 @@ th,td{
     <p>
       Consulta disponibilidad, precios, colores y sucursales en tiempo real.
     </p>
-
   </div>
 
   <div class="container">
-
     <div class="access-card">
-
       <div class="access-title">
         Selecciona tu acceso
       </div>
 
       <div class="access-grid">
-
-        <button class="access-btn btn-mayorista"
-          onclick="login('mayorista')">
+        <button class="access-btn btn-mayorista" onclick="login('mayorista')">
           📦 Mayoristas
         </button>
 
-        <button class="access-btn btn-revendedor"
-          onclick="login('revendedor')">
+        <button class="access-btn btn-revendedor" onclick="login('revendedor')">
           🛒 Revendedores
         </button>
 
-        <button class="access-btn btn-admin"
-          onclick="login('administracion')">
+        <button class="access-btn btn-admin" onclick="login('administracion')">
           ⚙️ Administración
         </button>
-
       </div>
-
     </div>
-
   </div>
-
 </section>
 
 <section id="portal" class="hidden">
-
   <div class="container">
 
     <div class="card">
@@ -400,52 +425,21 @@ th,td{
     </div>
 
     <div class="card">
-
       <div class="categories">
-
-        <button class="cat-btn active"
-          onclick="setCategory('',event)">
-          Todos
-        </button>
-
-        <button class="cat-btn"
-          onclick="setCategory('Celulares',event)">
-          📱 Celulares
-        </button>
-
-        <button class="cat-btn"
-          onclick="setCategory('Tablets',event)">
-          📟 Tablets
-        </button>
-
-        <button class="cat-btn"
-          onclick="setCategory('Laptops',event)">
-          💻 Laptops
-        </button>
-
-        <button class="cat-btn"
-          onclick="setCategory('Relojes',event)">
-          ⌚ Relojes
-        </button>
-
-        <button class="cat-btn"
-          onclick="setCategory('Consolas',event)">
-          🎮 Consolas
-        </button>
-
+        <button class="cat-btn active" onclick="setCategory('',event)">Todos</button>
+        <button class="cat-btn" onclick="setCategory('Celulares',event)">📱 Celulares</button>
+        <button class="cat-btn" onclick="setCategory('Tablets',event)">📟 Tablets</button>
+        <button class="cat-btn" onclick="setCategory('Laptops',event)">💻 Laptops</button>
+        <button class="cat-btn" onclick="setCategory('Relojes',event)">⌚ Relojes</button>
+        <button class="cat-btn" onclick="setCategory('Consolas',event)">🎮 Consolas</button>
+        <button class="cat-btn" onclick="setCategory('Televisores',event)">📺 Televisores</button>
+        <button class="cat-btn" onclick="setCategory('Accesorios',event)">🎧 Accesorios</button>
       </div>
-
     </div>
 
     <div class="card">
-
       <div class="filters">
-
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Buscar modelo..."
-        >
+        <input type="text" id="searchInput" placeholder="Buscar modelo...">
 
         <select id="brandFilter">
           <option value="">Todas las marcas</option>
@@ -455,18 +449,16 @@ th,td{
           <option value="">Todos los estados</option>
           <option>Nuevo</option>
           <option>Usado</option>
+          <option>En caja</option>
         </select>
 
         <select id="branchFilter">
           <option value="">Todas las sucursales</option>
         </select>
-
       </div>
-
     </div>
 
     <div class="stats">
-
       <div class="stat-box">
         <h3 id="statModels">0</h3>
         <p>Modelos</p>
@@ -481,32 +473,24 @@ th,td{
         <h3 id="statBranches">0</h3>
         <p>Sucursales</p>
       </div>
-
     </div>
 
     <div class="grid" id="productGrid"></div>
 
   </div>
-
 </section>
 
 <div class="modal" id="detailModal">
-
   <div class="modal-content">
-
     <div class="modal-header">
-
       <h2 id="modalTitle"></h2>
 
-      <button class="close-btn"
-        onclick="closeModal()">
+      <button class="close-btn" onclick="closeModal()">
         ✕
       </button>
-
     </div>
 
     <table>
-
       <thead>
         <tr>
           <th>Sucursal</th>
@@ -518,15 +502,11 @@ th,td{
       </thead>
 
       <tbody id="modalBody"></tbody>
-
     </table>
-
   </div>
-
 </div>
 
 <script>
-
 const PASSWORDS = {
   mayorista:"MAYOR2026",
   revendedor:"REVENTA2026",
@@ -550,7 +530,6 @@ statusFilter.addEventListener("change", renderCards);
 branchFilter.addEventListener("change", renderCards);
 
 async function login(role){
-
   const password = prompt("Ingrese contraseña");
 
   if(password !== PASSWORDS[role]){
@@ -561,7 +540,6 @@ async function login(role){
   currentRole = role;
 
   try{
-
     const res = await fetch(API_URL);
     const data = await res.json();
 
@@ -588,12 +566,10 @@ async function login(role){
       administracion:"Panel Administración"
     };
 
-    document.getElementById("roleTitle").textContent =
-      titles[role] || "Catálogo";
+    document.getElementById("roleTitle").textContent = titles[role] || "Catálogo";
 
     document.getElementById("updatedText").textContent =
-      "Última actualización: " +
-      new Date().toLocaleString("es-HN");
+      "Última actualización: " + new Date().toLocaleString("es-HN");
 
     loadBranches();
     loadBrands();
@@ -606,7 +582,6 @@ async function login(role){
 }
 
 function setCategory(category,event){
-
   currentCategory = category;
 
   document.querySelectorAll(".cat-btn")
@@ -618,40 +593,30 @@ function setCategory(category,event){
 }
 
 function getFilteredData(){
-
   const search = searchInput.value.trim().toLowerCase();
   const brand = brandFilter.value.trim().toLowerCase();
   const status = statusFilter.value.trim().toLowerCase();
   const branch = branchFilter.value.trim().toLowerCase();
 
   return inventoryData.filter(item => {
-
     const text =
-      `${item.modelo} ${item.marca} ${item.color} ${item.capacidad}`
-      .toLowerCase();
+      `${item.modelo} ${item.marca} ${item.color} ${item.capacidad}`.toLowerCase();
 
     return text.includes(search)
       && (!brand || item.marca.toLowerCase() === brand)
       && (!status || item.estado.toLowerCase() === status)
       && (!branch || item.sucursal.toLowerCase() === branch)
-      && (
-        !currentCategory ||
-        item.categoria.toLowerCase() === currentCategory.toLowerCase()
-      );
+      && (!currentCategory || item.categoria.toLowerCase() === currentCategory.toLowerCase());
   });
 }
 
 function groupProducts(data){
-
   const grouped = {};
 
   data.forEach(item => {
-
-    const key =
-      `${item.marca}|${item.modelo}|${item.capacidad}`;
+    const key = `${item.marca}|${item.modelo}|${item.capacidad}`;
 
     if(!grouped[key]){
-
       grouped[key] = {
         key,
         marca:item.marca,
@@ -669,11 +634,9 @@ function groupProducts(data){
     grouped[key].cantidad += item.cantidad;
 
     grouped[key].colores[item.color] =
-      (grouped[key].colores[item.color] || 0)
-      + item.cantidad;
+      (grouped[key].colores[item.color] || 0) + item.cantidad;
 
     grouped[key].items.push(item);
-
   });
 
   return Object.values(grouped)
@@ -681,29 +644,21 @@ function groupProducts(data){
 }
 
 function renderCards(){
-
   const filteredData = getFilteredData();
   const products = groupProducts(filteredData);
 
   renderSummary(filteredData,products);
 
-  const grid =
-    document.getElementById("productGrid");
+  const grid = document.getElementById("productGrid");
 
   grid.innerHTML = "";
 
   if(products.length === 0){
-
-    grid.innerHTML =
-      `<div class="card">
-        No hay productos disponibles.
-      </div>`;
-
+    grid.innerHTML = `<div class="card">No hay productos disponibles.</div>`;
     return;
   }
 
   products.forEach(product => {
-
     const colores =
       Object.entries(product.colores)
       .map(([c,q]) => `${c}: ${q}`)
@@ -720,15 +675,11 @@ function renderCards(){
     }
 
     if(currentRole === "administracion"){
-      precio =
-        `M: ${product.precioMayorista}
-         | R: ${product.precioReventa}`;
+      precio = `M: ${product.precioMayorista} | R: ${product.precioReventa}`;
     }
 
     grid.innerHTML += `
-
-      <div class="product-card"
-        onclick="openDetail('${product.key}')">
+      <div class="product-card" onclick="openDetail('${product.key}')">
 
         ${product.imagen ? `
           <img
@@ -739,17 +690,14 @@ function renderCards(){
           >
         ` : ""}
 
-        <div class="product-title">
-          ${product.modelo}
-        </div>
+        <div class="product-title">${product.modelo}</div>
 
         <div class="product-meta">
           ${product.marca} · ${product.capacidad}
         </div>
 
         <div>
-          <strong>Colores:</strong>
-          ${colores}
+          <strong>Colores:</strong> ${colores}
         </div>
 
         <div class="qty">
@@ -766,24 +714,18 @@ function renderCards(){
 }
 
 function openDetail(key){
-
-  const products =
-    groupProducts(getFilteredData());
-
-  const product =
-    products.find(p => p.key === key);
+  const products = groupProducts(getFilteredData());
+  const product = products.find(p => p.key === key);
 
   if(!product) return;
 
-  document.getElementById("detailModal").style.display =
-    "flex";
+  document.getElementById("detailModal").style.display = "flex";
 
   document.getElementById("modalTitle").textContent =
     `${product.modelo} ${product.capacidad}`;
 
   document.getElementById("modalBody").innerHTML =
     product.items.map(item => {
-
       let precio = "";
 
       if(currentRole === "mayorista"){
@@ -795,9 +737,7 @@ function openDetail(key){
       }
 
       if(currentRole === "administracion"){
-        precio =
-          `${item.precioMayorista}
-           / ${item.precioReventa}`;
+        precio = `${item.precioMayorista} / ${item.precioReventa}`;
       }
 
       return `
@@ -813,79 +753,42 @@ function openDetail(key){
 }
 
 function closeModal(){
-
-  document.getElementById("detailModal")
-    .style.display = "none";
+  document.getElementById("detailModal").style.display = "none";
 }
 
 function renderSummary(data,products){
-
   const branches =
-    [...new Set(
-      data.map(i => i.sucursal).filter(Boolean)
-    )];
+    [...new Set(data.map(i => i.sucursal).filter(Boolean))];
 
   const totalUnits =
-    data.reduce(
-      (sum,item) =>
-      sum + (Number(item.cantidad) || 0),
-      0
-    );
+    data.reduce((sum,item) => sum + (Number(item.cantidad) || 0),0);
 
-  document.getElementById("statModels")
-    .textContent = products.length;
-
-  document.getElementById("statUnits")
-    .textContent = totalUnits;
-
-  document.getElementById("statBranches")
-    .textContent = branches.length;
+  document.getElementById("statModels").textContent = products.length;
+  document.getElementById("statUnits").textContent = totalUnits;
+  document.getElementById("statBranches").textContent = branches.length;
 }
 
 function loadBranches(){
-
-  branchFilter.innerHTML =
-    `<option value="">
-      Todas las sucursales
-    </option>`;
+  branchFilter.innerHTML = `<option value="">Todas las sucursales</option>`;
 
   const branches =
-    [...new Set(
-      inventoryData
-        .map(i => i.sucursal)
-        .filter(Boolean)
-    )].sort();
+    [...new Set(inventoryData.map(i => i.sucursal).filter(Boolean))].sort();
 
   branches.forEach(branch => {
-
-    branchFilter.innerHTML += `
-      <option>${branch}</option>
-    `;
+    branchFilter.innerHTML += `<option>${branch}</option>`;
   });
 }
 
 function loadBrands(){
-
-  brandFilter.innerHTML =
-    `<option value="">
-      Todas las marcas
-    </option>`;
+  brandFilter.innerHTML = `<option value="">Todas las marcas</option>`;
 
   const brands =
-    [...new Set(
-      inventoryData
-        .map(i => i.marca)
-        .filter(Boolean)
-    )].sort();
+    [...new Set(inventoryData.map(i => i.marca).filter(Boolean))].sort();
 
   brands.forEach(brand => {
-
-    brandFilter.innerHTML += `
-      <option>${brand}</option>
-    `;
+    brandFilter.innerHTML += `<option>${brand}</option>`;
   });
 }
-
 </script>
 
 </body>
