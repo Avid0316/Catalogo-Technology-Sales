@@ -6,19 +6,34 @@
 <title>Catálogo de Inventario</title>
 
 <style>
+:root{
+  --black:#0f172a;
+  --blue:#38bdf8;
+  --blue-dark:#0369a1;
+  --yellow:#facc15;
+  --bg:#eef3f9;
+  --text:#111827;
+  --muted:#64748b;
+  --border:#dbe7f5;
+}
+
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#eef3f9;
-  color:#111827;
+  background:linear-gradient(to bottom,#f8fbff,#eef3f9);
+  color:var(--text);
 }
 
 .hero{
   background:#ffffff;
-  color:#111827;
-  padding:28px 18px;
-  border-bottom:4px solid #facc15;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
+  color:var(--text);
+  padding:20px 15px;
+  border-bottom:4px solid var(--yellow);
+  box-shadow:0 8px 24px rgba(15,23,42,.08);
 }
 
 .hero-content{
@@ -27,23 +42,25 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:18px;
+  gap:22px;
   text-align:left;
 }
 
 .logo{
-  width:240px;
+  width:190px;
   height:auto;
   object-fit:contain;
   background:none;
   padding:0;
-  margin-bottom:10px;
+  margin:0;
 }
 
 .tag{
-  display:inline-block;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
   background:#e0f2fe;
-  color:#0369a1;
+  color:var(--blue-dark);
   padding:7px 12px;
   border-radius:999px;
   font-size:13px;
@@ -51,40 +68,26 @@ body{
   margin-bottom:8px;
 }
 
+.tag::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#22c55e;
+  box-shadow:0 0 0 4px rgba(34,197,94,.14);
+}
+
 .hero h1{
   margin:0;
-  font-size:34px;
-  color:#111827;
+  font-size:32px;
+  line-height:1.05;
+  color:var(--black);
 }
 
 .hero p{
-  margin-top:6px;
+  margin-top:7px;
   color:#4b5563;
   font-size:15px;
-}
-
-@media(max-width:650px){
-  .hero{
-    padding:22px 15px;
-  }
-
-  .hero-content{
-    flex-direction:column;
-    text-align:center;
-    gap:10px;
-  }
-
-  .logo{
-    width:240px;
-  }
-
-  .hero h1{
-    font-size:28px;
-  }
-
-  .hero p{
-    font-size:14px;
-  }
 }
 
 .container{
@@ -94,15 +97,37 @@ body{
 }
 
 .card{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 5px 16px rgba(0,0,0,.08);
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(219,231,245,.9);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 12px 30px rgba(15,23,42,.08);
   margin-bottom:18px;
+  animation:fade .35s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
 .hidden{
   display:none;
+}
+
+.home-head{
+  margin-bottom:18px;
+}
+
+.home-head h2{
+  margin:0;
+  font-size:30px;
+}
+
+.home-head p{
+  margin:8px 0 0;
+  color:var(--muted);
 }
 
 .roles{
@@ -113,25 +138,37 @@ body{
 
 .role-btn{
   border:none;
-  padding:22px;
-  border-radius:18px;
+  padding:23px;
+  border-radius:20px;
   color:white;
   font-size:18px;
   font-weight:bold;
   cursor:pointer;
+  transition:.25s;
+  box-shadow:0 10px 24px rgba(15,23,42,.13);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
 }
 
-.role-btn:nth-child(1){background:#111827;}
-.role-btn:nth-child(2){background:#38bdf8;color:#111827;}
-.role-btn:nth-child(3){background:#facc15;color:#111827;}
+.role-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 28px rgba(15,23,42,.18);
+}
+
+.role-btn:nth-child(1){background:var(--black);}
+.role-btn:nth-child(2){background:#0ea5e9;color:white;}
+.role-btn:nth-child(3){background:var(--yellow);color:var(--black);}
 
 input,select{
   width:100%;
-  padding:13px;
+  padding:14px;
   border:1px solid #d1d5db;
-  border-radius:12px;
+  border-radius:14px;
   font-size:15px;
   box-sizing:border-box;
+  background:white;
 }
 
 .filters{
@@ -150,16 +187,85 @@ input,select{
 .cat-btn{
   border:none;
   background:#e5e7eb;
-  padding:10px 16px;
+  padding:11px 17px;
   border-radius:999px;
   cursor:pointer;
   white-space:nowrap;
   font-weight:bold;
+  transition:.2s;
+}
+
+.cat-btn:hover{
+  background:#dbeafe;
 }
 
 .cat-btn.active{
-  background:#38bdf8;
-  color:#111827;
+  background:var(--blue);
+  color:var(--black);
+}
+
+.portal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.portal-head h2{
+  margin:0;
+  font-size:28px;
+}
+
+.portal-head p{
+  margin:7px 0 0;
+  color:var(--muted);
+}
+
+.sync-status{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:#ecfeff;
+  color:#0369a1;
+  font-weight:bold;
+  border-radius:999px;
+  padding:8px 12px;
+  font-size:13px;
+}
+
+.sync-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#22c55e;
+  box-shadow:0 0 0 4px rgba(34,197,94,.15);
+}
+
+.mini-stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+  margin-top:18px;
+}
+
+.mini-card{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  padding:14px;
+}
+
+.mini-card span{
+  color:var(--muted);
+  font-size:13px;
+  display:block;
+}
+
+.mini-card strong{
+  font-size:24px;
+  margin-top:4px;
+  display:block;
 }
 
 .product-grid{
@@ -170,12 +276,13 @@ input,select{
 
 .product-card{
   background:white;
-  border:1px solid #dbe7f5;
-  border-radius:18px;
+  border:1px solid var(--border);
+  border-radius:20px;
   padding:18px;
   box-shadow:0 4px 12px rgba(0,0,0,.06);
   cursor:pointer;
   transition:.2s;
+  animation:fade .35s ease;
 }
 
 .product-img{
@@ -186,7 +293,6 @@ input,select{
   border-radius:14px;
   margin-bottom:12px;
   padding:10px;
-  box-sizing:border-box;
 }
 
 .product-card:hover{
@@ -257,7 +363,7 @@ input,select{
 .close{
   float:right;
   border:none;
-  background:#111827;
+  background:var(--black);
   color:white;
   padding:8px 12px;
   border-radius:10px;
@@ -278,8 +384,42 @@ th,td{
 }
 
 th{
-  background:#111827;
+  background:var(--black);
   color:white;
+}
+
+@media(max-width:650px){
+  .hero{
+    padding:20px 15px;
+  }
+
+  .hero-content{
+    flex-direction:column;
+    text-align:center;
+    gap:10px;
+  }
+
+  .logo{
+    width:180px;
+  }
+
+  .hero h1{
+    font-size:27px;
+  }
+
+  .hero p{
+    font-size:14px;
+  }
+
+  .home-head h2,
+  .portal-head h2{
+    font-size:25px;
+  }
+
+  .role-btn{
+    padding:21px;
+    font-size:17px;
+  }
 }
 </style>
 </head>
@@ -300,20 +440,46 @@ th{
 <div class="container">
 
 <section id="home" class="card">
-  <h2>Selecciona tu acceso</h2>
+  <div class="home-head">
+    <h2>Selecciona tu acceso</h2>
+    <p>Ingresa al catálogo según tu tipo de cliente o administración.</p>
+  </div>
 
   <div class="roles">
-    <button class="role-btn" onclick="login('mayorista')">Mayoristas</button>
-    <button class="role-btn" onclick="login('revendedor')">Revendedores</button>
-    <button class="role-btn" onclick="login('administracion')">Administración</button>
+    <button class="role-btn" onclick="login('mayorista')">🔒 Mayoristas</button>
+    <button class="role-btn" onclick="login('revendedor')">🛒 Revendedores</button>
+    <button class="role-btn" onclick="login('administracion')">⚙️ Administración</button>
   </div>
 </section>
 
 <section id="portal" class="hidden">
 
   <div class="card">
-    <h2 id="roleTitle"></h2>
-    <p id="updatedText">Cargando inventario...</p>
+    <div class="portal-head">
+      <div>
+        <h2 id="roleTitle"></h2>
+        <p id="updatedText">Cargando inventario...</p>
+      </div>
+      <div class="sync-status">
+        <span class="sync-dot"></span>
+        Inventario sincronizado
+      </div>
+    </div>
+
+    <div class="mini-stats">
+      <div class="mini-card">
+        <span>Modelos visibles</span>
+        <strong id="statModels">0</strong>
+      </div>
+      <div class="mini-card">
+        <span>Unidades visibles</span>
+        <strong id="statUnits">0</strong>
+      </div>
+      <div class="mini-card">
+        <span>Sucursales</span>
+        <strong id="statBranches">0</strong>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -501,8 +667,11 @@ function groupProducts(data){
 }
 
 function renderCards(){
-  const products = groupProducts(getFilteredData());
+  const filteredData = getFilteredData();
+  const products = groupProducts(filteredData);
   const grid = document.getElementById("productGrid");
+
+  renderSummary(filteredData, products);
 
   grid.innerHTML = "";
 
@@ -602,6 +771,16 @@ function openDetail(key){
 
 function closeModal(){
   document.getElementById("detailModal").style.display = "none";
+}
+
+
+function renderSummary(data, products){
+  const branches = [...new Set(data.map(i => i.sucursal).filter(Boolean))];
+  const totalUnits = data.reduce((sum, item) => sum + (Number(item.cantidad) || 0), 0);
+
+  document.getElementById("statModels").textContent = products.length;
+  document.getElementById("statUnits").textContent = totalUnits;
+  document.getElementById("statBranches").textContent = branches.length;
 }
 
 function loadBranches(){
