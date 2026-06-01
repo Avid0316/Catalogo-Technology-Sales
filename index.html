@@ -389,13 +389,6 @@ th{
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyO1hzcv7fvk0vwDgphPvl6TMvq8ptHYJ1cEbizdWeWUQYLKadeosJ179t5-OBEifLS/exec";
-
-const PASSWORDS = {
-  mayorista:"MAYOR2026",
-  revendedor:"REVENTA2026",
-  administracion:"STAFF2026"
-};
 
 let inventoryData = [];
 let currentRole = "";
@@ -435,28 +428,47 @@ async function loadInventory(){
   renderCards();
 }
 
-function login(role){
+async function login(role){
 
-  const pass = prompt("Ingrese contraseña");
+  const password = prompt("Ingrese contraseña");
 
-  if(pass !== PASSWORDS[role]){
-    alert("Contraseña incorrecta");
+  const res = await fetch("/.netlify/functions/inventario", {
+    method:"POST",
+    body:JSON.stringify({
+      role,
+      password
+    })
+  });
+
+  const result = await res.json();
+
+  if(!res.ok){
+    alert(result.error || "Acceso denegado");
     return;
   }
 
   currentRole = role;
 
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("portal").classList.remove("hidden");
+  inventoryData = result.data.map(row => ({
+    categoria: row["Categoria"] || "",
+    marca: row["Marca"] || "",
+    modelo: row["Modelo"] || "",
+    capacidad: row["Capacidad"] || "",
+    color: row["Color"] || "",
+    sucursal: row["Sucursal"] || "",
+    cantidad: Number(row["Cantidad"]) || 0,
+    precioMayorista: row["Precio Mayorista"] || "",
+    precioReventa: row["Precio Reventa"] || "",
+    estado: row["Estado"] || ""
+  }));
 
-  const titles = {
-    mayorista:"Catálogo Mayorista",
-    revendedor:"Catálogo Revendedor",
-    administracion:"Panel de Administracion"
-  };
+  document.getElementById("home")
+    .classList.add("hidden");
 
-  document.getElementById("roleTitle").textContent =
-    titles[role];
+  document.getElementById("portal")
+    .classList.remove("hidden");
+
+  renderCards();
 }
 
 function setCategory(category){
@@ -650,8 +662,6 @@ function loadBranches(){
   });
 }
 
-loadInventory();
-setInterval(loadInventory,60000);
 </script>
 
 </body>
