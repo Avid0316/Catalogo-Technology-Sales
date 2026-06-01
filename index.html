@@ -26,51 +26,58 @@ body{
 
 .hero{
   background:white;
-  padding:18px 18px 24px;
+  padding:24px 20px;
   border-bottom:4px solid #e4c441;
-  text-align:center;
+}
+
+.hero-inner{
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:80px;
 }
 
 .logo{
-  width:190px;
+  width:220px;
   max-width:90%;
-  margin:0 auto 10px;
-  display:block;
+}
+
+.hero-text{
+  text-align:left;
 }
 
 .hero-badge{
   display:inline-flex;
   align-items:center;
-  gap:9px;
+  gap:8px;
   background:#dbeafe;
   color:#1d4f91;
-  padding:9px 17px;
+  padding:8px 16px;
   border-radius:999px;
   font-weight:700;
-  margin-bottom:15px;
-  font-size:15px;
+  margin-bottom:10px;
+  font-size:14px;
 }
 
 .hero-badge::before{
   content:"";
-  width:11px;
-  height:11px;
+  width:10px;
+  height:10px;
   border-radius:50%;
   background:#36c56d;
   box-shadow:0 0 10px #36c56d;
 }
 
 .hero h1{
-  font-size:58px;
-  line-height:1.05;
-  margin:14px 0;
+  font-size:34px;
+  margin-bottom:6px;
 }
 
 .hero p{
   color:#4b5563;
-  font-size:18px;
-  max-width:760px;
-  margin:auto;
+  font-size:16px;
 }
 
 .container{
@@ -316,29 +323,28 @@ th,td{
 }
 
 @media(max-width:650px){
-  .hero{
-    padding:18px 14px;
+  .hero-inner{
+    flex-direction:column;
+    gap:16px;
+    text-align:center;
+  }
+
+  .hero-text{
+    text-align:center;
   }
 
   .logo{
-    width:150px;
-    margin-bottom:10px;
+    width:190px;
   }
 
-  .hero-badge{
-    font-size:14px;
-    padding:9px 15px;
-    margin-bottom:14px;
+  .hero h1{
+    font-size:32px;
   }
-
-.hero h1{
-  font-size:34px;
-}
 
   .hero p{
-    font-size:16px;
-    line-height:1.35;
+    font-size:15px;
   }
+}
 
   .container{
     padding:18px;
@@ -416,6 +422,30 @@ th,td{
   </div>
 </section>
 
+<div class="hero">
+  <div class="hero-inner">
+
+    <img src="logo.png" class="logo" alt="Technology Sales">
+
+    <div class="hero-text">
+
+      <div class="hero-badge">
+        Inventario actualizado para clientes
+      </div>
+
+      <h1>Catálogo de Inventario</h1>
+
+      <p>
+        Consulta disponibilidad, precios, colores y sucursales en tiempo real.
+      </p>
+
+    </div>
+
+  </div>
+</div>
+
+<section id="portal" class="hidden">
+  
 <section id="portal" class="hidden">
   <div class="container">
 
