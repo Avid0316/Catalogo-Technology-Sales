@@ -88,6 +88,46 @@ en el siguiente paso del proyecto.
 
 ---
 
+## Paso 6 · Reglas para recibir cotizaciones (carrito)
+
+El catálogo ya permite que **mayoristas, revendedores y clientes generales**
+armen un carrito y envíen una **solicitud de cotización**. Esas solicitudes se
+guardan en Firestore, en una colección llamada `cotizaciones`.
+
+Para que se puedan guardar (incluso las de clientes que no inician sesión),
+hay que pegar unas reglas. Es rápido:
+
+1. En el menú izquierdo, entra a **"Firestore Database"**.
+2. Arriba, clic en la pestaña **"Reglas"** (Rules).
+3. **Borra** lo que haya y **pega exactamente esto**:
+
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+
+       // Cualquiera puede ENVIAR una cotización (también clientes sin sesión).
+       // Solo usuarios con sesión (asesores) pueden verlas o cambiarlas.
+       match /cotizaciones/{id} {
+         allow create: if true;
+         allow read, update, delete: if request.auth != null;
+       }
+
+     }
+   }
+   ```
+
+4. Clic en **"Publicar"** (Publish).
+
+✅ Listo. Ahora las cotizaciones llegan a tu base de datos. En el panel del
+asesor (siguiente etapa) las verás y podrás cambiarles el estado.
+
+> 🔒 **Nota de seguridad:** `allow create: if true` solo permite *crear* una
+> cotización nueva; nadie puede leer, editar ni borrar las de otros sin sesión.
+> Más adelante afinamos esto para que solo tú y Miguel (admins) puedan leerlas.
+
+---
+
 ## ✅ Cuando termines
 
 Pásame **dos cosas**:
