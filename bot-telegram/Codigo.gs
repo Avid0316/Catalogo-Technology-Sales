@@ -53,6 +53,14 @@ var NOMBRE_PESTANA = 'Equipos';
 // Luego ejecuta la función "procesarFotosViejas" a mano. Ver la guía.
 var CARPETA_FOTOS_VIEJAS = 'PEGA_AQUI_EL_ID_DE_LA_CARPETA_CON_FOTOS_VIEJAS';
 
+// Modelo para la importación en BLOQUE de fotos viejas. Para muchas fotos
+// (ej: 2000) conviene Haiku, que es ~7 veces más barato y lee el IMEI bien.
+var MODELO_IA_IMPORTAR = 'claude-haiku-4-5';
+
+// Híbrido: si al importar con Haiku el IMEI sale dudoso (no son 15 dígitos),
+// reintenta esa foto con Opus (más caro pero más exacto). true = sí reintentar.
+var REINTENTAR_CON_OPUS = true;
+
 // ============================================================
 //  No necesitas tocar nada de aquí para abajo.
 // ============================================================
@@ -200,7 +208,7 @@ function manejarRespuesta(msg) {
  * Le manda la foto a la IA y le pide que devuelva los datos en forma ordenada.
  * Usa la API de Anthropic por HTTP (Apps Script no tiene librería oficial).
  */
-function leerFotoConIA(base64, contentType) {
+function leerFotoConIA(base64, contentType, modelo) {
   var instruccion =
     'Esta es la foto de un equipo de la tienda "Technology Sales": la caja con ' +
     'su código de barras y/o el contrato de garantía escrito a mano. ' +
@@ -231,7 +239,7 @@ function leerFotoConIA(base64, contentType) {
   };
 
   var payload = {
-    model: MODELO_IA,
+    model: modelo || MODELO_IA,
     max_tokens: 1024,
     messages: [{
       role: 'user',
@@ -347,8 +355,12 @@ function responder200() {
  *   3. Ejecuta esta función "procesarFotosViejas" desde el editor.
  *
  *  Lee cada foto con IA, la apunta en la MISMA hoja y luego la mueve a una
- *  subcarpeta "Procesadas" para no repetirla. Si tienes muchas fotos, vuelve
- *  a ejecutarla las veces que haga falta (sigue donde se quedó).
+ *  subcarpeta "Procesadas" para no repetirla.
+ *
+ *  Para MUCHAS fotos (ej: 2000) NO la ejecutes a mano una y otra vez: usa
+ *  "instalarImportacionAutomatica" (abajo) y el bot las irá procesando solo
+ *  en tandas, hasta terminar. Usa el modelo MODELO_IA_IMPORTAR (Haiku) y, si
+ *  REINTENTAR_CON_OPUS está activo, reintenta con Opus las de IMEI dudoso.
  */
 function procesarFotosViejas() {
   var inicio = new Date().getTime();
@@ -362,7 +374,7 @@ function procesarFotosViejas() {
   while (archivos.hasNext()) {
     // Cuidado con el límite de 6 minutos de Apps Script: paramos a los 5.
     if (new Date().getTime() - inicio > 5 * 60 * 1000) {
-      Logger.log('Pausa por tiempo. Vuelve a ejecutar para continuar.');
+      Logger.log('Pausa por tiempo. Continúa en la próxima tanda automática.');
       break;
     }
 
@@ -370,15 +382,28 @@ function procesarFotosViejas() {
     var tipo = archivo.getMimeType();
     if (tipo.indexOf('image/') !== 0) continue; // solo fotos
 
+    var base64 = Utilities.base64Encode(archivo.getBlob().getBytes());
     var datos = {};
     try {
-      datos = leerFotoConIA(Utilities.base64Encode(archivo.getBlob().getBytes()), tipo);
+      // 1er intento: modelo económico (Haiku) para la importación masiva.
+      datos = leerFotoConIA(base64, tipo, MODELO_IA_IMPORTAR);
     } catch (err) {
       console.error('No se pudo leer ' + archivo.getName() + ': ' + err);
     }
 
     var imei = (datos.imei || '').toString().replace(/\D/g, '');
     var imeiOk = /^\d{15}$/.test(imei);
+
+    // 2do intento (híbrido): si el IMEI salió dudoso, reintenta con Opus.
+    if (!imeiOk && REINTENTAR_CON_OPUS && MODELO_IA_IMPORTAR !== MODELO_IA) {
+      try {
+        var datos2 = leerFotoConIA(base64, tipo, MODELO_IA);
+        var imei2 = (datos2.imei || '').toString().replace(/\D/g, '');
+        if (/^\d{15}$/.test(imei2)) { datos = datos2; imei = imei2; imeiOk = true; }
+      } catch (err) {
+        console.error('Reintento con Opus falló en ' + archivo.getName() + ': ' + err);
+      }
+    }
     if (imeiOk) conImei++;
 
     archivo.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
@@ -396,14 +421,38 @@ function procesarFotosViejas() {
       'import'                             // ID mensaje
     ]);
 
-    // Mover a "Procesadas" para no repetirla en la próxima corrida.
+    // Mover a "Procesadas" para no repetirla en la próxima tanda.
     procesadas.addFile(archivo);
     carpeta.removeFile(archivo);
     leidas++;
   }
 
-  Logger.log('Listo: ' + leidas + ' fotos importadas (' + conImei + ' con IMEI). ' +
-    'Si quedaron fotos en la carpeta, vuelve a ejecutar.');
+  // ¿Ya no quedan fotos? Apaga el temporizador automático si estaba puesto.
+  if (!carpeta.getFiles().hasNext()) {
+    detenerImportacionAutomatica();
+    Logger.log('🎉 Importación TERMINADA. No quedan fotos por procesar.');
+  }
+
+  Logger.log('Tanda lista: ' + leidas + ' fotos importadas (' + conImei + ' con IMEI).');
+}
+
+/**
+ * Enciende el temporizador: procesa las fotos solo, en tandas, cada 5 minutos,
+ * hasta vaciar la carpeta. Ejecútala UNA vez y deja que trabaje (puede tardar
+ * horas con muchas fotos). Se apaga solo al terminar.
+ */
+function instalarImportacionAutomatica() {
+  detenerImportacionAutomatica(); // evita duplicados
+  ScriptApp.newTrigger('procesarFotosViejas').timeBased().everyMinutes(5).create();
+  procesarFotosViejas(); // arranca de una vez la primera tanda
+  Logger.log('✅ Temporizador encendido: procesará fotos cada 5 minutos hasta terminar.');
+}
+
+/** Apaga el temporizador de importación (lo hace solo al terminar, o a mano). */
+function detenerImportacionAutomatica() {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'procesarFotosViejas') ScriptApp.deleteTrigger(t);
+  });
 }
 
 /** Devuelve la subcarpeta con ese nombre, creándola si no existe. */

@@ -183,14 +183,25 @@ nuevo, así que la lee y la guarda igual. Ideal para unas pocas.
 2. Sube esas fotos a una **carpeta nueva de Google Drive** (ej: `Fotos viejas`).
 3. Copia el **ID de esa carpeta** (la parte del link después de `/folders/`) y
    pégalo en el código, en la línea `CARPETA_FOTOS_VIEJAS`. Guarda (💾).
-4. En el editor de Apps Script, selecciona la función **`procesarFotosViejas`**
-   en el desplegable de arriba y dale **Ejecutar** (▶️).
-5. El bot lee cada foto, la apunta en la **misma hoja** (marcadas como
-   "Importado") y mueve la foto a una subcarpeta `Procesadas`.
+4. En el editor de Apps Script, selecciona la función
+   **`instalarImportacionAutomatica`** y dale **Ejecutar** (▶️).
+5. ¡Eso es todo! El bot empieza a leer las fotos **solo, en tandas cada 5
+   minutos**, hasta terminar. Las apunta en la **misma hoja** (marcadas como
+   "Importado") y las mueve a una subcarpeta `Procesadas`. **Se apaga solo**
+   cuando ya no quedan fotos.
 
-> 💡 Si son muchas fotos, la función se pausa sola a los 5 minutos (límite de
-> Google). Solo **vuelve a ejecutarla** las veces que haga falta: sigue donde
-> se quedó hasta terminar.
+> 💡 Puedes cerrar la pestaña; sigue trabajando solo. Si quieres detenerlo
+> antes, ejecuta `detenerImportacionAutomatica`.
+
+#### Para MUCHAS fotos (ej: 2000) — costo y tiempo
+- **Costo de lectura:** con el modelo económico (Haiku, ya configurado para la
+  importación) son ~**$6–10 USD** por las 2000. Con Opus serían ~$40. El código
+  trae un **modo híbrido**: lee todo con Haiku y solo reintenta con Opus las
+  fotos donde el IMEI salga dudoso (lo mejor de los dos). Puedes ajustar
+  `MODELO_IA_IMPORTAR` y `REINTENTAR_CON_OPUS` arriba en el código.
+- **Tiempo:** unas 2–3 horas trabajando solo. Con Gmail gratis, Google limita
+  el tiempo diario, así que podría repartirse en **un par de días** (no pasa
+  nada, retoma solo). Asegúrate de tener saldo suficiente en la IA antes.
 
 ---
 
