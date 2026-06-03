@@ -227,13 +227,21 @@ lo que haya: el código de barras de la caja y/o el contrato escrito a mano.
 registra **una fila por cada equipo** que vea, con su IMEI/código, modelo,
 color y batería.
 
-**¿Cómo sé de cuándo es cada equipo (la fecha)?** En la hoja hay dos fechas:
-- **Fecha documento:** la que viene **impresa o escrita en la etiqueta o el
-  contrato** (ej: `17/12/2025`). Es la fecha real de ese equipo.
-- **Fecha/Hora registro:** cuándo el bot lo apuntó (o, si reenviaste una foto
-  vieja al grupo, la fecha original del mensaje reenviado).
-Si una etiqueta no trae fecha, esa casilla queda vacía y te guías por la de
-registro.
+**¿Cómo sé de cuándo es cada equipo (la fecha)?** En la hoja hay **dos fechas
+distintas**, no las confundas:
+- **Fecha de envío:** cuándo se **mandó la foto al grupo**. Telegram da esta
+  fecha exacta, así que es la fecha **real** de la foto/movimiento. *(Si
+  reenvías una foto vieja, usa la fecha original del reenvío.)*
+- **Fecha etiqueta:** la que viene **impresa en la etiqueta** del teléfono
+  (ej: `17/12/2025`). Es cuándo se **creó/etiquetó** ese equipo (entró a
+  inventario), **NO** cuándo se tomó la foto. Sirve de referencia, pero la
+  fecha que vale para el día a día es la **Fecha de envío**.
+
+> ⚠️ **Fotos viejas importadas:** en esas, la "Fecha de envío" sale **vacía**,
+> porque al subirlas a Drive se pierde la fecha original del grupo. Si
+> necesitas la fecha real de las viejas, hay que importarlas desde el archivo
+> del export de Telegram (que sí trae la fecha de cada mensaje) — pídemelo y
+> te lo preparo.
 
 ---
 

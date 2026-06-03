@@ -69,11 +69,14 @@ var API = 'https://api.telegram.org/bot' + TOKEN;
 
 // Orden de las columnas en la hoja (debe coincidir con los encabezados).
 // Una FILA por equipo (una foto puede traer varios teléfonos).
+// OJO con las dos fechas:
+//  - "Fecha de envío"  = cuándo se mandó la foto al grupo (la fecha real).
+//  - "Fecha etiqueta"  = fecha impresa en la etiqueta (cuándo se creó/etiquetó).
 var COLUMNAS = [
-  'Fecha/Hora registro', 'Quién envió', 'IMEI', 'Código interno', 'Modelo',
+  'Fecha de envío', 'Quién envió', 'IMEI', 'Código interno', 'Modelo',
   'Color', 'Batería', 'Cliente', 'ID cliente', 'Teléfono', 'Precio',
   'Método de pago', 'Tipo', 'Sitio de entrega', 'Entregado por', 'Vendedor',
-  'Fecha documento', 'Garantía', 'Estado', 'Foto', 'ID mensaje'
+  'Fecha etiqueta', 'Garantía', 'Estado', 'Foto', 'ID mensaje'
 ];
 
 /**
@@ -137,9 +140,11 @@ function manejarFoto(msg) {
   var linkFoto = blob ? guardarBlobEnDrive(blob, nombreBase) : '(no se pudo descargar la foto)';
 
   // 4. Apuntar una fila por cada equipo.
-  // Si la foto es REENVIADA, usamos la fecha original del mensaje.
+  // "Fecha de envío" = cuándo se mandó al grupo (la fecha real de la foto).
+  // Telegram nos da esa fecha exacta en msg.date. Si la foto fue REENVIADA,
+  // usamos la fecha original del mensaje (forward_date).
   var hoja = obtenerHoja();
-  var ahora = msg.forward_date ? new Date(msg.forward_date * 1000) : new Date();
+  var ahora = new Date((msg.forward_date || msg.date || (Date.now() / 1000)) * 1000);
   var sinImei = 0;
 
   if (!equipos.length) {
@@ -451,14 +456,17 @@ function procesarFotosViejas() {
     }
 
     archivo.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    var fechaArchivo = archivo.getDateCreated();
     var url = archivo.getUrl();
+    // OJO: en fotos viejas NO sabemos la fecha real de envío (la de Drive es la
+    // de subida, no la del grupo). La dejamos vacía; la fecha verdadera se
+    // recupera con el export de Telegram (ver guía). Sí queda la fecha de etiqueta.
+    var fechaEnvio = '';
 
     if (!equipos.length) {
-      hoja.appendRow(armarFila({}, fechaArchivo, 'Importado (foto vieja)', url, 'import'));
+      hoja.appendRow(armarFila({}, fechaEnvio, 'Importado (foto vieja)', url, 'import'));
     } else {
       equipos.forEach(function (eq) {
-        hoja.appendRow(armarFila(eq, fechaArchivo, 'Importado (foto vieja)', url, 'import'));
+        hoja.appendRow(armarFila(eq, fechaEnvio, 'Importado (foto vieja)', url, 'import'));
         if (imeiValido(eq)) conImei++;
       });
     }
