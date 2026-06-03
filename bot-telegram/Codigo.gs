@@ -48,6 +48,11 @@ var MODELO_IA = 'claude-opus-4-8';
 // Nombre de la pestaña dentro de la hoja donde se apunta todo.
 var NOMBRE_PESTANA = 'Equipos';
 
+// (OPCIONAL) Para importar fotos VIEJAS en bloque: pon aquí el ID de una
+// carpeta de Drive donde subiste las fotos antiguas (ej: el export de Telegram).
+// Luego ejecuta la función "procesarFotosViejas" a mano. Ver la guía.
+var CARPETA_FOTOS_VIEJAS = 'PEGA_AQUI_EL_ID_DE_LA_CARPETA_CON_FOTOS_VIEJAS';
+
 // ============================================================
 //  No necesitas tocar nada de aquí para abajo.
 // ============================================================
@@ -327,6 +332,84 @@ function enviarMensaje(chatId, texto, responderA) {
 
 function responder200() {
   return ContentService.createTextOutput('ok');
+}
+
+/**
+ * ============================================================
+ *  IMPORTAR FOTOS VIEJAS EN BLOQUE
+ * ============================================================
+ *  El bot NO puede leer fotos que se mandaron al grupo ANTES de instalarlo
+ *  (Telegram no le entrega el historial). Para recuperarlas:
+ *
+ *   1. Sube las fotos viejas a una carpeta de Drive (por ejemplo, las del
+ *      export de Telegram Desktop, o reenviadas/descargadas a mano).
+ *   2. Pega el ID de esa carpeta arriba, en CARPETA_FOTOS_VIEJAS.
+ *   3. Ejecuta esta función "procesarFotosViejas" desde el editor.
+ *
+ *  Lee cada foto con IA, la apunta en la MISMA hoja y luego la mueve a una
+ *  subcarpeta "Procesadas" para no repetirla. Si tienes muchas fotos, vuelve
+ *  a ejecutarla las veces que haga falta (sigue donde se quedó).
+ */
+function procesarFotosViejas() {
+  var inicio = new Date().getTime();
+  var hoja = obtenerHoja();
+  var carpeta = DriveApp.getFolderById(CARPETA_FOTOS_VIEJAS);
+  var procesadas = obtenerSubcarpeta(carpeta, 'Procesadas');
+
+  var archivos = carpeta.getFiles();
+  var leidas = 0, conImei = 0;
+
+  while (archivos.hasNext()) {
+    // Cuidado con el límite de 6 minutos de Apps Script: paramos a los 5.
+    if (new Date().getTime() - inicio > 5 * 60 * 1000) {
+      Logger.log('Pausa por tiempo. Vuelve a ejecutar para continuar.');
+      break;
+    }
+
+    var archivo = archivos.next();
+    var tipo = archivo.getMimeType();
+    if (tipo.indexOf('image/') !== 0) continue; // solo fotos
+
+    var datos = {};
+    try {
+      datos = leerFotoConIA(Utilities.base64Encode(archivo.getBlob().getBytes()), tipo);
+    } catch (err) {
+      console.error('No se pudo leer ' + archivo.getName() + ': ' + err);
+    }
+
+    var imei = (datos.imei || '').toString().replace(/\D/g, '');
+    var imeiOk = /^\d{15}$/.test(imei);
+    if (imeiOk) conImei++;
+
+    archivo.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    hoja.appendRow([
+      archivo.getDateCreated(),            // Fecha/Hora (la del archivo)
+      'Importado (foto vieja)',            // Quién envió
+      imeiOk ? imei : (datos.imei || ''),  // IMEI
+      datos.modelo || '', datos.cliente || '', datos.id_cliente || '',
+      datos.telefono || '', datos.precio || '', datos.metodo_pago || '',
+      datos.tipo || '', datos.sitio_entrega || '', datos.entregado_por || '',
+      datos.vendedor || '', datos.fecha || '', datos.garantia || '',
+      imeiOk ? '✅ Importado' : '⚠️ Revisar IMEI', // Estado
+      archivo.getUrl(),                    // Foto
+      'import'                             // ID mensaje
+    ]);
+
+    // Mover a "Procesadas" para no repetirla en la próxima corrida.
+    procesadas.addFile(archivo);
+    carpeta.removeFile(archivo);
+    leidas++;
+  }
+
+  Logger.log('Listo: ' + leidas + ' fotos importadas (' + conImei + ' con IMEI). ' +
+    'Si quedaron fotos en la carpeta, vuelve a ejecutar.');
+}
+
+/** Devuelve la subcarpeta con ese nombre, creándola si no existe. */
+function obtenerSubcarpeta(carpeta, nombre) {
+  var existentes = carpeta.getFoldersByName(nombre);
+  return existentes.hasNext() ? existentes.next() : carpeta.createFolder(nombre);
 }
 
 /**

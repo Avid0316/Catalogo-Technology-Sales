@@ -167,6 +167,33 @@ Guarda (💾) otra vez.
 
 ---
 
+## 📦 Recuperar fotos VIEJAS (de antes de instalar el bot)
+
+El bot solo ve las fotos que llegan **después** de instalarlo (así funciona
+Telegram). Para recuperar las de fechas anteriores tienes dos caminos:
+
+### Camino rápido (pocas fotos): reenviarlas
+En el grupo, **reenvía** ("Forward") la foto vieja. Para el bot es un mensaje
+nuevo, así que la lee y la guarda igual. Ideal para unas pocas.
+
+### Camino en bloque (muchas fotos): importarlas desde el historial
+1. En **Telegram Desktop** (la app de computadora) abre el grupo →
+   menú **⋮ → Exportar historial del chat** → marca **Fotos** y exporta.
+   *(También sirve cualquier carpeta donde tengas las fotos juntas.)*
+2. Sube esas fotos a una **carpeta nueva de Google Drive** (ej: `Fotos viejas`).
+3. Copia el **ID de esa carpeta** (la parte del link después de `/folders/`) y
+   pégalo en el código, en la línea `CARPETA_FOTOS_VIEJAS`. Guarda (💾).
+4. En el editor de Apps Script, selecciona la función **`procesarFotosViejas`**
+   en el desplegable de arriba y dale **Ejecutar** (▶️).
+5. El bot lee cada foto, la apunta en la **misma hoja** (marcadas como
+   "Importado") y mueve la foto a una subcarpeta `Procesadas`.
+
+> 💡 Si son muchas fotos, la función se pausa sola a los 5 minutos (límite de
+> Google). Solo **vuelve a ejecutarla** las veces que haga falta: sigue donde
+> se quedó hasta terminar.
+
+---
+
 ## Preguntas comunes
 
 **¿Es seguro?** Sí. Todo queda en TU Google (tu Drive y tu hoja) y en tu propio
