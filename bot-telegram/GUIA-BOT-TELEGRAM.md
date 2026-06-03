@@ -1,13 +1,16 @@
 # 🤖 Guía paso a paso: Bot de Telegram que lee tus equipos
 
 Este bot vive en tu grupo de Telegram. Cuando un compañero manda la **foto**
-de un equipo (la caja con código de barras y/o el contrato de garantía), el bot:
+de uno o varios equipos (la caja con código de barras, el contrato de garantía,
+o varios teléfonos juntos con sus etiquetas), el bot:
 
 1. **Guarda la foto** en una carpeta de Google Drive.
-2. **Lee la foto solo** con inteligencia artificial y saca: IMEI, modelo,
-   cliente, precio, tipo (venta/entrega), fecha, etc.
-3. **Apunta todo** en una hoja de Google Sheets, una fila por equipo.
-4. Si la foto sale borrosa y no se lee el IMEI, **pide el dato** en el grupo.
+2. **Lee la foto solo** con inteligencia artificial y saca: IMEI, código
+   interno, modelo, color, batería, cliente, precio, tipo, fecha, etc.
+3. **Apunta una fila por CADA equipo** en una hoja de Google Sheets
+   (si una foto trae 3 teléfonos, salen 3 filas).
+4. Si una etiqueta sale borrosa y no se lee el IMEI, **avisa** en el grupo
+   y lo marca como "Revisar" en la hoja.
 
 Así puedes abrir la hoja y **verificar que todo esté facturado**. Tus
 compañeros siguen mandando la foto como siempre, sin escribir nada.
@@ -219,6 +222,18 @@ está comentado en español para que se entienda.
 
 **¿Funciona con fotos solo de la caja, o solo del contrato?** Con las dos. Lee
 lo que haya: el código de barras de la caja y/o el contrato escrito a mano.
+
+**¿Y si la foto trae varios teléfonos juntos?** No hay problema: el bot
+registra **una fila por cada equipo** que vea, con su IMEI/código, modelo,
+color y batería.
+
+**¿Cómo sé de cuándo es cada equipo (la fecha)?** En la hoja hay dos fechas:
+- **Fecha documento:** la que viene **impresa o escrita en la etiqueta o el
+  contrato** (ej: `17/12/2025`). Es la fecha real de ese equipo.
+- **Fecha/Hora registro:** cuándo el bot lo apuntó (o, si reenviaste una foto
+  vieja al grupo, la fecha original del mensaje reenviado).
+Si una etiqueta no trae fecha, esa casilla queda vacía y te guías por la de
+registro.
 
 ---
 

@@ -68,11 +68,12 @@ var REINTENTAR_CON_OPUS = true;
 var API = 'https://api.telegram.org/bot' + TOKEN;
 
 // Orden de las columnas en la hoja (debe coincidir con los encabezados).
+// Una FILA por equipo (una foto puede traer varios teléfonos).
 var COLUMNAS = [
-  'Fecha/Hora registro', 'Quién envió', 'IMEI', 'Modelo', 'Cliente',
-  'ID cliente', 'Teléfono', 'Precio', 'Método de pago', 'Tipo',
-  'Sitio de entrega', 'Entregado por', 'Vendedor', 'Fecha contrato',
-  'Garantía', 'Estado', 'Foto', 'ID mensaje'
+  'Fecha/Hora registro', 'Quién envió', 'IMEI', 'Código interno', 'Modelo',
+  'Color', 'Batería', 'Cliente', 'ID cliente', 'Teléfono', 'Precio',
+  'Método de pago', 'Tipo', 'Sitio de entrega', 'Entregado por', 'Vendedor',
+  'Fecha documento', 'Garantía', 'Estado', 'Foto', 'ID mensaje'
 ];
 
 /**
@@ -109,7 +110,8 @@ function doPost(e) {
 }
 
 /**
- * Procesa una foto nueva: la guarda, la LEE con IA y la apunta en la hoja.
+ * Procesa una foto nueva: la guarda, la LEE con IA y apunta UNA FILA por cada
+ * equipo que aparezca (una foto puede traer varios teléfonos).
  */
 function manejarFoto(msg) {
   var chatId = msg.chat.id;
@@ -119,57 +121,83 @@ function manejarFoto(msg) {
   var foto = msg.photo[msg.photo.length - 1];
   var blob = descargarFoto(foto.file_id);
 
-  // 2. Leer la foto con IA.
-  var datos = {};
+  // 2. Leer la foto con IA → lista de equipos.
+  var equipos = [];
   if (blob) {
     try {
-      datos = leerFotoConIA(Utilities.base64Encode(blob.getBytes()), blob.getContentType());
+      var datos = leerFotoConIA(blob.getBytes() ? Utilities.base64Encode(blob.getBytes()) : '', blob.getContentType());
+      equipos = (datos && datos.equipos) || [];
     } catch (err) {
       console.error('La IA no pudo leer la foto: ' + err);
     }
   }
 
-  // 3. Guardar la foto en Drive (nombrada con el IMEI si se leyó).
-  var linkFoto = blob
-    ? guardarBlobEnDrive(blob, datos.imei || ('msg' + msg.message_id))
-    : '(no se pudo descargar la foto)';
+  // 3. Guardar la foto en Drive (nombrada con el 1er IMEI/código si se leyó).
+  var nombreBase = (equipos[0] && (equipos[0].imei || equipos[0].codigo_interno)) || ('msg' + msg.message_id);
+  var linkFoto = blob ? guardarBlobEnDrive(blob, nombreBase) : '(no se pudo descargar la foto)';
 
-  // 4. ¿Se pudo leer el IMEI? (15 dígitos)
-  var imei = (datos.imei || '').toString().replace(/\D/g, '');
-  var imeiOk = /^\d{15}$/.test(imei);
-  var estado = imeiOk ? '✅ Leído' : '⚠️ Revisar IMEI';
-
-  // 5. Apuntar la fila en la hoja.
+  // 4. Apuntar una fila por cada equipo.
+  // Si la foto es REENVIADA, usamos la fecha original del mensaje.
   var hoja = obtenerHoja();
-  hoja.appendRow([
-    new Date(),                      // Fecha/Hora registro
-    quien,                           // Quién envió
-    imeiOk ? imei : (datos.imei || ''), // IMEI
-    datos.modelo || '',              // Modelo
-    datos.cliente || '',             // Cliente
-    datos.id_cliente || '',          // ID cliente
-    datos.telefono || '',            // Teléfono
-    datos.precio || '',              // Precio
-    datos.metodo_pago || '',         // Método de pago
-    datos.tipo || '',                // Tipo (venta/entrega)
-    datos.sitio_entrega || '',       // Sitio de entrega
-    datos.entregado_por || '',       // Entregado por
-    datos.vendedor || '',            // Vendedor
-    datos.fecha || '',               // Fecha del contrato
-    datos.garantia || '',            // Garantía
-    estado,                          // Estado
-    linkFoto,                        // Foto
-    String(msg.message_id)           // ID mensaje (para vincular respuestas)
-  ]);
+  var ahora = msg.forward_date ? new Date(msg.forward_date * 1000) : new Date();
+  var sinImei = 0;
 
-  // 6. Si no se pudo leer el IMEI, pedirlo en el grupo.
-  if (!imeiOk) {
+  if (!equipos.length) {
+    hoja.appendRow(armarFila({}, ahora, quien, linkFoto, String(msg.message_id)));
+    sinImei = 1;
+  } else {
+    equipos.forEach(function (eq) {
+      hoja.appendRow(armarFila(eq, ahora, quien, linkFoto, String(msg.message_id)));
+      if (!imeiValido(eq)) sinImei++;
+    });
+  }
+
+  // 5. Avisar en el grupo (un solo mensaje resumen).
+  if (equipos.length && sinImei === 0) {
+    enviarMensaje(chatId, '✅ Registré ' + equipos.length + ' equipo(s) de esta foto.', msg.message_id);
+  } else {
     enviarMensaje(chatId,
-      '⚠️ ' + quien + ', no pude leer bien el *IMEI* de esta foto.\n' +
-      'Por favor *responde a esta misma foto* escribiendo el IMEI, por ejemplo:\n' +
-      'IMEI: 868677063192914',
+      '✅ Registré ' + (equipos.length || 1) + ' equipo(s); ' + sinImei + ' sin IMEI legible.\n' +
+      'Revísalos en la hoja, o *responde a esta foto* con el IMEI así: IMEI: 351016096282919',
       msg.message_id);
   }
+}
+
+/** ¿El equipo trae un IMEI válido de 15 dígitos? */
+function imeiValido(eq) {
+  return /^\d{15}$/.test(((eq && eq.imei) || '').toString().replace(/\D/g, ''));
+}
+
+/** Arma la fila de la hoja para un equipo (según el orden de COLUMNAS). */
+function armarFila(eq, fechaRegistro, quien, linkFoto, msgId) {
+  eq = eq || {};
+  var imei = (eq.imei || '').toString().replace(/\D/g, '');
+  var imeiOk = /^\d{15}$/.test(imei);
+  var estado = imeiOk ? '✅ Leído'
+    : (eq.codigo_interno ? 'ℹ️ Sin IMEI (código)' : '⚠️ Revisar');
+  return [
+    fechaRegistro,                 // Fecha/Hora registro
+    quien,                         // Quién envió
+    imeiOk ? imei : (eq.imei || ''), // IMEI
+    eq.codigo_interno || '',       // Código interno (ej: I-07166)
+    eq.modelo || '',               // Modelo
+    eq.color || '',                // Color
+    eq.bateria || '',              // Batería
+    eq.cliente || '',              // Cliente
+    eq.id_cliente || '',           // ID cliente
+    eq.telefono || '',             // Teléfono
+    eq.precio || '',               // Precio
+    eq.metodo_pago || '',          // Método de pago
+    eq.tipo || '',                 // Tipo (venta/entrega)
+    eq.sitio_entrega || '',        // Sitio de entrega
+    eq.entregado_por || '',        // Entregado por
+    eq.vendedor || '',             // Vendedor
+    eq.fecha || '',                // Fecha del documento
+    eq.garantia || '',             // Garantía
+    estado,                        // Estado
+    linkFoto,                      // Foto
+    msgId                          // ID mensaje
+  ];
 }
 
 /**
@@ -180,28 +208,29 @@ function manejarRespuesta(msg) {
   var idFotoOriginal = String(msg.reply_to_message.message_id);
   var texto = msg.text || msg.caption || '';
 
+  var m = texto.match(/\b(\d{15})\b/);
+  if (!m) {
+    enviarMensaje(msg.chat.id,
+      'No encontré un IMEI de 15 dígitos en tu mensaje. Mándalo así: IMEI: 351016096282919',
+      msg.message_id);
+    return;
+  }
+
   var hoja = obtenerHoja();
   var rango = hoja.getDataRange().getValues();
-  var colImei = 3, colEstado = 16, colMsgId = 18; // posiciones (1 = primera columna)
+  var colImei = 3, colEstado = 19, colMsgId = 21; // posiciones (1 = primera columna)
 
-  for (var i = rango.length - 1; i >= 1; i--) {
-    if (String(rango[i][colMsgId - 1]) === idFotoOriginal) {
+  // Buscar la PRIMERA fila de esa foto que aún no tenga IMEI y completarla.
+  for (var i = 1; i < rango.length; i++) {
+    if (String(rango[i][colMsgId - 1]) === idFotoOriginal && !/^\d{15}$/.test(String(rango[i][colImei - 1]))) {
       var fila = i + 1;
-
-      // Buscar un IMEI (15 dígitos) en el texto de la respuesta.
-      var m = texto.match(/\b(\d{15})\b/);
-      if (m) {
-        hoja.getRange(fila, colImei).setValue(m[1]);
-        hoja.getRange(fila, colEstado).setValue('✅ Corregido');
-        enviarMensaje(msg.chat.id, '✅ ¡Gracias! IMEI registrado: ' + m[1], msg.message_id);
-      } else {
-        enviarMensaje(msg.chat.id,
-          'No encontré un IMEI de 15 dígitos en tu mensaje. Mándalo así: IMEI: 868677063192914',
-          msg.message_id);
-      }
+      hoja.getRange(fila, colImei).setValue(m[1]);
+      hoja.getRange(fila, colEstado).setValue('✅ Corregido');
+      enviarMensaje(msg.chat.id, '✅ ¡Gracias! IMEI registrado: ' + m[1], msg.message_id);
       return;
     }
   }
+  enviarMensaje(msg.chat.id, 'Anotado: ' + m[1] + '. (No encontré una fila pendiente de esa foto.)', msg.message_id);
 }
 
 /**
@@ -210,19 +239,26 @@ function manejarRespuesta(msg) {
  */
 function leerFotoConIA(base64, contentType, modelo) {
   var instruccion =
-    'Esta es la foto de un equipo de la tienda "Technology Sales": la caja con ' +
-    'su código de barras y/o el contrato de garantía escrito a mano. ' +
-    'Lee TODO lo que puedas (el código de barras y la letra a mano) y devuelve ' +
-    'los datos. El IMEI son 15 dígitos (aparece en el código de barras y junto a ' +
-    '"IMEI:" en el contrato). Si un dato no aparece o no se puede leer, déjalo vacío ("").';
+    'Foto de la tienda "Technology Sales". Puede mostrar UNO o VARIOS teléfonos. ' +
+    'Puede ser (a) un contrato de venta/garantía con datos del cliente, o ' +
+    '(b) una foto de inventario donde cada teléfono tiene una etiqueta con código ' +
+    'de barras (IMEI), modelo, color, batería y fecha, o una nota escrita a mano. ' +
+    'Devuelve un objeto en "equipos" por CADA teléfono visible. ' +
+    'El IMEI son 15 dígitos (del código de barras o junto a "IMEI:"). Si el código ' +
+    'NO tiene 15 dígitos (ej: un código interno como "I-07166"), ponlo en ' +
+    '"codigo_interno" y deja "imei" vacío. La "fecha" es la que aparece IMPRESA o ' +
+    'escrita en la etiqueta o el contrato (ej: 17/12/2025). Si un dato no aparece, déjalo vacío ("").';
 
-  var schema = {
+  var equipo = {
     type: 'object',
     additionalProperties: false,
     properties: {
       imei: { type: 'string', description: 'IMEI de 15 dígitos. Vacío si no se lee.' },
-      modelo: { type: 'string', description: 'Modelo del equipo, ej: HONOR 90 256GB.' },
-      cliente: { type: 'string', description: 'Nombre del cliente.' },
+      codigo_interno: { type: 'string', description: 'Código interno o de etiqueta que NO sea de 15 dígitos, ej: I-07166.' },
+      modelo: { type: 'string', description: 'Modelo, ej: iPhone 13 Pro Max 128GB.' },
+      color: { type: 'string', description: 'Color del equipo, ej: Verde, Gris.' },
+      bateria: { type: 'string', description: 'Porcentaje de batería, ej: 100%.' },
+      cliente: { type: 'string', description: 'Nombre del cliente (si es contrato).' },
       id_cliente: { type: 'string', description: 'Número de identidad del cliente.' },
       telefono: { type: 'string', description: 'Teléfono o N.º del cliente.' },
       precio: { type: 'string', description: 'Precio, ej: 5,000 LPS.' },
@@ -231,16 +267,26 @@ function leerFotoConIA(base64, contentType, modelo) {
       sitio_entrega: { type: 'string', description: 'Tienda o Envío y lugar.' },
       entregado_por: { type: 'string', description: 'Quién entregó el equipo.' },
       vendedor: { type: 'string', description: 'Número o nombre del vendedor.' },
-      fecha: { type: 'string', description: 'Fecha del contrato.' },
+      fecha: { type: 'string', description: 'Fecha impresa o escrita en la etiqueta/contrato.' },
       garantia: { type: 'string', description: 'Tiempo de garantía, ej: 60 días.' }
     },
-    required: ['imei', 'modelo', 'cliente', 'id_cliente', 'telefono', 'precio',
-      'metodo_pago', 'tipo', 'sitio_entrega', 'entregado_por', 'vendedor', 'fecha', 'garantia']
+    required: ['imei', 'codigo_interno', 'modelo', 'color', 'bateria', 'cliente',
+      'id_cliente', 'telefono', 'precio', 'metodo_pago', 'tipo', 'sitio_entrega',
+      'entregado_por', 'vendedor', 'fecha', 'garantia']
+  };
+
+  var schema = {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      equipos: { type: 'array', description: 'Un objeto por cada teléfono visible en la foto.', items: equipo }
+    },
+    required: ['equipos']
   };
 
   var payload = {
     model: modelo || MODELO_IA,
-    max_tokens: 1024,
+    max_tokens: 2048,
     messages: [{
       role: 'user',
       content: [
@@ -383,43 +429,39 @@ function procesarFotosViejas() {
     if (tipo.indexOf('image/') !== 0) continue; // solo fotos
 
     var base64 = Utilities.base64Encode(archivo.getBlob().getBytes());
-    var datos = {};
+    var equipos = [];
     try {
       // 1er intento: modelo económico (Haiku) para la importación masiva.
-      datos = leerFotoConIA(base64, tipo, MODELO_IA_IMPORTAR);
+      var datos = leerFotoConIA(base64, tipo, MODELO_IA_IMPORTAR);
+      equipos = (datos && datos.equipos) || [];
     } catch (err) {
       console.error('No se pudo leer ' + archivo.getName() + ': ' + err);
     }
 
-    var imei = (datos.imei || '').toString().replace(/\D/g, '');
-    var imeiOk = /^\d{15}$/.test(imei);
-
-    // 2do intento (híbrido): si el IMEI salió dudoso, reintenta con Opus.
-    if (!imeiOk && REINTENTAR_CON_OPUS && MODELO_IA_IMPORTAR !== MODELO_IA) {
+    // 2do intento (híbrido): si no se identificó ningún equipo (ni IMEI ni
+    // código), reintenta con Opus, más exacto con letra a mano.
+    if (REINTENTAR_CON_OPUS && MODELO_IA_IMPORTAR !== MODELO_IA && contarIdentificados(equipos) === 0) {
       try {
         var datos2 = leerFotoConIA(base64, tipo, MODELO_IA);
-        var imei2 = (datos2.imei || '').toString().replace(/\D/g, '');
-        if (/^\d{15}$/.test(imei2)) { datos = datos2; imei = imei2; imeiOk = true; }
+        var eq2 = (datos2 && datos2.equipos) || [];
+        if (contarIdentificados(eq2) > contarIdentificados(equipos)) equipos = eq2;
       } catch (err) {
         console.error('Reintento con Opus falló en ' + archivo.getName() + ': ' + err);
       }
     }
-    if (imeiOk) conImei++;
 
     archivo.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    var fechaArchivo = archivo.getDateCreated();
+    var url = archivo.getUrl();
 
-    hoja.appendRow([
-      archivo.getDateCreated(),            // Fecha/Hora (la del archivo)
-      'Importado (foto vieja)',            // Quién envió
-      imeiOk ? imei : (datos.imei || ''),  // IMEI
-      datos.modelo || '', datos.cliente || '', datos.id_cliente || '',
-      datos.telefono || '', datos.precio || '', datos.metodo_pago || '',
-      datos.tipo || '', datos.sitio_entrega || '', datos.entregado_por || '',
-      datos.vendedor || '', datos.fecha || '', datos.garantia || '',
-      imeiOk ? '✅ Importado' : '⚠️ Revisar IMEI', // Estado
-      archivo.getUrl(),                    // Foto
-      'import'                             // ID mensaje
-    ]);
+    if (!equipos.length) {
+      hoja.appendRow(armarFila({}, fechaArchivo, 'Importado (foto vieja)', url, 'import'));
+    } else {
+      equipos.forEach(function (eq) {
+        hoja.appendRow(armarFila(eq, fechaArchivo, 'Importado (foto vieja)', url, 'import'));
+        if (imeiValido(eq)) conImei++;
+      });
+    }
 
     // Mover a "Procesadas" para no repetirla en la próxima tanda.
     procesadas.addFile(archivo);
@@ -433,7 +475,14 @@ function procesarFotosViejas() {
     Logger.log('🎉 Importación TERMINADA. No quedan fotos por procesar.');
   }
 
-  Logger.log('Tanda lista: ' + leidas + ' fotos importadas (' + conImei + ' con IMEI).');
+  Logger.log('Tanda lista: ' + leidas + ' fotos (' + conImei + ' equipos con IMEI).');
+}
+
+/** Cuenta equipos identificables (con IMEI de 15 dígitos o con código interno). */
+function contarIdentificados(equipos) {
+  return (equipos || []).filter(function (eq) {
+    return imeiValido(eq) || (eq && eq.codigo_interno);
+  }).length;
 }
 
 /**
