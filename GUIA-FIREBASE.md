@@ -172,6 +172,52 @@ lo que le corresponde (precios, panel, etc.). Si un usuario aún no está en
 
 ---
 
+## Paso 8 · Reglas para el panel de usuarios
+
+Para que el **admin pueda crear/editar usuarios desde la web**, y para que cada
+**mayorista/revendedor pueda guardar sus direcciones de envío**, hay que ampliar
+la regla de `usuarios`.
+
+1. **Firestore → Reglas.**
+2. **Reemplaza** el bloque `match /usuarios/{email} { ... }` del Paso 7 por este:
+
+   ```
+   function isAdmin() {
+     return request.auth != null &&
+       get(/databases/$(database)/documents/usuarios/$(request.auth.token.email)).data.role == 'admin';
+   }
+
+   match /usuarios/{email} {
+     // Cada quien lee su propio perfil; el admin lee todos.
+     allow read: if request.auth != null && (request.auth.token.email == email || isAdmin());
+     // Solo el admin crea o elimina usuarios.
+     allow create, delete: if isAdmin();
+     // El admin edita todo; cada quien edita su propio perfil
+     // PERO no puede cambiarse el rol a sí mismo.
+     allow update: if isAdmin() ||
+       (request.auth != null && request.auth.token.email == email
+        && request.resource.data.role == resource.data.role);
+   }
+   ```
+
+   *(La función `isAdmin()` va dentro de `match /databases/{database}/documents { ... }`, junto a las demás reglas.)*
+
+3. Clic en **"Publicar"**.
+
+> ⚠️ **MUY importante:** para que `isAdmin()` te reconozca, **tu propio usuario
+> admin debe existir en la colección `usuarios` con `role: admin`**. O sea,
+> crea los documentos de `avid@ts.com` y `miguel@ts.com` con `role = admin`
+> (Paso 7) **antes** de usar el panel. Si no, el panel dirá que no puede cargar
+> los usuarios.
+
+> 🔒 Esta regla impide que un mayorista/revendedor se cambie el rol a sí mismo
+> (no puede auto-ascenderse a admin). Solo puede editar sus datos y direcciones.
+
+✅ Con esto ya puedes administrar usuarios y roles **desde la página**, sin entrar
+a la consola de Firebase.
+
+---
+
 ## ✅ Cuando termines
 
 Pásame **dos cosas**:
