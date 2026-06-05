@@ -25,7 +25,7 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .access-sub{color:#6b7280;margin-bottom:22px;text-align:center}
 .login-form{display:grid;gap:14px}
 .login-form label{font-weight:700;color:#334155;font-size:14px}
-.login-form input{width:100%;padding:15px;border-radius:15px;border:1px solid #d1d5db;font-size:15px;background:white}
+.login-form input{width:100%;padding:15px;border-radius:15px;border:1px solid #d1d5db;font-size:16px;background:white}
 .login-btn{border:none;border-radius:18px;padding:16px;font-size:18px;font-weight:800;cursor:pointer;background:#0f172a;color:white;transition:.25s;margin-top:6px}
 .login-btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(15,23,42,.16)}
 .login-note{margin-top:14px;text-align:center;color:#64748b;font-size:13px}
@@ -51,20 +51,20 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .search-box{position:relative;flex:1;min-width:240px}
 .search-box .search-ico{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:16px;height:16px;border:2px solid #94a3b8;border-radius:50%}
 .search-box .search-ico::after{content:"";position:absolute;width:7px;height:2px;background:#94a3b8;transform:rotate(45deg);right:-5px;bottom:0}
-.search-box input{width:100%;padding:14px 14px 14px 44px;border-radius:14px;border:2px solid #e2e8f0;font-size:15px;background:white}
+.search-box input{width:100%;padding:14px 14px 14px 44px;border-radius:14px;border:2px solid #e2e8f0;font-size:16px;background:white}
 .f-cap{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.03em;margin:0 0 6px 4px}
 .dd{position:relative;min-width:170px}
 .dd-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-radius:14px;border:2px solid #e2e8f0;background:white;font-size:15px;font-weight:600;color:var(--text);cursor:pointer}
 .dd-btn .dd-chev{border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #94a3b8;flex-shrink:0}
 .dd-panel{position:absolute;top:calc(100% + 6px);left:0;right:0;background:white;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 14px 34px rgba(15,23,42,.16);z-index:60;padding:8px;max-height:320px;overflow:auto}
-.dd-search{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0;font-size:14px;margin-bottom:6px}
+.dd-search{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #e2e8f0;font-size:16px;margin-bottom:6px}
 .dd-options{display:flex;flex-direction:column}
 .dd-opt{border:none;background:none;text-align:left;padding:11px 12px;border-radius:10px;font-size:14px;font-weight:600;color:#334155;cursor:pointer}
 .dd-opt:hover{background:#f1f5f9}
 .dd-opt.sel{background:#e0f2fe;color:#0369a1}
 .price-range{min-width:200px}
 .pr-inputs{display:flex;align-items:center;gap:8px}
-.pr-inputs input{width:100%;padding:14px 12px;border-radius:14px;border:2px solid #e2e8f0;font-size:14px;background:white}
+.pr-inputs input{width:100%;padding:14px 12px;border-radius:14px;border:2px solid #e2e8f0;font-size:16px;background:white}
 .pr-inputs span{color:var(--muted);font-weight:700}
 .active-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
 .af-label{font-size:12px;font-weight:800;color:var(--muted)}
@@ -93,7 +93,8 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .pc-foot{margin-top:auto;padding-top:12px}
 .pc-pricerow{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:10px}
 .pc-units{background:#eef2ff;color:#4338ca;padding:5px 11px;border-radius:999px;font-weight:800;font-size:13px;white-space:nowrap}
-.pc-price{font-size:22px;font-weight:800;color:#0f172a;white-space:nowrap;text-align:right}
+.pc-price{font-size:19px;font-weight:800;color:#0f172a;white-space:nowrap;text-align:right}
+.pc-price-tba{font-size:13px;font-weight:700;color:#94a3b8;white-space:normal}
 .pc-prices{display:flex;flex-direction:column;gap:2px;text-align:right;font-size:13px;color:#475569;font-weight:600}
 .pc-prices b{color:#0f172a;font-weight:800}
 .empty{padding:22px;border-radius:18px;background:white;box-shadow:0 6px 18px rgba(0,0,0,.04)}
@@ -125,8 +126,8 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .modal-add-row{flex-shrink:0;display:flex;gap:12px;align-items:center;padding:16px 24px;border-top:1px solid #eef2f7;background:white}
 .modal-add-row .qsel{display:flex;align-items:center;gap:0;border:1px solid #d1d5db;border-radius:12px;overflow:hidden;flex-shrink:0}
 .modal-add-row .qsel button{border:none;background:#f1f5f9;width:40px;height:42px;font-size:20px;font-weight:800;cursor:pointer}
-.modal-add-row .qsel input{width:54px;text-align:center;border:none;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;border-radius:0;padding:11px 0}
-.modal-add-row .btn-add{margin-top:0;flex:1;min-width:160px}
+.modal-add-row .qsel input{width:54px;text-align:center;border:none;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;border-radius:0;padding:11px 0;font-size:16px;background:#fff;color:#0f172a;cursor:default}
+.modal-add-row .btn-add{margin-top:0;flex:1;min-width:150px;font-size:13px;line-height:1.25;padding:11px 10px}
 /* carrito */
 .cart-fab{position:fixed;bottom:22px;right:22px;background:#0f172a;color:white;border:none;border-radius:999px;padding:15px 22px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 10px 28px rgba(15,23,42,.3);z-index:90;display:flex;align-items:center;gap:10px;transition:.2s}
 .cart-fab:hover{transform:translateY(-3px)}
@@ -160,7 +161,7 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .quote-btn:disabled{opacity:.6;cursor:not-allowed}
 .quote-form{display:grid;gap:12px;margin-top:8px}
 .quote-form label{font-weight:700;color:#334155;font-size:14px}
-.quote-form input{width:100%;padding:14px;border-radius:14px;border:1px solid #d1d5db;font-size:15px}
+.quote-form input{width:100%;padding:14px;border-radius:14px;border:1px solid #d1d5db;font-size:16px}
 .quote-back{border:none;background:none;color:#64748b;font-weight:700;cursor:pointer;font-size:14px;padding:6px 0;text-align:left}
 .quote-success{text-align:center;padding:24px 10px}
 .quote-success .qs-icon{font-size:52px}
@@ -228,7 +229,7 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
     <div class="modal-picker hidden" id="modalPicker"></div>
   </div>
   <div class="modal-scroll"><table><thead><tr><th>Sucursal</th><th>Color</th><th>Cantidad</th><th>Precio</th><th>Estado</th></tr></thead><tbody id="modalBody"></tbody></table></div>
-  <div class="modal-add-row hidden" id="modalAddRow"><div class="qsel"><button type="button" onclick="modalQtyChange(-1)" aria-label="Quitar uno">−</button><input type="number" id="modalQty" value="1" min="1" aria-label="Cantidad"><button type="button" onclick="modalQtyChange(1)" aria-label="Agregar uno">+</button></div><button class="btn-add" type="button" id="modalAddBtn" onclick="addFromModal()">🛒 Agregar al carrito</button></div>
+  <div class="modal-add-row hidden" id="modalAddRow"><div class="qsel"><button type="button" onclick="modalQtyChange(-1)" aria-label="Quitar uno">−</button><input type="text" id="modalQty" value="1" inputmode="none" readonly aria-label="Cantidad"><button type="button" onclick="modalQtyChange(1)" aria-label="Agregar uno">+</button></div><button class="btn-add" type="button" id="modalAddBtn" onclick="addFromModal()">🛒 Agregar al carrito</button></div>
 </div></div>
 <button class="cart-fab hidden" id="cartFab" onclick="openCart()" aria-label="Ver carrito">🛒 <span>Mi cotización</span> <span class="cart-count" id="cartCount">0</span></button>
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
@@ -289,7 +290,7 @@ function ownPriceStr(o){if(currentRole==="mayorista")return o.precioMayorista;if
 function parsePrice(str){if(!str)return NaN;const cleaned=String(str).replace(/[^\d.,]/g,"").replace(/,/g,"");const num=parseFloat(cleaned);return isNaN(num)?NaN:num}
 function formatMoney(num){return "L "+num.toLocaleString("es-HN",{minimumFractionDigits:0,maximumFractionDigits:2})}
 function priceCell(item){if(isInternal())return `M ${item.precioMayorista||"—"} · R ${item.precioReventa||"—"} · CF ${item.precioPublico||"—"}`;return ownPriceStr(item)||"Precio a confirmar"}
-function cardPriceHtml(product){if(isInternal())return `<div class="pc-prices"><span>May. <b>${escapeHtml(product.precioMayorista||"—")}</b></span><span>Rev. <b>${escapeHtml(product.precioReventa||"—")}</b></span><span>C.F. <b>${escapeHtml(product.precioPublico||"—")}</b></span></div>`;return `<div class="pc-price">${escapeHtml(ownPriceStr(product)||"Precio a confirmar")}</div>`}
+function cardPriceHtml(product){if(isInternal())return `<div class="pc-prices"><span>May. <b>${escapeHtml(product.precioMayorista||"—")}</b></span><span>Rev. <b>${escapeHtml(product.precioReventa||"—")}</b></span><span>C.F. <b>${escapeHtml(product.precioPublico||"—")}</b></span></div>`;const p=ownPriceStr(product);return p?`<div class="pc-price">${escapeHtml(p)}</div>`:`<div class="pc-price pc-price-tba">Precio a confirmar</div>`}
 /* ===== Categorías ===== */
 function updateCategoryCounts(){const products=groupProducts(inventoryData);const counts={};let total=0;products.forEach(p=>{total++;const c=(p.categoria||"").trim();if(c)counts[c]=(counts[c]||0)+1});document.querySelectorAll("[data-catcount]").forEach(el=>{const cat=el.getAttribute("data-catcount");el.textContent=cat===""?total:(counts[cat]||0)})}
 function setCategory(category,event){currentCategory=category;document.querySelectorAll(".cat-btn").forEach(btn=>btn.classList.remove("active"));const b=event&&(event.currentTarget||event.target.closest(".cat-btn"));if(b)b.classList.add("active");else{const def=document.querySelector('.cat-btn[data-cat=""]');if(def)def.classList.add("active")}renderCards()}
