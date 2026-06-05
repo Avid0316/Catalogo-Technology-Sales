@@ -268,7 +268,7 @@ window.fbGetUser=async(email)=>{try{const s=await getDoc(doc(db,"usuarios",email
 </script>
 <script>
 /* ===== Roles ===== */
-const ROLES={"avid@ts.com":{role:"admin",name:"David"},"avid0316@ts.com":{role:"admin",name:"David"},"miguel@ts.com":{role:"admin",name:"Miguel"},"wilmer@ts.com":{role:"asesor",name:"Wilmer"},"mayorista@ts.com":{role:"mayorista",name:"Mayorista"},"reventa@ts.com":{role:"revendedor",name:"Reventa"}};
+const ROLES={"avid@ts.com":{role:"admin",name:"David"},"avid0316@ts.com":{role:"admin",name:"David"},"miguel@ts.com":{role:"admin",name:"Miguel"},"wilmer@ts.com":{role:"asesor",name:"Wilmer"},"vendedor@ts.com":{role:"vendedor",name:"Vendedor"},"mayorista@ts.com":{role:"mayorista",name:"Mayorista"},"reventa@ts.com":{role:"revendedor",name:"Reventa"}};
 function normalizeRole(r){const k=String(r||"").trim().toLowerCase();const map={"administracion":"admin","administración":"admin","admin":"admin","asesor":"asesor","asesor de ventas":"asesor","vendedor":"vendedor","mayorista":"mayorista","revendedor":"revendedor","reventa":"revendedor","cliente":"cliente","cliente final":"cliente","publico":"cliente","público":"cliente"};return map[k]||"revendedor"}
 const INTERNAL=["admin","asesor","vendedor"];
 function isInternal(){return INTERNAL.includes(currentRole)}
