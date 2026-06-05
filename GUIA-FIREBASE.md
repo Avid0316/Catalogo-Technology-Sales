@@ -128,6 +128,50 @@ asesor (siguiente etapa) las verás y podrás cambiarles el estado.
 
 ---
 
+## Paso 7 · Usuarios y roles (colección `usuarios`)
+
+Para no tener que tocar el código cada vez que agregas un empleado o cliente,
+los **roles viven en la base de datos**, en una colección llamada `usuarios`.
+
+### 7.1 · Crear un usuario en la colección
+
+1. **Authentication → Users → Agregar usuario:** crea el correo + contraseña
+   (esto es para que pueda iniciar sesión).
+2. **Firestore Database → Iniciar colección** (o "Agregar documento" si ya
+   existe) con el nombre **`usuarios`**.
+3. Crea un **documento** cuyo **ID sea el correo** del usuario (ej.
+   `carlos@ts.com`) y agrégale estos campos:
+
+   | Campo  | Tipo   | Ejemplo                     |
+   |--------|--------|-----------------------------|
+   | `role` | string | `vendedor`                  |
+   | `name` | string | `Carlos`                    |
+
+   Valores válidos para **`role`**:
+   `admin` · `asesor` · `vendedor` · `mayorista` · `revendedor` · `cliente`
+
+   > 💡 Repite para cada persona. Para cambiarle el rol a alguien, solo editas
+   > su campo `role` — sin tocar código.
+
+### 7.2 · Regla para que cada quien lea su propio rol
+
+En **Firestore → Reglas**, dentro de las llaves, agrega este bloque (junto al
+de `cotizaciones`):
+
+```
+match /usuarios/{email} {
+  allow read: if request.auth != null && request.auth.token.email == email;
+}
+```
+
+Clic en **"Publicar"**.
+
+✅ Listo. Al iniciar sesión, la página lee el rol de cada usuario y le muestra
+lo que le corresponde (precios, panel, etc.). Si un usuario aún no está en
+`usuarios`, entra como **revendedor** por defecto.
+
+---
+
 ## ✅ Cuando termines
 
 Pásame **dos cosas**:
