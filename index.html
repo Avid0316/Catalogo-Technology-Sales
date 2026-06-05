@@ -254,7 +254,7 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .addr-add input{width:100%;padding:12px;border-radius:10px;border:1px solid #cbd5e1;font-size:16px}
 .addr-addbtn{border:none;background:#0ea5e9;color:white;border-radius:10px;padding:11px;font-weight:800;cursor:pointer}
 @media(max-width:900px){.hero-inner{flex-direction:column;gap:16px;text-align:center}.hero-text{text-align:center}.logo{width:190px}.hero h1{font-size:32px}.hero p{font-size:15px}.stats{grid-template-columns:1fr}.stats.cols-2{grid-template-columns:1fr}.filter-row{flex-direction:column;align-items:stretch}.dd,.price-range,.search-box{min-width:0;width:100%}}
-@media(max-width:650px){.hero{padding:18px 14px}.logo{width:170px}.hero-badge{font-size:13px;padding:8px 13px}.hero h1{font-size:30px}.hero p{font-size:14px}.container{padding:18px}.card{padding:20px;border-radius:22px}.access-title{font-size:28px}.grid{grid-template-columns:1fr}.product-img{height:150px}.cart-fab{bottom:16px;right:16px;padding:13px 18px}}
+@media(max-width:650px){.hero{padding:18px 14px}.logo{width:170px}.hero-badge{font-size:13px;padding:8px 13px}.hero h1{font-size:30px}.hero p{font-size:14px}.container{padding:18px}.card{padding:20px;border-radius:22px}.access-title{font-size:28px}.grid{grid-template-columns:1fr}.product-img{height:150px}.cart-fab{bottom:16px;right:16px;padding:13px 18px}.admin-nav{padding:6px;gap:5px}.anav-btn{flex-direction:column;gap:3px;font-size:12px;padding:9px 3px}.anav-ico{font-size:19px;line-height:1}.anav-badge{position:absolute;top:5px;right:7px;font-size:10px;min-width:16px;height:16px;padding:0 4px}}
 </style>
 </head>
 <body>
@@ -278,7 +278,7 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 </main>
 <main id="portal" class="hidden"><div class="container">
   <div class="card"><div class="portal-head"><div><h2 id="roleTitle">Catálogo</h2><p id="updatedText">Cargando inventario...</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="profile-btn hidden" id="profileBtn" onclick="openPerfil()">👤 Mi perfil</button><button class="logout-btn" style="margin-top:0" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div></div><div class="sync-status"><span class="sync-dot"></span>Inventario sincronizado</div></div></div>
-  <div class="card admin-nav hidden" id="adminNav"><button class="anav-btn active" id="navCat" onclick="showView('catalogo')">📦 Catálogo</button><button class="anav-btn" id="navCot" onclick="showView('cotizaciones')">📋 Cotizaciones <span class="anav-badge hidden" id="cotBadge">0</span></button><button class="anav-btn hidden" id="navUsr" onclick="showView('usuarios')">👥 Usuarios</button></div>
+  <div class="card admin-nav hidden" id="adminNav"><button class="anav-btn active" id="navCat" onclick="showView('catalogo')"><span class="anav-ico">📦</span><span class="anav-lbl">Catálogo</span></button><button class="anav-btn" id="navCot" onclick="showView('cotizaciones')"><span class="anav-ico">📋</span><span class="anav-lbl">Cotizaciones</span><span class="anav-badge hidden" id="cotBadge">0</span></button><button class="anav-btn hidden" id="navUsr" onclick="showView('usuarios')"><span class="anav-ico">👥</span><span class="anav-lbl">Usuarios</span></button></div>
   <div id="catalogView">
   <nav class="breadcrumb" id="breadcrumb" aria-label="Ruta"></nav>
   <div class="card"><div class="categories" id="categories" role="group" aria-label="Filtrar por categoría">
