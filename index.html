@@ -188,6 +188,40 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .quote-success p{color:#64748b;margin-bottom:16px}
 .wa-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;border-radius:16px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;background:#25d366;color:white;text-decoration:none;transition:.2s}
 .wa-btn:hover{background:#1da851}
+/* Panel administrativo */
+.admin-nav{display:flex;gap:10px;padding:10px}
+.anav-btn{flex:1;border:none;background:#eef1f5;color:#334155;font-weight:800;font-size:15px;padding:13px;border-radius:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s}
+.anav-btn.active{background:#0f172a;color:white}
+.anav-badge{background:#ef4444;color:white;border-radius:999px;font-size:12px;font-weight:800;padding:1px 8px;min-width:22px;text-align:center}
+.cotiz-toolbar{padding:14px}
+.cotiz-filter{display:flex;gap:8px;flex-wrap:wrap}
+.cf-btn{border:none;background:#eef1f5;color:#334155;font-weight:700;font-size:13px;padding:9px 14px;border-radius:999px;cursor:pointer}
+.cf-btn.active{background:var(--blue);color:#0f172a}
+.cotiz-card{background:white;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 5px 16px rgba(0,0,0,.05);cursor:pointer;transition:.2s;border:1px solid var(--border)}
+.cotiz-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(56,189,248,.16)}
+.cc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.cc-name{font-weight:800;font-size:17px;color:#0f172a}
+.cc-meta{color:#64748b;font-size:13px;margin-top:3px}
+.cc-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px;flex-wrap:wrap}
+.cc-items{font-size:13px;color:#475569;font-weight:600}
+.cc-total{font-weight:800;color:#0f172a}
+.est-badge{display:inline-block;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:800;color:white;white-space:nowrap}
+.est-nueva{background:#0284c7}.est-revisando{background:#f59e0b}.est-incompleto{background:#ef4444}.est-proformada{background:#16a34a}
+.cotiz-empty{padding:30px;text-align:center;color:#64748b;background:white;border-radius:18px;box-shadow:0 5px 16px rgba(0,0,0,.04)}
+.cd-section{margin-bottom:16px}
+.cd-label{font-size:11px;font-weight:800;letter-spacing:.04em;color:#94a3b8;margin-bottom:6px}
+.cd-contact{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.cd-contact a{display:inline-flex;align-items:center;gap:6px;border-radius:12px;padding:10px 14px;font-weight:800;font-size:14px;text-decoration:none}
+.cd-wa{background:#25d366;color:white}.cd-call{background:#0f172a;color:white}
+.cd-items{width:100%;border-collapse:collapse}
+.cd-items th,.cd-items td{padding:10px;border-bottom:1px solid #eef2f7;text-align:left;font-size:13px}
+.cd-items th{color:#94a3b8;font-weight:800;font-size:11px}
+.est-actions{display:flex;flex-direction:column;gap:8px;width:100%}
+.est-actions .ea-label{font-size:12px;font-weight:800;color:#475569}
+.est-actions .ea-btns{display:flex;gap:8px;flex-wrap:wrap}
+.ea-btn{border:2px solid #e2e8f0;background:white;color:#334155;font-weight:800;font-size:13px;padding:9px 14px;border-radius:999px;cursor:pointer}
+.ea-btn.sel{border-color:transparent;color:white}
+.ea-btn.sel.est-nueva{background:#0284c7}.ea-btn.sel.est-revisando{background:#f59e0b}.ea-btn.sel.est-incompleto{background:#ef4444}.ea-btn.sel.est-proformada{background:#16a34a}
 @media(max-width:900px){.hero-inner{flex-direction:column;gap:16px;text-align:center}.hero-text{text-align:center}.logo{width:190px}.hero h1{font-size:32px}.hero p{font-size:15px}.stats{grid-template-columns:1fr}.stats.cols-2{grid-template-columns:1fr}.filter-row{flex-direction:column;align-items:stretch}.dd,.price-range,.search-box{min-width:0;width:100%}}
 @media(max-width:650px){.hero{padding:18px 14px}.logo{width:170px}.hero-badge{font-size:13px;padding:8px 13px}.hero h1{font-size:30px}.hero p{font-size:14px}.container{padding:18px}.card{padding:20px;border-radius:22px}.access-title{font-size:28px}.grid{grid-template-columns:1fr}.product-img{height:150px}.cart-fab{bottom:16px;right:16px;padding:13px 18px}}
 </style>
@@ -213,6 +247,8 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 </main>
 <main id="portal" class="hidden"><div class="container">
   <div class="card"><div class="portal-head"><div><h2 id="roleTitle">Catálogo</h2><p id="updatedText">Cargando inventario...</p><button class="logout-btn" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div><div class="sync-status"><span class="sync-dot"></span>Inventario sincronizado</div></div></div>
+  <div class="card admin-nav hidden" id="adminNav"><button class="anav-btn active" id="navCat" onclick="showView('catalogo')">📦 Catálogo</button><button class="anav-btn" id="navCot" onclick="showView('cotizaciones')">📋 Cotizaciones <span class="anav-badge hidden" id="cotBadge">0</span></button></div>
+  <div id="catalogView">
   <nav class="breadcrumb" id="breadcrumb" aria-label="Ruta"></nav>
   <div class="card"><div class="categories" id="categories" role="group" aria-label="Filtrar por categoría">
     <button class="cat-btn active" data-cat="" onclick="setCategory('',event)">Todos <span class="cat-count" data-catcount=""></span></button>
@@ -241,6 +277,17 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
     <div class="stat-box"><h3 id="statBranches">0</h3><p>Sucursales</p></div>
   </div>
   <div class="grid" id="productGrid"></div>
+  </div>
+  <div id="cotizacionesView" class="hidden">
+    <div class="card cotiz-toolbar"><div class="cotiz-filter" id="cotizFilter">
+      <button class="cf-btn active" data-est="">Todas</button>
+      <button class="cf-btn" data-est="Nueva">Nueva</button>
+      <button class="cf-btn" data-est="Revisando">Revisando</button>
+      <button class="cf-btn" data-est="Incompleto">Incompleto</button>
+      <button class="cf-btn" data-est="Proformada">Proformada</button>
+    </div></div>
+    <div id="cotizList"></div>
+  </div>
 </div></main>
 <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-content">
   <div class="modal-top">
@@ -249,6 +296,11 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
   </div>
   <div class="modal-scroll"><table><thead><tr><th>Sucursal</th><th>Color</th><th>Cantidad</th><th>Precio</th><th>Estado</th></tr></thead><tbody id="modalBody"></tbody></table></div>
   <div class="modal-add-row hidden" id="modalAddRow"><div class="qcol"><div class="qsel"><button type="button" onclick="modalQtyChange(-1)" aria-label="Quitar uno">−</button><input type="text" id="modalQty" value="1" inputmode="none" readonly aria-label="Cantidad"><button type="button" onclick="modalQtyChange(1)" aria-label="Agregar uno">+</button></div><div class="qmax" id="modalQtyMax"></div></div><button class="btn-add" type="button" id="modalAddBtn" onclick="addFromModal()">🛒 Agregar al carrito</button></div>
+</div></div>
+<div class="modal" id="cotizModal" role="dialog" aria-modal="true" aria-labelledby="cotizModalTitle"><div class="modal-content">
+  <div class="modal-top"><div class="modal-header"><h2 id="cotizModalTitle">Cotización</h2><button class="close-btn" onclick="closeCotiz()" aria-label="Cerrar">✕</button></div></div>
+  <div class="modal-scroll" id="cotizModalBody"></div>
+  <div class="modal-add-row" id="cotizModalFoot" style="flex-wrap:wrap"></div>
 </div></div>
 <button class="cart-fab hidden" id="cartFab" onclick="openCart()" aria-label="Ver carrito">🛒 <span>Mi cotización</span> <span class="cart-count" id="cartCount">0</span></button>
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
@@ -260,7 +312,7 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, query, orderBy, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyA9nOW0QXIdYk5MJk7wcBVrTSb-WMejOV8",authDomain:"technology-sales-web.firebaseapp.com",projectId:"technology-sales-web",storageBucket:"technology-sales-web.firebasestorage.app",messagingSenderId:"663775830764",appId:"1:663775830764:web:8a606d662b2d4e454abbc9"};
 const app=initializeApp(firebaseConfig);
 window.fbAuth=getAuth(app);
@@ -269,6 +321,8 @@ window.fbSignOut=signOut;
 const db=getFirestore(app);
 window.fbSaveQuote=async(data)=>{const ref=collection(db,"cotizaciones");return await addDoc(ref,{...data,fecha:serverTimestamp()})};
 window.fbGetUser=async(email)=>{try{const s=await getDoc(doc(db,"usuarios",email));return s.exists()?s.data():null}catch(e){console.error("getUser",e);return null}};
+window.fbWatchQuotes=(cb)=>{const q=query(collection(db,"cotizaciones"),orderBy("fecha","desc"));return onSnapshot(q,snap=>cb(snap.docs.map(d=>({id:d.id,...d.data()}))),err=>{console.error("watch quotes",err);cb(null,err)})};
+window.fbUpdateQuoteEstado=(id,estado)=>updateDoc(doc(db,"cotizaciones",id),{estado});
 </script>
 <script>
 /* ===== Roles ===== */
@@ -293,7 +347,7 @@ document.getElementById("priceMin").addEventListener("input",e=>{fMin=e.target.v
 document.getElementById("priceMax").addEventListener("input",e=>{fMax=e.target.value;renderCards()});
 document.getElementById("productGrid").addEventListener("click",event=>{const addBtn=event.target.closest("[data-add]");if(addBtn){event.stopPropagation();quickAdd(addBtn.dataset.add);return}const card=event.target.closest(".product-card");if(card&&card.dataset.key)openDetail(card.dataset.key)});
 document.getElementById("detailModal").addEventListener("click",event=>{if(event.target.id==="detailModal")closeModal()});
-document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeModal();closeAllDD()}});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeModal();closeCotiz();closeAllDD()}});
 document.getElementById("activeFilters").addEventListener("click",e=>{const chip=e.target.closest("[data-clear]");if(chip){clearFilter(chip.dataset.clear);return}if(e.target.closest("#afClearAll"))clearAllFilters()});
 document.getElementById("modalPicker").addEventListener("click",e=>{const c=e.target.closest("[data-color]");if(c){selectColor(c.dataset.color);return}const s=e.target.closest("[data-estado]");if(s)selectEstado(s.dataset.estado)});
 document.getElementById("cartBody").addEventListener("click",e=>{const dec=e.target.closest("[data-dec]");if(dec){changeCartQty(dec.dataset.dec,-1);return}const inc=e.target.closest("[data-inc]");if(inc){changeCartQty(inc.dataset.inc,1);return}const rm=e.target.closest("[data-remove]");if(rm)removeFromCart(rm.dataset.remove)});
@@ -302,10 +356,10 @@ document.addEventListener("click",e=>{if(!e.target.closest(".dd"))closeAllDD()})
 async function loadInventory(){const res=await fetch(API_URL);if(!res.ok)throw new Error("La API respondió con estado "+res.status);const data=await res.json();if(!Array.isArray(data))throw new Error("La API no devolvió una lista válida");inventoryData=data.map(row=>({categoria:row["Categoria"]||"",marca:row["Marca"]||"",modelo:row["Modelo"]||"",capacidad:row["Capacidad"]||"",color:row["Color"]||"",sucursal:row["Sucursal"]||"",cantidad:Number(row["Cantidad"])||0,precioMayorista:row["Precio Mayorista"]||"",precioReventa:row["Precio Reventa"]||"",precioPublico:row["Precio Publico"]||row["Precio Público"]||row["Precio al Publico"]||"",estado:row["Estado"]||"",imagen:row["Imagen"]||""}))}
 async function resolveProfile(email){if(window.fbGetUser){const u=await window.fbGetUser(email);if(u&&u.role)return{role:normalizeRole(u.role),name:u.name||email}}if(ROLES[email])return ROLES[email];return{role:"revendedor",name:email}}
 function roleTitleText(){const t={admin:"Panel Administración",asesor:"Catálogo Asesor",vendedor:"Catálogo Vendedor",mayorista:"Catálogo Mayorista",revendedor:"Catálogo Revendedor",cliente:"Catálogo"};return currentRole==="cliente"?"Catálogo · Cliente":`${t[currentRole]||"Catálogo"} · ${currentUser}`}
-function enterPortal(){document.getElementById("home").classList.add("hidden");document.getElementById("portal").classList.remove("hidden");document.getElementById("roleTitle").textContent=roleTitleText();document.getElementById("updatedText").textContent="Última actualización: "+new Date().toLocaleString("es-HN");document.getElementById("statUnitsBox").classList.toggle("hidden",!isInternal());document.getElementById("statsRow").classList.toggle("cols-2",!isInternal());cart=[];fMarca=fEstado=fSucursal=fMin=fMax="";searchInput.value="";document.getElementById("priceMin").value="";document.getElementById("priceMax").value="";currentCategory="";updateCartFab();buildDropdowns();updateCategoryCounts();renderCards()}
+function enterPortal(){document.getElementById("home").classList.add("hidden");document.getElementById("portal").classList.remove("hidden");document.getElementById("roleTitle").textContent=roleTitleText();document.getElementById("updatedText").textContent="Última actualización: "+new Date().toLocaleString("es-HN");document.getElementById("statUnitsBox").classList.toggle("hidden",!isInternal());document.getElementById("statsRow").classList.toggle("cols-2",!isInternal());cart=[];fMarca=fEstado=fSucursal=fMin=fMax="";searchInput.value="";document.getElementById("priceMin").value="";document.getElementById("priceMax").value="";currentCategory="";updateCartFab();buildDropdowns();updateCategoryCounts();renderCards();document.getElementById("adminNav").classList.toggle("hidden",!isAdminPanel());if(isAdminPanel())startQuotesWatch();else stopQuotesWatch();showView("catalogo")}
 async function login(event){event.preventDefault();if(!window.fbAuth||!window.fbSignIn){alert("El sistema sigue cargando, espera un momento e intenta de nuevo.");return}const email=document.getElementById("usernameInput").value.trim().toLowerCase();const password=document.getElementById("passwordInput").value;const submitBtn=event.target.querySelector(".login-btn");const originalLabel=submitBtn.textContent;submitBtn.disabled=true;submitBtn.textContent="Ingresando...";try{await window.fbSignIn(window.fbAuth,email,password);const profile=await resolveProfile(email);currentRole=profile.role;currentUser=profile.name;currentUserEmail=email;await loadInventory();applyRoleVisibility();enterPortal()}catch(error){console.error(error);const code=String(error&&error.code||"");if(code.startsWith("auth/"))alert("Correo o contraseña incorrectos");else alert("Error cargando inventario. Revisa la conexión o la API de Google Sheets.")}finally{submitBtn.disabled=false;submitBtn.textContent=originalLabel}}
 async function enterPublic(){const btn=document.querySelector(".public-btn");const original=btn.textContent;btn.disabled=true;btn.textContent="Cargando catálogo...";try{currentRole="cliente";currentUser="Cliente";currentUserEmail="";await loadInventory();applyRoleVisibility();enterPortal()}catch(error){console.error(error);alert("Error cargando inventario. Revisa la conexión o la API de Google Sheets.")}finally{btn.disabled=false;btn.textContent=original}}
-function logout(){currentRole="";currentUser="";currentUserEmail="";currentCategory="";inventoryData=[];cart=[];closeCart();updateCartFab();document.getElementById("passwordInput").value="";document.getElementById("portal").classList.add("hidden");document.getElementById("home").classList.remove("hidden");if(window.fbSignOut&&window.fbAuth)window.fbSignOut(window.fbAuth).catch(()=>{})}
+function logout(){currentRole="";currentUser="";currentUserEmail="";currentCategory="";inventoryData=[];cart=[];stopQuotesWatch();closeCotiz();closeCart();updateCartFab();document.getElementById("passwordInput").value="";document.getElementById("portal").classList.add("hidden");document.getElementById("home").classList.remove("hidden");if(window.fbSignOut&&window.fbAuth)window.fbSignOut(window.fbAuth).catch(()=>{})}
 /* ===== Precios por rol ===== */
 function ownPriceStr(o){if(currentRole==="mayorista")return o.precioMayorista;if(currentRole==="revendedor")return o.precioReventa;return o.precioPublico}
 function parsePrice(str){if(!str)return NaN;const cleaned=String(str).replace(/[^\d.,]/g,"").replace(/,/g,"");const num=parseFloat(cleaned);return isNaN(num)?NaN:num}
@@ -376,6 +430,28 @@ async function submitQuote(name,contact,note=""){const btn=document.getElementBy
 function buildWhatsAppMessage(quote){const lines=["*Nueva solicitud de cotización*","",`*Cliente:* ${quote.cliente.nombre}`,`*Contacto:* ${quote.cliente.contacto}`,`*Tipo:* ${quote.cliente.rol}`,""];quote.items.forEach(it=>{const v=[it.color,it.estadoEquipo].filter(Boolean).join(" · ");lines.push(`• ${it.cantidad}x ${it.marca} ${it.modelo} ${it.capacidad}${v?" · "+v:""} — ${it.precio}`)});lines.push("");lines.push(quote.totalEstimado!=null?`*Total estimado:* ${formatMoney(quote.totalEstimado)}`:"*Total:* a confirmar");if(quote.comentario)lines.push(`*Comentario:* ${quote.comentario}`);return lines.join("\n")}
 function renderQuoteSuccess(quote){cartStage="success";const body=document.getElementById("cartBody"),foot=document.getElementById("cartFoot");const waText=encodeURIComponent(buildWhatsAppMessage(quote));const waUrl=WHATSAPP_NUMBER?`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`:`https://wa.me/?text=${waText}`;body.innerHTML=`<div class="quote-success"><div class="qs-icon">✅</div><h4>¡Cotización enviada!</h4><p>Tu solicitud quedó registrada. Un asesor de Technology Sales se pondrá en contacto contigo pronto.</p><a class="wa-btn" href="${waUrl}" target="_blank" rel="noopener">📲 Enviar también por WhatsApp</a></div>`;foot.innerHTML=`<button class="quote-btn" type="button" onclick="finishQuote()">Listo</button>`;cart=[];updateCartFab();renderCards()}
 function finishQuote(){cartStage="cart";closeCart();renderCart()}
+/* ===== Panel administrativo (cotizaciones) ===== */
+const ESTADOS=["Nueva","Revisando","Incompleto","Proformada"];
+function estadoClass(e){return "est-"+String(e||"Nueva").toLowerCase().replace(/\s/g,"")}
+let quotesUnsub=null,quotesData=[],cotizEstadoFilter="",currentCotizId="";
+function isAdminPanel(){return currentRole==="admin"||currentRole==="asesor"}
+function showView(view){document.getElementById("catalogView").classList.toggle("hidden",view!=="catalogo");document.getElementById("cotizacionesView").classList.toggle("hidden",view!=="cotizaciones");document.getElementById("navCat").classList.toggle("active",view==="catalogo");document.getElementById("navCot").classList.toggle("active",view==="cotizaciones");if(view==="cotizaciones")renderQuotes()}
+function startQuotesWatch(){if(quotesUnsub||!window.fbWatchQuotes)return;quotesUnsub=window.fbWatchQuotes((quotes,err)=>{if(err){document.getElementById("cotizList").innerHTML=`<div class="cotiz-empty">No se pudieron cargar las cotizaciones.<br>Revisa las reglas de Firestore.</div>`;return}quotesData=quotes||[];updateCotBadge();if(!document.getElementById("cotizacionesView").classList.contains("hidden"))renderQuotes()})}
+function stopQuotesWatch(){if(quotesUnsub){quotesUnsub();quotesUnsub=null}quotesData=[];updateCotBadge()}
+function updateCotBadge(){const n=quotesData.filter(q=>(q.estado||"Nueva")==="Nueva").length;const b=document.getElementById("cotBadge");if(n>0){b.textContent=n;b.classList.remove("hidden")}else b.classList.add("hidden")}
+function fmtFecha(ts){try{const dt=ts&&ts.toDate?ts.toDate():(ts&&ts.seconds?new Date(ts.seconds*1000):null);return dt?dt.toLocaleString("es-HN",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"—"}catch(e){return "—"}}
+function quoteCount(q){return (q.items||[]).reduce((s,it)=>s+(Number(it.cantidad)||0),0)}
+function quoteTotalStr(q){return q.totalEstimado!=null?formatMoney(q.totalEstimado):"A confirmar"}
+function renderQuotes(){const list=document.getElementById("cotizList");const data=quotesData.filter(q=>!cotizEstadoFilter||(q.estado||"Nueva")===cotizEstadoFilter);if(data.length===0){list.innerHTML=`<div class="cotiz-empty">No hay cotizaciones${cotizEstadoFilter?" en estado "+escapeHtml(cotizEstadoFilter):" todavía"}.</div>`;return}list.innerHTML=data.map(q=>{const est=q.estado||"Nueva";return `<div class="cotiz-card" data-cotiz="${escapeHtml(q.id)}"><div class="cc-top"><div><div class="cc-name">${escapeHtml((q.cliente&&q.cliente.nombre)||"Cliente")}</div><div class="cc-meta">${escapeHtml((q.cliente&&q.cliente.contacto)||"")} · ${escapeHtml(fmtFecha(q.fecha))}</div></div><span class="est-badge ${estadoClass(est)}">${escapeHtml(est)}</span></div><div class="cc-bottom"><span class="cc-items">🛒 ${quoteCount(q)} producto(s)</span><span class="cc-total">${escapeHtml(quoteTotalStr(q))}</span></div></div>`}).join("")}
+function contactHtml(contacto){const c=String(contacto||"").trim();if(!c)return "";let html="";const digits=c.replace(/[^\d]/g,"");if(digits.length>=8){const tel=digits.length<=8?"504"+digits:digits;html+=`<a class="cd-wa" href="https://wa.me/${tel}" target="_blank" rel="noopener">📲 WhatsApp</a><a class="cd-call" href="tel:${escapeHtml(c)}">📞 Llamar</a>`}if(/@/.test(c))html+=`<a class="cd-call" href="mailto:${escapeHtml(c)}">✉️ Correo</a>`;return html}
+function openCotiz(id){const q=quotesData.find(x=>x.id===id);if(!q)return;currentCotizId=id;document.getElementById("cotizModal").style.display="flex";document.getElementById("cotizModalTitle").textContent=(q.cliente&&q.cliente.nombre)||"Cotización";const items=(q.items||[]).map(it=>{const v=[it.color,it.estadoEquipo].filter(Boolean).map(escapeHtml).join(" · ");return `<tr><td>${escapeHtml(it.cantidad)}×</td><td>${escapeHtml(it.marca)} ${escapeHtml(it.modelo)} ${escapeHtml(it.capacidad)}${v?`<br><span style="color:#94a3b8">${v}</span>`:""}</td><td style="white-space:nowrap">${escapeHtml(it.precio||"")}</td></tr>`}).join("");document.getElementById("cotizModalBody").innerHTML=`<div class="cd-section"><div class="cd-label">CLIENTE</div><div style="font-weight:800">${escapeHtml((q.cliente&&q.cliente.nombre)||"—")}</div><div style="color:#64748b;font-size:13px">${escapeHtml((q.cliente&&q.cliente.contacto)||"")} · ${escapeHtml(fmtFecha(q.fecha))}${q.cliente&&q.cliente.rol?" · "+escapeHtml(q.cliente.rol):""}</div><div class="cd-contact">${contactHtml(q.cliente&&q.cliente.contacto)}</div></div>${q.comentario?`<div class="cd-section"><div class="cd-label">COMENTARIO</div><div>${escapeHtml(q.comentario)}</div></div>`:""}<div class="cd-section"><div class="cd-label">PRODUCTOS</div><table class="cd-items"><thead><tr><th>Cant.</th><th>Producto</th><th>Precio</th></tr></thead><tbody>${items}</tbody></table><div style="text-align:right;font-weight:800;margin-top:12px">Total estimado: ${escapeHtml(quoteTotalStr(q))}</div></div>`;const est=q.estado||"Nueva";document.getElementById("cotizModalFoot").innerHTML=`<div class="est-actions"><div class="ea-label">Cambiar estado:</div><div class="ea-btns">${ESTADOS.map(e=>`<button class="ea-btn ${e===est?"sel "+estadoClass(e):""}" data-setest="${escapeHtml(e)}">${escapeHtml(e)}</button>`).join("")}</div></div>`}
+function closeCotiz(){document.getElementById("cotizModal").style.display="none"}
+async function setCotizEstado(id,estado){try{if(window.fbUpdateQuoteEstado)await window.fbUpdateQuoteEstado(id,estado);const q=quotesData.find(x=>x.id===id);if(q)q.estado=estado;updateCotBadge();renderQuotes();if(document.getElementById("cotizModal").style.display==="flex")openCotiz(id)}catch(e){console.error(e);alert("No se pudo cambiar el estado. Revisa tu conexión.")}}
+document.getElementById("cotizList").addEventListener("click",e=>{const c=e.target.closest("[data-cotiz]");if(c)openCotiz(c.dataset.cotiz)});
+document.getElementById("cotizFilter").addEventListener("click",e=>{const b=e.target.closest(".cf-btn");if(!b)return;cotizEstadoFilter=b.dataset.est;document.querySelectorAll("#cotizFilter .cf-btn").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderQuotes()});
+document.getElementById("cotizModalFoot").addEventListener("click",e=>{const b=e.target.closest("[data-setest]");if(b&&currentCotizId)setCotizEstado(currentCotizId,b.dataset.setest)});
+document.getElementById("cotizModal").addEventListener("click",e=>{if(e.target.id==="cotizModal")closeCotiz()});
+window.showView=showView;window.closeCotiz=closeCotiz;
 window.login=login;window.enterPublic=enterPublic;window.logout=logout;window.setCategory=setCategory;window.openCart=openCart;window.closeCart=closeCart;window.closeModal=closeModal;window.modalQtyChange=modalQtyChange;window.addFromModal=addFromModal;window.goToQuoteForm=goToQuoteForm;window.backToCart=backToCart;window.submitPublicQuote=submitPublicQuote;window.finishQuote=finishQuote;window.clearAllFilters=clearAllFilters;
 </script>
 </body>
