@@ -182,6 +182,14 @@ function doGet() {
     var inventario = sheetToObjects(inventarioSheet);
     var precios = sheetToObjects(preciosSheet);
 
+    // Imágenes generales por modelo (hoja opcional "Imagenes": Marca · Modelo · Imagen)
+    var imagenesSheet = ss.getSheetByName("Imagenes");
+    var imagenes = imagenesSheet ? sheetToObjects(imagenesSheet) : [];
+    var imagenesMap = {};
+    imagenes.forEach(function (item) {
+      imagenesMap[makeKeyModelo(item["Marca"], item["Modelo"])] = item["Imagen"] || "";
+    });
+
     // Mapa de precios por Marca|Modelo|Capacidad
     var preciosMap = {};
     precios.forEach(function (item) {
@@ -212,7 +220,8 @@ function doGet() {
         "Precio Mayorista": p.precioMayorista || "",
         "Precio Reventa":   p.precioReventa || "",
         "Precio Publico":   p.precioClienteFinal || "",   // Cliente Final → "Precio Publico" (lo que usa el sitio)
-        Imagen:       p.imagen || ""
+        // Imagen general por modelo (hoja Imagenes); si no hay, cae a la de Precios.
+        Imagen: imagenesMap[makeKeyModelo(item["Marca"], item["Modelo"])] || p.imagen || ""
       };
     });
 
@@ -237,6 +246,13 @@ function sheetToObjects(sheet) {
 
 function makeKey(marca, modelo, capacidad) {
   return [marca || "", modelo || "", capacidad || ""]
+    .map(function (v) { return String(v).trim().toUpperCase(); })
+    .join("|");
+}
+
+// Llave general por Marca + Modelo (para la imagen del modelo, sin capacidad).
+function makeKeyModelo(marca, modelo) {
+  return [marca || "", modelo || ""]
     .map(function (v) { return String(v).trim().toUpperCase(); })
     .join("|");
 }

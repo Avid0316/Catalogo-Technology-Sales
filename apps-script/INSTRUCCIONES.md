@@ -16,7 +16,8 @@ Crudo  ──[Diccionarios]──►  Inventario  ──[+ Precios]──►  JS
 | **Diccionario_Almacenamientos** | `Texto a buscar · Almacenamiento correcto` |
 | **Diccionario_Colores** | `Texto a buscar · Color correcto` (largos primero) |
 | **Inventario** | **Se genera solo** (no la edites a mano) |
-| **Precios** | `Marca · Modelo · Capacidad · Precio Mayorista · Precio Reventa · Precio Cliente Final · Imagen` |
+| **Precios** | `Marca · Modelo · Capacidad · Precio Mayorista · Precio Reventa · Precio Cliente Final` |
+| **Imagenes** | `Marca · Modelo · Imagen` (una imagen general por modelo) |
 
 > Los diccionarios y la hoja Precios vienen **pre-generados** en
 > `Estructura_PreGenerada.xlsx` (298 modelos, 27 capacidades, 403 llaves de precio).
@@ -48,7 +49,7 @@ o **Nueva implementación** la primera vez:
 | Comprometido | En proforma (solo personal interno) |
 | Estado | Grupo (Nuevo, Usado, Open Box, En Caja) |
 | Precio Mayorista / Reventa / Publico | Hoja Precios (Publico = Cliente Final) |
-| Imagen | Hoja Precios |
+| Imagen | Hoja **Imagenes** por Marca+Modelo (una por modelo) |
 
 ## 💾 Guardar precios desde la web (doPost)
 
