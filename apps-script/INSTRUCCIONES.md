@@ -12,7 +12,7 @@ Crudo  ──[Diccionarios]──►  Inventario  ──[+ Precios]──►  JS
 | Hoja | Para qué |
 |---|---|
 | **Crudo** | Pegas el reporte del sistema tal cual |
-| **Diccionario_Modelos** | `Texto a buscar · Marca · Modelo · Categoria` |
+| **Diccionario_Modelos** | `Texto a buscar · Marca · Modelo · Categoria · Chip` |
 | **Diccionario_Almacenamientos** | `Texto a buscar · Almacenamiento correcto` |
 | **Diccionario_Colores** | `Texto a buscar · Color correcto` (largos primero) |
 | **Inventario** | **Se genera solo** (no la edites a mano) |
@@ -42,7 +42,7 @@ o **Nueva implementación** la primera vez:
 | Campo | Origen |
 |---|---|
 | Categoria, Marca, Modelo, Capacidad, Color | Diccionarios |
-| Chip | Detectado del nombre (eSIM / Dual SIM / 1 SIM) |
+| Chip | Columna **Chip** del Diccionario_Modelos; si está vacía, se detecta del nombre |
 | Sucursal, Cantidad | Disponible = Virtual + Consignación |
 | Consignacion | Cuánto de lo disponible es consignación (solo interno) |
 | Comprometido | En proforma (solo personal interno) |

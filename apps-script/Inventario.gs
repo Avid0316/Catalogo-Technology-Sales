@@ -122,13 +122,16 @@ function construirInventario() {
     var fa = buscarEn_(dicAlmac, up);
     var fc = buscarEn_(dicColores, up);
 
+    // Chip: 1° lo definido en el diccionario (columna Chip); si está vacío, lo que se detecte del nombre.
+    var chip = (fm[4] && String(fm[4]).trim()) ? String(fm[4]).trim() : detectarChip_(nombre);
+
     salida.push([
       fm[3] || "",                  // Categoria
       fm[1] || "",                  // Marca
       fm[2] || "",                  // Modelo
       fa ? (fa[1] || "") : "",      // Capacidad
       fc ? (fc[1] || "") : "",      // Color
-      detectarChip_(nombre),        // Chip
+      chip,                         // Chip
       String(row[iSuc] || "").trim(),
       virt, cons, comp,
       disp,                         // Cantidad = Disponible
