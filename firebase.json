@@ -6,7 +6,9 @@
       ".firebaserc",
       "**/.*",
       "**/node_modules/**",
-      "*.md"
+      "*.md",
+      "apps-script/**",
+      "docs/**"
     ],
     "cleanUrls": true,
     "trailingSlash": false,
