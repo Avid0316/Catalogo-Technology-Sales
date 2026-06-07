@@ -193,7 +193,7 @@ function doGet() {
     // Mapa de precios por Marca|Modelo|Capacidad
     var preciosMap = {};
     precios.forEach(function (item) {
-      var key = makeKey(item["Marca"], item["Modelo"], item["Capacidad"], item["Chip"]);
+      var key = makeKey(item["Marca"], item["Modelo"], item["Capacidad"], item["Chip"], item["Estado"]);
       preciosMap[key] = {
         precioMayorista:    formatLempiras(item["Precio Mayorista"]),
         precioReventa:      formatLempiras(item["Precio Reventa"]),
@@ -203,7 +203,7 @@ function doGet() {
     });
 
     var resultado = inventario.map(function (item) {
-      var key = makeKey(item["Marca"], item["Modelo"], item["Capacidad"], item["Chip"]);
+      var key = makeKey(item["Marca"], item["Modelo"], item["Capacidad"], item["Chip"], item["Estado"]);
       var p = preciosMap[key] || {};
       return {
         Categoria:    item["Categoria"] || "",
@@ -244,8 +244,8 @@ function sheetToObjects(sheet) {
   });
 }
 
-function makeKey(marca, modelo, capacidad, chip) {
-  return [marca || "", modelo || "", capacidad || "", chip || ""]
+function makeKey(marca, modelo, capacidad, chip, estado) {
+  return [marca || "", modelo || "", capacidad || "", chip || "", estado || ""]
     .map(function (v) { return String(v).trim().toUpperCase(); })
     .join("|");
 }
@@ -334,17 +334,18 @@ function guardarPrecio_(body) {
   var values = sh.getDataRange().getValues();
   var head = values[0].map(function (h) { return String(h).trim(); });
   function ci(n) { return head.indexOf(n); }
-  var iMa = ci("Marca"), iMo = ci("Modelo"), iCa = ci("Capacidad"), iCh = ci("Chip"),
+  var iMa = ci("Marca"), iMo = ci("Modelo"), iCa = ci("Capacidad"), iCh = ci("Chip"), iEs = ci("Estado"),
       iPM = ci("Precio Mayorista"), iPR = ci("Precio Reventa"), iPC = ci("Precio Cliente Final");
   if (iMa < 0 || iMo < 0 || iCa < 0) {
     throw new Error("La hoja Precios debe tener columnas Marca, Modelo y Capacidad.");
   }
 
-  var objetivo = makeKey(body.marca, body.modelo, body.capacidad, body.chip);
+  var objetivo = makeKey(body.marca, body.modelo, body.capacidad, body.chip, body.estado);
   var fila = -1;
   for (var r = 1; r < values.length; r++) {
     var chipFila = iCh >= 0 ? values[r][iCh] : "";
-    if (makeKey(values[r][iMa], values[r][iMo], values[r][iCa], chipFila) === objetivo) { fila = r; break; }
+    var estFila = iEs >= 0 ? values[r][iEs] : "";
+    if (makeKey(values[r][iMa], values[r][iMo], values[r][iCa], chipFila, estFila) === objetivo) { fila = r; break; }
   }
 
   if (fila === -1) {
@@ -352,6 +353,7 @@ function guardarPrecio_(body) {
     for (var k = 0; k < head.length; k++) nueva.push("");
     nueva[iMa] = body.marca || ""; nueva[iMo] = body.modelo || ""; nueva[iCa] = body.capacidad || "";
     if (iCh >= 0) nueva[iCh] = body.chip || "";
+    if (iEs >= 0) nueva[iEs] = body.estado || "";
     if (iPM >= 0) nueva[iPM] = body.precioMayorista || "";
     if (iPR >= 0) nueva[iPR] = body.precioReventa || "";
     if (iPC >= 0) nueva[iPC] = body.precioPublico || "";
