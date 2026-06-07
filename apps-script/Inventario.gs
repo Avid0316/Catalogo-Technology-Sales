@@ -77,9 +77,22 @@ function construirInventario() {
   var dicAlmac   = cargarDiccionario_("Diccionario_Almacenamientos");// [buscar, Almacenamiento correcto]
   var dicColores = cargarDiccionario_("Diccionario_Colores");        // [buscar, Color correcto]
 
+  // Capacidad/Color: el texto a buscar SÍ aparece pegado (ej. "128GB/4RAM", "AZUL MARINO").
   function buscarEn_(dic, texto) {
     for (var i = 0; i < dic.length; i++) {
       if (texto.indexOf(dic[i].buscar) !== -1) return dic[i].fila;
+    }
+    return null;
+  }
+  // Modelo: casa si TODAS las palabras del modelo están en el nombre (aunque la
+  // capacidad/color estén en medio, ej. "IPAD 11VA 128GB ROSADO WIFI").
+  function buscarModelo_(dic, tokens) {
+    for (var i = 0; i < dic.length; i++) {
+      var palabras = dic[i].buscar.split(/\s+/), ok = true;
+      for (var w = 0; w < palabras.length; w++) {
+        if (palabras[w] && !tokens[palabras[w]]) { ok = false; break; }
+      }
+      if (ok) return dic[i].fila;
     }
     return null;
   }
@@ -100,7 +113,10 @@ function construirInventario() {
     if (disp <= 0 && comp <= 0) continue;           // agotados: no entran
 
     var up = nombre.toUpperCase();
-    var fm = buscarEn_(dicModelos, up);
+    var tokens = {};
+    up.split(/\s+/).forEach(function (t) { if (t) tokens[t] = true; });
+
+    var fm = buscarModelo_(dicModelos, tokens);
     if (!fm) { if (sinModelo.indexOf(nombre) === -1) sinModelo.push(nombre); continue; }
 
     var fa = buscarEn_(dicAlmac, up);
