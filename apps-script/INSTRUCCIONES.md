@@ -44,6 +44,7 @@ o **Nueva implementación** la primera vez:
 | Categoria, Marca, Modelo, Capacidad, Color | Diccionarios |
 | Chip | Detectado del nombre (eSIM / Dual SIM / 1 SIM) |
 | Sucursal, Cantidad | Disponible = Virtual + Consignación |
+| Consignacion | Cuánto de lo disponible es consignación (solo interno) |
 | Comprometido | En proforma (solo personal interno) |
 | Estado | Grupo (Nuevo, Usado, Open Box, En Caja) |
 | Precio Mayorista / Reventa / Publico | Hoja Precios (Publico = Cliente Final) |
@@ -54,5 +55,6 @@ o **Nueva implementación** la primera vez:
 - **La llave es `Marca + Modelo + Capacidad`** y debe ser **idéntica** en `Inventario`
   y en `Precios`. Como ambas salen de los mismos diccionarios, coincide automáticamente.
 - Los **agotados no se envían** (Disponible y Comprometido en 0).
-- El sitio todavía debe: mostrar **Comprometido** solo a roles internos y agregar el
-  **filtro de Chip** (siguiente ajuste en `index.html`).
+- El sitio ya muestra **Consignación** y **En proforma (Comprometido)** en el detalle,
+  **solo a roles internos** (admin, asesor, vendedor).
+- Pendiente a futuro: el **filtro de Chip** (la API ya entrega el dato).

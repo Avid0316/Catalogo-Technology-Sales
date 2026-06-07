@@ -174,6 +174,7 @@ function doGet() {
         Chip:         item["Chip"] || "",
         Sucursal:     item["Sucursal"] || "",
         Cantidad:     item["Cantidad"] || 0,
+        Consignacion: item["CantidadConsignacion"] || 0,
         Comprometido: item["Comprometido"] || 0,
         Estado:       item["Estado"] || "",
         "Precio Mayorista": p.precioMayorista || "",
