@@ -131,7 +131,20 @@ function construirInventario() {
     msg += "\n\n⚠️ " + sinModelo.length + " productos sin modelo en el diccionario (ejemplos):\n- " +
            sinModelo.slice(0, 10).join("\n- ");
   }
-  SpreadsheetApp.getUi().alert(msg);
+  notificar_(msg);
+}
+
+// Muestra un aviso. Si se corre desde el editor (sin interfaz), no falla:
+// usa toast y, en último caso, lo deja en el registro de ejecución.
+function notificar_(msg) {
+  try {
+    SpreadsheetApp.getUi().alert(msg);
+    return;
+  } catch (e) {}
+  try {
+    SpreadsheetApp.getActiveSpreadsheet().toast(String(msg).substring(0, 250), "TechnologySales", 10);
+  } catch (e2) {}
+  Logger.log(msg);
 }
 
 /* ===================================================================
