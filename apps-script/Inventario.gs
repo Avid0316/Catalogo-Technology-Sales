@@ -235,6 +235,97 @@ function jsonOutput(data) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+/* ===================================================================
+ * PARTE 3 — GUARDAR PRECIOS DESDE LA WEB (doPost)
+ * El panel de admin del sitio manda un POST para guardar en "Precios".
+ * =================================================================== */
+
+// 👇 Correos que PUEDEN guardar precios desde la web. Agrega/quita los que necesites.
+var ADMIN_EMAILS = [
+  "david.zelaya698@gmail.com",
+  "avid@ts.com",
+  "avid0316@ts.com",
+  "miguel@ts.com"
+];
+// Clave pública del proyecto Firebase (la misma del sitio) — sirve para validar el token.
+var FIREBASE_API_KEY = "AIzaSyA9nOW0QXIdYk5MJk7wcBVrTSb-WMejOV8";
+
+function doPost(e) {
+  try {
+    var body = JSON.parse((e && e.postData && e.postData.contents) || "{}");
+
+    if (body.action !== "setPrecio") {
+      return jsonOutput({ error: true, mensaje: "Acción no soportada: " + body.action });
+    }
+
+    var email = verificarTokenFirebase_(body.idToken);
+    if (!email) {
+      return jsonOutput({ error: true, mensaje: "Sesión inválida o expirada. Vuelve a iniciar sesión." });
+    }
+    var admins = ADMIN_EMAILS.map(function (x) { return String(x).toLowerCase(); });
+    if (admins.indexOf(email.toLowerCase()) === -1) {
+      return jsonOutput({ error: true, mensaje: "Tu correo (" + email + ") no está en la lista de admins." });
+    }
+
+    guardarPrecio_(body);
+    return jsonOutput({ ok: true });
+  } catch (err) {
+    return jsonOutput({ error: true, mensaje: err.message });
+  }
+}
+
+// Valida el idToken con Google/Firebase y devuelve el email verificado (o "" si no es válido).
+function verificarTokenFirebase_(idToken) {
+  if (!idToken) return "";
+  try {
+    var url = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=" + FIREBASE_API_KEY;
+    var res = UrlFetchApp.fetch(url, {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify({ idToken: idToken }),
+      muteHttpExceptions: true
+    });
+    var data = JSON.parse(res.getContentText() || "{}");
+    if (data.users && data.users.length) return data.users[0].email || "";
+  } catch (e) {}
+  return "";
+}
+
+// Crea o actualiza la fila de "Precios" por Marca|Modelo|Capacidad.
+function guardarPrecio_(body) {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Precios");
+  if (!sh) throw new Error('No existe la hoja "Precios".');
+
+  var values = sh.getDataRange().getValues();
+  var head = values[0].map(function (h) { return String(h).trim(); });
+  function ci(n) { return head.indexOf(n); }
+  var iMa = ci("Marca"), iMo = ci("Modelo"), iCa = ci("Capacidad"),
+      iPM = ci("Precio Mayorista"), iPR = ci("Precio Reventa"), iPC = ci("Precio Cliente Final");
+  if (iMa < 0 || iMo < 0 || iCa < 0) {
+    throw new Error("La hoja Precios debe tener columnas Marca, Modelo y Capacidad.");
+  }
+
+  var objetivo = makeKey(body.marca, body.modelo, body.capacidad);
+  var fila = -1;
+  for (var r = 1; r < values.length; r++) {
+    if (makeKey(values[r][iMa], values[r][iMo], values[r][iCa]) === objetivo) { fila = r; break; }
+  }
+
+  if (fila === -1) {
+    var nueva = [];
+    for (var k = 0; k < head.length; k++) nueva.push("");
+    nueva[iMa] = body.marca || ""; nueva[iMo] = body.modelo || ""; nueva[iCa] = body.capacidad || "";
+    if (iPM >= 0) nueva[iPM] = body.precioMayorista || "";
+    if (iPR >= 0) nueva[iPR] = body.precioReventa || "";
+    if (iPC >= 0) nueva[iPC] = body.precioPublico || "";
+    sh.appendRow(nueva);
+  } else {
+    if (iPM >= 0) sh.getRange(fila + 1, iPM + 1).setValue(body.precioMayorista || "");
+    if (iPR >= 0) sh.getRange(fila + 1, iPR + 1).setValue(body.precioReventa || "");
+    if (iPC >= 0) sh.getRange(fila + 1, iPC + 1).setValue(body.precioPublico || "");
+  }
+}
+
 /* ===================== MENÚ ===================== */
 
 function onOpen() {

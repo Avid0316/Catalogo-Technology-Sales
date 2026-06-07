@@ -50,6 +50,21 @@ o **Nueva implementación** la primera vez:
 | Precio Mayorista / Reventa / Publico | Hoja Precios (Publico = Cliente Final) |
 | Imagen | Hoja Precios |
 
+## 💾 Guardar precios desde la web (doPost)
+
+El panel de admin del sitio guarda precios directo en la hoja `Precios`. Para que
+funcione, el Apps Script incluye `doPost`, que **valida que seas admin** (con tu
+sesión de Firebase) antes de escribir.
+
+- Edita la lista **`ADMIN_EMAILS`** (arriba del archivo) con los correos que pueden
+  guardar precios. Usa el **mismo correo con el que inicias sesión en la web**.
+- ⚠️ **Cada vez que cambies el código debes RE-DESPLEGAR** para que el `doPost` nuevo
+  tome efecto: **Implementar ▸ Gestionar implementaciones ▸** editar la existente
+  ▸ Versión: **Nueva** ▸ Implementar. (La URL no cambia.)
+
+> Si al guardar sale *"Failed to fetch"* o *"no tiene doPost"*, casi siempre es que
+> faltó **re-desplegar** tras pegar el código.
+
 ## ⚠️ Notas importantes
 
 - **La llave es `Marca + Modelo + Capacidad`** y debe ser **idéntica** en `Inventario`
