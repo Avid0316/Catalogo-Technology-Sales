@@ -1,86 +1,58 @@
-# 📋 Catálogo TechnologySales — Paso 1 (Inventario desde el sistema)
+# 📋 Catálogo TechnologySales — API completa
 
-Esta guía conecta el **reporte de tu sistema** con el sitio web, para que el
-catálogo muestre **categoría, marca, modelo, almacenamiento, color, chip y
-stock real** — sin ordenar nada a mano.
-
-> **Paso 1 (este):** stock + atributos limpios.
-> **Paso 2 (después):** precios desde la hoja *Precios* (editable en la web) y
-> el filtro de **chip** en el sitio.
-
----
-
-## 🧩 Cómo funciona
+Convierte tu **reporte del sistema** en catálogo web usando tus diccionarios.
 
 ```
-Reporte del sistema (lo pegas tal cual)
-        │  el Apps Script automáticamente:
-        ├─ saca Modelo / Almacenamiento / RAM / Color del nombre
-        ├─ detecta el Chip cuando viene en el nombre (iPhone eSIM, etc.)
-        ├─ toma Categoría (Subgrupo), Marca (Referencia) y Estado (Grupo)
-        └─ calcula el stock:
-              Disponible   = Cantidad Virtual + Consignación   (revendedor/mayorista/cliente)
-              Comprometido = en proforma                        (solo personal interno)
-        ▼
-   Catálogo limpio (JSON)  →  el sitio web
+Crudo  ──[Diccionarios]──►  Inventario  ──[+ Precios]──►  JSON  ──►  Sitio web
+        construirInventario()              doGet()
 ```
 
-Los **agotados no se envían** (si Disponible y Comprometido son 0, no aparece).
+## 🗂️ Hojas necesarias
 
----
+| Hoja | Para qué |
+|---|---|
+| **Crudo** | Pegas el reporte del sistema tal cual |
+| **Diccionario_Modelos** | `Texto a buscar · Marca · Modelo · Categoria` |
+| **Diccionario_Almacenamientos** | `Texto a buscar · Almacenamiento correcto` |
+| **Diccionario_Colores** | `Texto a buscar · Color correcto` (largos primero) |
+| **Inventario** | **Se genera solo** (no la edites a mano) |
+| **Precios** | `Marca · Modelo · Capacidad · Precio Mayorista · Precio Reventa · Precio Cliente Final · Imagen` |
 
-## 🛠️ Instalación (una sola vez)
-
-1. Abre tu hoja de **Google Sheets** (la misma donde está *Precios*).
-2. Crea una pestaña nueva llamada exactamente **`Inventario crudo`**.
-3. Abre el menú **Extensiones ▸ Apps Script**.
-4. Borra lo que haya y **pega el contenido de `Inventario.gs`**. Guarda 💾.
-5. Vuelve a la hoja y **recárgala** (F5). Aparecerá el menú **TechnologySales**.
+> Los diccionarios y la hoja Precios vienen **pre-generados** en
+> `Estructura_PreGenerada.xlsx` (298 modelos, 27 capacidades, 403 llaves de precio).
 
 ## 🔄 Uso de cada día
 
-1. Genera el reporte en tu sistema (el `INVENTARIO_GENERAL`).
-2. Copia y **pega todo** en la pestaña **`Inventario crudo`** (desde la celda A1).
-3. Menú **TechnologySales ▸ Reconstruir catálogo**.
-   - Se crea/actualiza la pestaña **`Catalogo`** para que revises cómo quedó. 👀
+1. Pega el reporte del sistema en **`Crudo`**.
+2. Menú **TechnologySales ▸ Construir inventario**.
+   - Llena la hoja **`Inventario`** aplicando los diccionarios.
+   - Si algún producto **no está en el diccionario de modelos**, te avisa con ejemplos
+     para que lo agregues (una línea) y vuelvas a construir.
+3. (Si cambiaste precios, solo edita la hoja **`Precios`**.)
 
-> No necesitas ordenar ni limpiar nada: pega el reporte tal como sale del sistema.
+## 🌐 Publicar
 
----
+**Implementar ▸ Gestionar implementaciones ▸** editar la existente (así la URL no cambia),
+o **Nueva implementación** la primera vez:
+- Tipo **Aplicación web** · Ejecutar como **Yo** · Acceso **Cualquier persona**.
+- Copia la URL `…/exec` y pégala en `API_URL` dentro de `index.html`.
 
-## 🌐 Publicar para el sitio web
-
-1. En el editor de Apps Script: **Implementar ▸ Nueva implementación**.
-2. Tipo: **Aplicación web**.
-   - *Ejecutar como:* **Yo**.
-   - *Quién tiene acceso:* **Cualquier persona**.
-3. **Implementar** y **copia la URL** (`https://script.google.com/.../exec`).
-4. En `index.html`, reemplaza el valor de `API_URL` por esa URL.
-
-> Cada vez que cambies el código, usa **Implementar ▸ Gestionar implementaciones**
-> y edita la existente (así la URL no cambia).
-
----
-
-## ✅ Qué entrega cada producto
+## 📦 Qué entrega el JSON
 
 | Campo | Origen |
 |---|---|
-| Categoria | Subgrupo del sistema (Celulares, Tablets, Accesorios…) |
-| Marca | Referencia (iPhone, Samsung, Xiaomi…) |
-| Modelo / Capacidad / RAM / Color | Separados del nombre del sistema |
-| Chip | Del nombre cuando viene (eSIM, Dual SIM, 1 SIM) — el resto en el Paso 2 |
-| Sucursal + Cantidad | Disponible (Virtual + Consignación) por sucursal |
-| Comprometido | En proforma (solo lo ve el personal interno) |
+| Categoria, Marca, Modelo, Capacidad, Color | Diccionarios |
+| Chip | Detectado del nombre (eSIM / Dual SIM / 1 SIM) |
+| Sucursal, Cantidad | Disponible = Virtual + Consignación |
+| Comprometido | En proforma (solo personal interno) |
 | Estado | Grupo (Nuevo, Usado, Open Box, En Caja) |
-| Precios | Vacío por ahora → se llenan en el **Paso 2** |
-| Codigo | Llave para unir con la hoja *Precios* en el Paso 2 |
+| Precio Mayorista / Reventa / Publico | Hoja Precios (Publico = Cliente Final) |
+| Imagen | Hoja Precios |
 
----
+## ⚠️ Notas importantes
 
-## 📌 Notas
-
-- Probado con tu reporte real: **100% de colores** y **99.9% de almacenamiento**
-  detectados correctamente.
-- Si algún modelo nuevo trae un color raro que no se detecta, se agrega a la
-  lista `COLORS` dentro de `Inventario.gs` (una línea) y listo.
+- **La llave es `Marca + Modelo + Capacidad`** y debe ser **idéntica** en `Inventario`
+  y en `Precios`. Como ambas salen de los mismos diccionarios, coincide automáticamente.
+- Los **agotados no se envían** (Disponible y Comprometido en 0).
+- El sitio todavía debe: mostrar **Comprometido** solo a roles internos y agregar el
+  **filtro de Chip** (siguiente ajuste en `index.html`).

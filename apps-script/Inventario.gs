@@ -1,225 +1,231 @@
 /***********************************************************************
- * TechnologySales · Catálogo de Inventario
+ * TechnologySales · API del Catálogo (completa)
  * -------------------------------------------------------------------
- * PASO 1 — Normaliza el reporte del sistema (INVENTARIO_GENERAL) y lo
- * entrega como JSON limpio para el sitio web.
+ * Trabaja con TU estructura de hojas:
+ *   Crudo · Diccionario_Modelos · Diccionario_Almacenamientos ·
+ *   Diccionario_Colores · Inventario · Precios
  *
- * Qué hace:
- *   - Lee la hoja con el reporte crudo del sistema (pegado tal cual).
- *   - Separa Modelo / Almacenamiento / RAM / Color / Chip del nombre.
- *   - Toma Categoría (Subgrupo), Marca (Referencia) y Estado (Grupo).
- *   - Calcula el stock:
- *        Disponible   = Cantidad Virtual + Cantidad Consignación
- *        Comprometido = lo que está en proforma (solo personal interno)
- *   - Entrega una fila por (producto + sucursal) con disponible > 0
- *     o comprometido > 0 (los agotados NO se envían).
+ * Tiene DOS partes:
  *
- * Cómo se usa:
- *   1. Pega el reporte del sistema en la hoja "Inventario crudo".
- *   2. Menú  TechnologySales ▸ Reconstruir catálogo  (para previsualizar).
- *   3. Publica como App Web (Implementar ▸ Nueva implementación).
- *   Ver apps-script/INSTRUCCIONES.md para el paso a paso.
+ *  1) construirInventario()  → lee "Crudo", aplica los 3 diccionarios y
+ *     escribe la hoja "Inventario" lista para la web.
+ *     (Menú TechnologySales ▸ Construir inventario)
+ *
+ *  2) doGet()  → lee "Inventario" + "Precios", los une por
+ *     Marca|Modelo|Capacidad y entrega el JSON para el sitio.
+ *     Incluye: Precio Cliente Final, Comprometido y Chip.
  ***********************************************************************/
 
-/** ====== CONFIGURACIÓN ====== **/
-var CFG = {
-  // Nombre de la hoja donde pegas el reporte del sistema.
-  // Si no existe, se busca automáticamente la hoja que tenga la columna "NombreProducto".
-  RAW_SHEET: 'Inventario crudo',
-  // Hoja donde se escribe el catálogo limpio (para que lo puedas revisar).
-  CATALOG_SHEET: 'Catalogo',
-  // Encabezados esperados del reporte del sistema (tal como vienen).
-  COLS: {
-    codigo:      'Producto',
-    marca:       'Referencia',
-    nombre:      'NombreProducto',
-    sucursal:    'NombreSucursal',
-    subgrupo:    'NombreSubgrupoProducto',
-    grupo:       'NombreGrupoProducto',
-    consignacion:'CantidadConsignacion',
-    comprometido:'Comprometido',
-    virtual:     'CantidadVirtual'
-  }
-};
+/* ===================================================================
+ * PARTE 1 — CONSTRUIR INVENTARIO DESDE CRUDO (con diccionarios)
+ * =================================================================== */
 
-/** ====== DICCIONARIOS DE EXTRACCIÓN ====== **/
-// Colores (los compuestos van primero para que ganen sobre los simples).
-var COLORS = [
-  'GRIS TITANIO','TITANIO NATURAL','TITANIO DESIERTO','NATURAL TITANIUM',
-  'AZUL OSCURO','AZUL CLARO','VERDE OSCURO','VERDE CLARO','ULTRAMARINO','ULTRAMAR',
-  'NEGRO','BLANCO','AZUL','VERDE','GRIS','DORADO','MORADO','ROJO','ROSADO','ROSA',
-  'PLATA','SILVER','TITANIO','AMARILLO','CELESTE','BEIGE','CAFE','NARANJA','LILA',
-  'MENTA','CREMA','ORO','GRAFITO','MEDIANOCHE','DESERT','DESIERTO','NATURAL','CORAL',
-  'BRONCE','AURA','TEAL','TURQUESA','FUCSIA','VINO','LAVANDA','DURAZNO','OLIVA',
-  'OBSIDIANA','MARFIL','PERLA','ARENA','ESTELAR','NEGRA','BLANCA'
-];
-var CAP_RE  = /(\d+\s*(?:GB|TB))(?:\s*\/\s*(\d+\s*RAM))?/i;
 var CHIP_RE = /(DUAL\s*SIM|DUALSIM|2\s*SIM|1\s*SIM|E\s*SIM|ESIM|FISICO)/i;
 
-function normChip_(x) {
-  x = String(x).toUpperCase().replace(/\s+/g, '');
-  if (x === 'DUALSIM' || x === '2SIM') return 'Dual SIM';
-  if (x === '1SIM') return '1 SIM';
-  if (x === 'ESIM') return 'eSIM';
-  if (x === 'FISICO') return 'SIM física';
-  return '';
+function detectarChip_(name) {
+  var m = String(name).toUpperCase().match(CHIP_RE);
+  if (!m) return "";
+  var x = m[1].toUpperCase().replace(/\s+/g, "");
+  if (x === "DUALSIM" || x === "2SIM") return "Dual SIM";
+  if (x === "1SIM") return "1 SIM";
+  if (x === "ESIM") return "eSIM";
+  if (x === "FISICO") return "SIM física";
+  return "";
 }
 
-function titleCase_(s) {
-  return String(s).toLowerCase().replace(/(^|\s)\S/g, function (m) { return m.toUpperCase(); });
-}
-
-/**
- * Separa un nombre crudo en: modelo, capacidad, ram, color, chip.
- * Ej: "HOT 40 PRO 64GB/3RAM VERDE" -> {model:"HOT 40 PRO", cap:"64GB", ram:"3RAM", color:"Verde", chip:""}
- */
-function parseName_(name) {
-  var s = ' ' + String(name || '').toUpperCase().trim() + ' ';
-  var chip = '', cap = '', ram = '', color = '';
-
-  var mChip = s.match(CHIP_RE);
-  if (mChip) { chip = normChip_(mChip[1]); s = s.replace(mChip[0], ' '); }
-
-  var mCap = s.match(CAP_RE);
-  if (mCap) {
-    cap = mCap[1].replace(/\s+/g, '');
-    if (mCap[2]) ram = mCap[2].replace(/\s+/g, '');
-    s = s.replace(mCap[0], ' ');
-  }
-
-  for (var i = 0; i < COLORS.length; i++) {
-    var c = COLORS[i];
-    if (s.indexOf(' ' + c + ' ') !== -1) { color = titleCase_(c); s = s.replace(' ' + c + ' ', ' '); break; }
-  }
-
-  var model = s.replace(/\s+/g, ' ').trim();
-  return { model: model, cap: cap, ram: ram, color: color, chip: chip };
-}
-
-/** ====== LECTURA DE LA HOJA CRUDA ====== **/
-function getRawSheet_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sh = ss.getSheetByName(CFG.RAW_SHEET);
-  if (sh) return sh;
-  // Búsqueda automática: la hoja que tenga "NombreProducto" en alguna fila.
-  var sheets = ss.getSheets();
-  for (var i = 0; i < sheets.length; i++) {
-    var vals = sheets[i].getDataRange().getValues();
-    for (var r = 0; r < Math.min(vals.length, 10); r++) {
-      if (vals[r].indexOf(CFG.COLS.nombre) !== -1) return sheets[i];
-    }
-  }
-  throw new Error('No encontré la hoja del reporte. Crea una hoja llamada "' + CFG.RAW_SHEET + '" y pega ahí el reporte del sistema.');
-}
-
-// Localiza la fila de encabezados y devuelve un mapa nombre->índice de columna.
-function headerMap_(values) {
-  for (var r = 0; r < Math.min(values.length, 10); r++) {
-    if (values[r].indexOf(CFG.COLS.nombre) !== -1) {
-      var map = {}, row = values[r];
-      for (var c = 0; c < row.length; c++) map[String(row[c]).trim()] = c;
-      return { headerRow: r, map: map };
-    }
-  }
-  throw new Error('No encontré la fila de encabezados (debe incluir la columna "' + CFG.COLS.nombre + '").');
-}
-
-function num_(v) { var n = Number(v); return isNaN(n) ? 0 : n; }
-
-/**
- * Construye el catálogo limpio a partir del reporte crudo.
- * Devuelve un arreglo de objetos { ...campos del sitio... }.
- */
-function buildCatalog_() {
-  var sh = getRawSheet_();
+// Carga un diccionario [Texto a buscar, valor...] ordenado del texto más
+// largo al más corto (para que "16 PRO MAX" gane sobre "16 PRO").
+function cargarDiccionario_(nombreHoja) {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nombreHoja);
+  if (!sh) throw new Error('Falta la hoja "' + nombreHoja + '".');
   var values = sh.getDataRange().getValues();
-  var hm = headerMap_(values);
-  var map = hm.map, C = CFG.COLS;
-
-  function idx(key) {
-    var name = C[key], i = map[name];
-    if (i === undefined) throw new Error('Falta la columna "' + name + '" en el reporte.');
-    return i;
+  var lista = [];
+  for (var r = 1; r < values.length; r++) {           // salta encabezado
+    var buscar = String(values[r][0] || "").trim().toUpperCase();
+    if (!buscar) continue;
+    lista.push({ buscar: buscar, fila: values[r] });
   }
-  var iCod = idx('codigo'), iMarca = idx('marca'), iNom = idx('nombre'),
-      iSuc = idx('sucursal'), iSub = idx('subgrupo'), iGru = idx('grupo'),
-      iCons = idx('consignacion'), iComp = idx('comprometido'), iVirt = idx('virtual');
-
-  var parsedCache = {}; // código -> atributos (parseo una sola vez por código)
-  var out = [];
-
-  for (var r = hm.headerRow + 1; r < values.length; r++) {
-    var row = values[r];
-    var code = row[iCod];
-    if (code === '' || code === null) continue;
-
-    var disp = num_(row[iVirt]) + num_(row[iCons]);
-    var comp = num_(row[iComp]);
-    if (disp <= 0 && comp <= 0) continue; // agotados: no se envían
-
-    var p = parsedCache[code];
-    if (!p) { p = parseName_(row[iNom]); parsedCache[code] = p; }
-
-    out.push({
-      'Categoria':       titleCase_(row[iSub] || ''),
-      'Marca':           titleCase_(row[iMarca] || ''),
-      'Modelo':          p.model,
-      'Capacidad':       p.cap,
-      'RAM':             p.ram,
-      'Color':           p.color,
-      'Chip':            p.chip,
-      'Sucursal':        String(row[iSuc] || '').trim(),
-      'Cantidad':        disp,          // Disponible (Virtual + Consignación)
-      'Comprometido':    comp,          // Solo personal interno
-      'Estado':          titleCase_(row[iGru] || ''),
-      'Precio Mayorista':'',            // Se llenan en el Paso 2 (hoja Precios)
-      'Precio Reventa':  '',
-      'Precio Publico':  '',
-      'Imagen':          '',
-      'Codigo':          code           // llave para unir con Precios (Paso 2)
-    });
-  }
-  return out;
+  lista.sort(function (a, b) { return b.buscar.length - a.buscar.length; });
+  return lista;
 }
 
-/** ====== PUNTO DE ENTRADA WEB (lo que consume el sitio) ====== **/
-function doGet(e) {
-  var data;
-  try {
-    data = buildCatalog_();
-  } catch (err) {
-    data = { error: String(err) };
+function construirInventario() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var crudo = ss.getSheetByName("Crudo");
+  if (!crudo) throw new Error('Falta la hoja "Crudo".');
+
+  var values = crudo.getDataRange().getValues();
+  // Encuentra la fila de encabezados (la que tiene "NombreProducto").
+  var hRow = -1;
+  for (var r = 0; r < Math.min(values.length, 10); r++) {
+    if (values[r].indexOf("NombreProducto") !== -1) { hRow = r; break; }
   }
+  if (hRow === -1) throw new Error('En "Crudo" no encuentro la columna "NombreProducto".');
+
+  var H = {}, head = values[hRow];
+  for (var c = 0; c < head.length; c++) H[String(head[c]).trim()] = c;
+  function col(n) { if (H[n] === undefined) throw new Error('Falta la columna "' + n + '" en Crudo.'); return H[n]; }
+
+  var iNom = col("NombreProducto"),
+      iSuc = col("NombreSucursal"),
+      iGru = col("NombreGrupoProducto"),
+      iCons = col("CantidadConsignacion"),
+      iComp = col("Comprometido"),
+      iVirt = col("CantidadVirtual");
+
+  var dicModelos = cargarDiccionario_("Diccionario_Modelos");        // [buscar, Marca, Modelo, Categoria]
+  var dicAlmac   = cargarDiccionario_("Diccionario_Almacenamientos");// [buscar, Almacenamiento correcto]
+  var dicColores = cargarDiccionario_("Diccionario_Colores");        // [buscar, Color correcto]
+
+  function buscarEn_(dic, texto) {
+    for (var i = 0; i < dic.length; i++) {
+      if (texto.indexOf(dic[i].buscar) !== -1) return dic[i].fila;
+    }
+    return null;
+  }
+  function num(v) { var n = Number(v); return isNaN(n) ? 0 : n; }
+
+  var salida = [["Categoria","Marca","Modelo","Capacidad","Color","Chip",
+                 "Sucursal","CantidadVirtual","CantidadConsignacion","Comprometido",
+                 "Cantidad","Estado","NombreProductoOriginal"]];
+  var sinModelo = [];
+
+  for (var r2 = hRow + 1; r2 < values.length; r2++) {
+    var row = values[r2];
+    var nombre = String(row[iNom] || "").trim();
+    if (!nombre) continue;
+
+    var virt = num(row[iVirt]), cons = num(row[iCons]), comp = num(row[iComp]);
+    var disp = virt + cons;
+    if (disp <= 0 && comp <= 0) continue;           // agotados: no entran
+
+    var up = nombre.toUpperCase();
+    var fm = buscarEn_(dicModelos, up);
+    if (!fm) { if (sinModelo.indexOf(nombre) === -1) sinModelo.push(nombre); continue; }
+
+    var fa = buscarEn_(dicAlmac, up);
+    var fc = buscarEn_(dicColores, up);
+
+    salida.push([
+      fm[3] || "",                  // Categoria
+      fm[1] || "",                  // Marca
+      fm[2] || "",                  // Modelo
+      fa ? (fa[1] || "") : "",      // Capacidad
+      fc ? (fc[1] || "") : "",      // Color
+      detectarChip_(nombre),        // Chip
+      String(row[iSuc] || "").trim(),
+      virt, cons, comp,
+      disp,                         // Cantidad = Disponible
+      String(row[iGru] || "").trim(),
+      nombre
+    ]);
+  }
+
+  var inv = ss.getSheetByName("Inventario") || ss.insertSheet("Inventario");
+  inv.clearContents();
+  inv.getRange(1, 1, salida.length, salida[0].length).setValues(salida);
+  inv.setFrozenRows(1);
+
+  var msg = "Inventario construido: " + (salida.length - 1) + " filas con stock.";
+  if (sinModelo.length) {
+    msg += "\n\n⚠️ " + sinModelo.length + " productos sin modelo en el diccionario (ejemplos):\n- " +
+           sinModelo.slice(0, 10).join("\n- ");
+  }
+  SpreadsheetApp.getUi().alert(msg);
+}
+
+/* ===================================================================
+ * PARTE 2 — API WEB (Inventario + Precios → JSON)   [basado en tu doGet]
+ * =================================================================== */
+
+function doGet() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var inventarioSheet = ss.getSheetByName("Inventario");
+    var preciosSheet = ss.getSheetByName("Precios");
+
+    if (!inventarioSheet) return jsonOutput({ error: true, mensaje: "No existe la hoja Inventario" });
+    if (!preciosSheet)    return jsonOutput({ error: true, mensaje: "No existe la hoja Precios" });
+
+    var inventario = sheetToObjects(inventarioSheet);
+    var precios = sheetToObjects(preciosSheet);
+
+    // Mapa de precios por Marca|Modelo|Capacidad
+    var preciosMap = {};
+    precios.forEach(function (item) {
+      var key = makeKey(item["Marca"], item["Modelo"], item["Capacidad"]);
+      preciosMap[key] = {
+        precioMayorista:    formatLempiras(item["Precio Mayorista"]),
+        precioReventa:      formatLempiras(item["Precio Reventa"]),
+        precioClienteFinal: formatLempiras(item["Precio Cliente Final"]),
+        imagen:             item["Imagen"] || ""
+      };
+    });
+
+    var resultado = inventario.map(function (item) {
+      var key = makeKey(item["Marca"], item["Modelo"], item["Capacidad"]);
+      var p = preciosMap[key] || {};
+      return {
+        Categoria:    item["Categoria"] || "",
+        Marca:        item["Marca"] || "",
+        Modelo:       item["Modelo"] || "",
+        Capacidad:    item["Capacidad"] || "",
+        Color:        item["Color"] || "",
+        Chip:         item["Chip"] || "",
+        Sucursal:     item["Sucursal"] || "",
+        Cantidad:     item["Cantidad"] || 0,
+        Comprometido: item["Comprometido"] || 0,
+        Estado:       item["Estado"] || "",
+        "Precio Mayorista": p.precioMayorista || "",
+        "Precio Reventa":   p.precioReventa || "",
+        "Precio Publico":   p.precioClienteFinal || "",   // Cliente Final → "Precio Publico" (lo que usa el sitio)
+        Imagen:       p.imagen || ""
+      };
+    });
+
+    return jsonOutput(resultado);
+  } catch (error) {
+    return jsonOutput({ error: true, mensaje: error.message });
+  }
+}
+
+/* ===================== HELPERS (los tuyos) ===================== */
+
+function sheetToObjects(sheet) {
+  var data = sheet.getDataRange().getValues();
+  if (data.length < 2) return [];
+  var headers = data.shift().map(function (h) { return String(h).trim(); });
+  return data.map(function (row) {
+    var obj = {};
+    headers.forEach(function (header, index) { obj[header] = row[index]; });
+    return obj;
+  });
+}
+
+function makeKey(marca, modelo, capacidad) {
+  return [marca || "", modelo || "", capacidad || ""]
+    .map(function (v) { return String(v).trim().toUpperCase(); })
+    .join("|");
+}
+
+function formatLempiras(valor) {
+  if (valor === "" || valor === null || valor === undefined) return "";
+  var numero = Number(valor);
+  if (isNaN(numero)) return String(valor);   // por si viene "AGOTADO" u otro texto
+  return "L " + numero.toLocaleString("es-HN");
+}
+
+function jsonOutput(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/** ====== HERRAMIENTAS PARA TI (menú en la hoja) ====== **/
+/* ===================== MENÚ ===================== */
+
 function onOpen() {
   SpreadsheetApp.getUi()
-    .createMenu('TechnologySales')
-    .addItem('Reconstruir catálogo', 'reconstruirCatalogo')
+    .createMenu("TechnologySales")
+    .addItem("Construir inventario", "construirInventario")
     .addToUi();
-}
-
-/** Escribe el catálogo limpio en la hoja "Catalogo" para que lo revises. */
-function reconstruirCatalogo() {
-  var data = buildCatalog_();
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sh = ss.getSheetByName(CFG.CATALOG_SHEET) || ss.insertSheet(CFG.CATALOG_SHEET);
-  sh.clearContents();
-
-  var headers = ['Categoria','Marca','Modelo','Capacidad','RAM','Color','Chip',
-                 'Sucursal','Cantidad','Comprometido','Estado',
-                 'Precio Mayorista','Precio Reventa','Precio Publico','Imagen','Codigo'];
-  var rows = [headers];
-  for (var i = 0; i < data.length; i++) {
-    var d = data[i], line = [];
-    for (var h = 0; h < headers.length; h++) line.push(d[headers[h]]);
-    rows.push(line);
-  }
-  sh.getRange(1, 1, rows.length, headers.length).setValues(rows);
-  sh.setFrozenRows(1);
-  SpreadsheetApp.getUi().alert('Catálogo reconstruido: ' + data.length + ' filas con stock.');
 }
