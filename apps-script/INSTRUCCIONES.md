@@ -16,7 +16,7 @@ Crudo  ──[Diccionarios]──►  Inventario  ──[+ Precios]──►  JS
 | **Diccionario_Almacenamientos** | `Texto a buscar · Almacenamiento correcto` |
 | **Diccionario_Colores** | `Texto a buscar · Color correcto` (largos primero) |
 | **Inventario** | **Se genera solo** (no la edites a mano) |
-| **Precios** | `Marca · Modelo · Capacidad · Precio Mayorista · Precio Reventa · Precio Cliente Final` |
+| **Precios** | `Marca · Modelo · Capacidad · Chip · Precio Mayorista · Precio Reventa · Precio Cliente Final` |
 | **Imagenes** | `Marca · Modelo · Imagen` (una imagen general por modelo) |
 
 > Los diccionarios y la hoja Precios vienen **pre-generados** en
@@ -68,8 +68,10 @@ sesión de Firebase) antes de escribir.
 
 ## ⚠️ Notas importantes
 
-- **La llave es `Marca + Modelo + Capacidad`** y debe ser **idéntica** en `Inventario`
+- **La llave es `Marca + Modelo + Capacidad + Chip`** y debe ser **idéntica** en `Inventario`
   y en `Precios`. Como ambas salen de los mismos diccionarios, coincide automáticamente.
+  Así el precio puede variar según el chip (eSIM, 1 SIM, Dual SIM).
+  ⚠️ La hoja `Precios` **debe** tener la columna **Chip** (usa el Excel pre-generado).
 - Los **agotados no se envían** (Disponible y Comprometido en 0).
 - El sitio ya muestra **Consignación** y **En proforma (Comprometido)** en el detalle,
   **solo a roles internos** (admin, asesor, vendedor).
