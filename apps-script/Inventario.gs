@@ -225,6 +225,9 @@ function doGet() {
       };
     });
 
+    // Equipos individuales (hoja "Equipos"): cada teléfono con su ficha y precio propio.
+    resultado = resultado.concat(leerEquipos_(ss, imagenesMap));
+
     return jsonOutput(resultado);
   } catch (error) {
     return jsonOutput({ error: true, mensaje: error.message });
@@ -268,6 +271,44 @@ function jsonOutput(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Lee la hoja "Equipos" (venta por unidad): cada fila es un teléfono con su
+// ficha (batería, ciclos, garantía) y su precio propio. Categoría fija.
+function leerEquipos_(ss, imagenesMap) {
+  var sh = ss.getSheetByName("Equipos");
+  if (!sh) return [];
+  var filas = sheetToObjects(sh);
+  var out = [];
+  filas.forEach(function (e) {
+    if (!String(e["Modelo"] || "").trim()) return;   // salta filas vacías
+    var marca = e["Marca"] || "", modelo = e["Modelo"] || "";
+    out.push({
+      Categoria:    "Equipos individuales",
+      Marca:        marca,
+      Modelo:       modelo,
+      Capacidad:    e["Capacidad"] || "",
+      Color:        e["Color"] || "",
+      Chip:         e["Chip"] || "",
+      Sucursal:     e["Sucursal"] || "",
+      Cantidad:     1,
+      Consignacion: 0,
+      Comprometido: 0,
+      Estado:       e["Estado"] || "",
+      "Precio Mayorista": formatLempiras(e["Precio Mayorista"]),
+      "Precio Reventa":   formatLempiras(e["Precio Reventa"]),
+      "Precio Publico":   formatLempiras(e["Precio Cliente Final"]),
+      Imagen:       e["Imagen"] || (imagenesMap ? (imagenesMap[makeKeyModelo(marca, modelo)] || "") : ""),
+      // Campos propios del equipo individual:
+      Individual:   true,
+      IMEI:         e["IMEI"] || e["Serie"] || "",
+      Bateria:      e["Bateria"] || e["Batería"] || "",
+      Ciclos:       e["Ciclos"] || "",
+      Garantia:     e["Garantia"] || e["Garantía"] || "",
+      Vence:        e["Vence"] || e["Vence Garantia"] || e["Vence Garantía"] || ""
+    });
+  });
+  return out;
 }
 
 /* ===================================================================
