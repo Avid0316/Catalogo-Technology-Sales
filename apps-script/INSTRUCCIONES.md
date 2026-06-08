@@ -18,6 +18,7 @@ Crudo  ──[Diccionarios]──►  Inventario  ──[+ Precios]──►  JS
 | **Inventario** | **Se genera solo** (no la edites a mano) |
 | **Precios** | `Marca · Modelo · Capacidad · Chip · Estado · Precio Mayorista · Precio Reventa · Precio Cliente Final` |
 | **Imagenes** | `Marca · Modelo · Imagen` (una imagen general por modelo) |
+| **Equipos** *(opcional)* | Venta por unidad: un teléfono por fila con su batería, ciclos, garantía y precios propios. Ver `Plantilla_Equipos.xlsx`. Aparecen en la categoría **"Equipos individuales"**. |
 
 > Los diccionarios y la hoja Precios vienen **pre-generados** en
 > `Estructura_PreGenerada.xlsx` (298 modelos, 27 capacidades, 403 llaves de precio).
