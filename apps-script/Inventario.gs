@@ -305,10 +305,18 @@ function leerEquipos_(ss, imagenesMap) {
       Bateria:      e["Bateria"] || e["Batería"] || "",
       Ciclos:       e["Ciclos"] || "",
       Garantia:     e["Garantia"] || e["Garantía"] || "",
-      Vence:        e["Vence"] || e["Vence Garantia"] || e["Vence Garantía"] || ""
+      Vence:        fmtFecha_(e["Vence"] || e["Vence Garantia"] || e["Vence Garantía"] || "")
     });
   });
   return out;
+}
+
+// Da formato a la fecha de garantía: si es una fecha real → "MM/AAAA"; si no, texto tal cual.
+function fmtFecha_(v) {
+  if (v instanceof Date) {
+    return Utilities.formatDate(v, Session.getScriptTimeZone() || "America/Tegucigalpa", "MM/yyyy");
+  }
+  return String(v || "").trim();
 }
 
 /* ===================================================================
