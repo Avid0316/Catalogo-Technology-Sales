@@ -140,12 +140,17 @@ function construirInventario() {
     ]);
   }
 
+  // Detectar y registrar movimientos ANTES de sobrescribir el Inventario.
+  var movs = 0;
+  try { movs = registrarMovimientos_(ss, salida); } catch (e) { Logger.log("Movimientos: " + e); }
+
   var inv = ss.getSheetByName("Inventario") || ss.insertSheet("Inventario");
   inv.clearContents();
   inv.getRange(1, 1, salida.length, salida[0].length).setValues(salida);
   inv.setFrozenRows(1);
 
   var msg = "Inventario construido: " + (salida.length - 1) + " filas con stock.";
+  if (movs > 0) msg += "\n📦 " + movs + " movimientos registrados en la hoja 'Movimientos'.";
   if (sinModelo.length) {
     msg += "\n\n⚠️ " + sinModelo.length + " productos sin modelo en el diccionario (ejemplos):\n- " +
            sinModelo.slice(0, 10).join("\n- ");
@@ -164,6 +169,125 @@ function notificar_(msg) {
     SpreadsheetApp.getActiveSpreadsheet().toast(String(msg).substring(0, 250), "TechnologySales", 10);
   } catch (e2) {}
   Logger.log(msg);
+}
+
+/* ===================================================================
+ * MOVIMIENTOS — historial de cambios de sucursal (hoja "Movimientos")
+ * Compara el estado anterior con el nuevo y registra los cambios.
+ * =================================================================== */
+
+function stockKey_(o) {
+  var p = [o["Marca"], o["Modelo"], o["Capacidad"], o["Color"], o["Chip"], o["Estado"]];
+  for (var i = 0; i < p.length; i++) p[i] = String(p[i] == null ? "" : p[i]).trim().toUpperCase();
+  if (!p[1]) return "";
+  return p.join("|");
+}
+
+function guardarSnapEquipos_(ss, eqRows) {
+  var snap = ss.getSheetByName("_SnapEquipos") || ss.insertSheet("_SnapEquipos");
+  snap.clearContents();
+  var rows = [["IMEI", "Sucursal"]];
+  eqRows.forEach(function (e) {
+    var i = String(e["IMEI"] || e["Serie"] || "").trim();
+    if (i) rows.push([i, String(e["Sucursal"] || "").trim()]);
+  });
+  snap.getRange(1, 1, rows.length, 2).setValues(rows);
+  try { snap.hideSheet(); } catch (e) {}
+}
+
+// Devuelve cuántos movimientos registró.
+function registrarMovimientos_(ss, salida) {
+  var hoy = Utilities.formatDate(new Date(), Session.getScriptTimeZone() || "America/Tegucigalpa", "yyyy-MM-dd HH:mm");
+  var nuevos = [];
+
+  // 1) STOCK NORMAL: Inventario viejo vs nuevo
+  var invVieja = ss.getSheetByName("Inventario");
+  if (invVieja) {
+    var oldRows = sheetToObjects(invVieja);
+    if (oldRows.length > 0) {
+      var oldMap = {}, info = {};
+      oldRows.forEach(function (o) {
+        var vk = stockKey_(o); if (!vk) return;
+        if (!oldMap[vk]) oldMap[vk] = {};
+        var s = String(o["Sucursal"] || "").trim();
+        oldMap[vk][s] = (oldMap[vk][s] || 0) + (Number(o["Cantidad"]) || 0);
+        info[vk] = o;
+      });
+      var H = salida[0];
+      var iM = H.indexOf("Marca"), iMo = H.indexOf("Modelo"), iCa = H.indexOf("Capacidad"),
+          iCo = H.indexOf("Color"), iCh = H.indexOf("Chip"), iSu = H.indexOf("Sucursal"),
+          iCt = H.indexOf("Cantidad"), iEs = H.indexOf("Estado");
+      var newMap = {};
+      for (var r = 1; r < salida.length; r++) {
+        var row = salida[r];
+        var o2 = { Marca: row[iM], Modelo: row[iMo], Capacidad: row[iCa], Color: row[iCo], Chip: row[iCh], Estado: row[iEs] };
+        var vk2 = stockKey_(o2); if (!vk2) continue;
+        if (!newMap[vk2]) newMap[vk2] = {};
+        var s2 = String(row[iSu] || "").trim();
+        newMap[vk2][s2] = (newMap[vk2][s2] || 0) + (Number(row[iCt]) || 0);
+        if (!info[vk2]) info[vk2] = o2;
+      }
+      var vks = {};
+      Object.keys(oldMap).forEach(function (k) { vks[k] = 1; });
+      Object.keys(newMap).forEach(function (k) { vks[k] = 1; });
+      Object.keys(vks).forEach(function (vk) {
+        var ob = oldMap[vk] || {}, nb = newMap[vk] || {}, sucs = {};
+        Object.keys(ob).forEach(function (s) { sucs[s] = 1; });
+        Object.keys(nb).forEach(function (s) { sucs[s] = 1; });
+        var totalOld = 0, totalNew = 0, deltas = [];
+        Object.keys(sucs).forEach(function (s) {
+          var oq = ob[s] || 0, nq = nb[s] || 0; totalOld += oq; totalNew += nq;
+          if (nq - oq !== 0) deltas.push({ s: s, d: nq - oq });
+        });
+        if (!deltas.length) return;
+        var tipo = (totalOld === totalNew) ? "Movimiento" : "Cambio";
+        var f = info[vk] || {};
+        deltas.forEach(function (d) {
+          nuevos.push([hoy, tipo, "", f.Modelo || "", f.Capacidad || "", f.Color || "", f.Chip || "", f.Estado || "", d.s, "", "", (d.d > 0 ? "+" : "") + d.d]);
+        });
+      });
+    }
+  }
+
+  // 2) INDIVIDUALES (IMEI): Equipos vs snapshot
+  var eqSh = ss.getSheetByName("Equipos");
+  if (eqSh) {
+    var eqRows = sheetToObjects(eqSh);
+    var snap = ss.getSheetByName("_SnapEquipos");
+    if (snap) {
+      var ahora = {}, infoEq = {};
+      eqRows.forEach(function (e) {
+        var i = String(e["IMEI"] || e["Serie"] || "").trim(); if (!i) return;
+        ahora[i] = String(e["Sucursal"] || "").trim(); infoEq[i] = e;
+      });
+      var antes = {};
+      sheetToObjects(snap).forEach(function (s) {
+        var i = String(s["IMEI"] || "").trim(); if (i) antes[i] = String(s["Sucursal"] || "").trim();
+      });
+      Object.keys(ahora).forEach(function (imei) {
+        var e = infoEq[imei];
+        if (!(imei in antes)) {
+          nuevos.push([hoy, "Ingreso", imei, e["Modelo"] || "", e["Capacidad"] || "", e["Color"] || "", e["Chip"] || "", e["Estado"] || "", "", "", ahora[imei], ""]);
+        } else if (antes[imei] !== ahora[imei]) {
+          nuevos.push([hoy, "Individual", imei, e["Modelo"] || "", e["Capacidad"] || "", e["Color"] || "", e["Chip"] || "", e["Estado"] || "", "", antes[imei], ahora[imei], ""]);
+        }
+      });
+      Object.keys(antes).forEach(function (imei) {
+        if (!(imei in ahora)) nuevos.push([hoy, "Salida", imei, "", "", "", "", "", "", antes[imei], "", ""]);
+      });
+    }
+    guardarSnapEquipos_(ss, eqRows);
+  }
+
+  if (!nuevos.length) return 0;
+  var mv = ss.getSheetByName("Movimientos");
+  if (!mv) {
+    mv = ss.insertSheet("Movimientos");
+    mv.appendRow(["Fecha", "Tipo", "IMEI", "Modelo", "Capacidad", "Color", "Chip", "Estado", "Sucursal", "Desde", "Hacia", "Cambio"]);
+    mv.setFrozenRows(1);
+  }
+  mv.getRange(mv.getLastRow() + 1, 1, nuevos.length, 12).setValues(nuevos);
+  return nuevos.length;
 }
 
 /* ===================================================================
