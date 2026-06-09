@@ -20,6 +20,7 @@ Crudo  ──[Diccionarios]──►  Inventario  ──[+ Precios]──►  JS
 | **Imagenes** | `Marca · Modelo · Imagen` (una imagen general por modelo) |
 | **Equipos** *(opcional)* | Venta por unidad: un teléfono por fila con su batería, ciclos, garantía y precios propios. Ver `Plantilla_Equipos.xlsx`. Aparecen en la categoría **"Equipos individuales"**. |
 | **Movimientos** *(se crea sola)* | Historial de cambios de sucursal. Cada vez que **Construir inventario**, compara con el estado anterior y registra los movimientos aquí. No la edites a mano. |
+| **Descuadres** *(se crea sola)* | Equipos individuales que no concuerdan con el sistema (están en `Equipos` pero el sistema ya no los tiene en esa sucursal). Menú **TechnologySales ▸ Revisar descuadres** o automático al construir. |
 
 ## 📦 Historial de movimientos (hoja "Movimientos")
 

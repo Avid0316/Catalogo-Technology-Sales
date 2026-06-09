@@ -149,8 +149,12 @@ function construirInventario() {
   inv.getRange(1, 1, salida.length, salida[0].length).setValues(salida);
   inv.setFrozenRows(1);
 
+  var desc = 0;
+  try { desc = revisarDescuadres_(ss); } catch (e) { Logger.log("Descuadres: " + e); }
+
   var msg = "Inventario construido: " + (salida.length - 1) + " filas con stock.";
   if (movs > 0) msg += "\n📦 " + movs + " movimientos registrados en la hoja 'Movimientos'.";
+  if (desc > 0) msg += "\n⚠️ " + desc + " equipos descuadran con el sistema (revisa la hoja 'Descuadres').";
   if (sinModelo.length) {
     msg += "\n\n⚠️ " + sinModelo.length + " productos sin modelo en el diccionario (ejemplos):\n- " +
            sinModelo.slice(0, 10).join("\n- ");
@@ -288,6 +292,51 @@ function registrarMovimientos_(ss, salida) {
   }
   mv.getRange(mv.getLastRow() + 1, 1, nuevos.length, 12).setValues(nuevos);
   return nuevos.length;
+}
+
+/* ===================================================================
+ * DESCUADRES — equipos individuales que no concuerdan con el sistema
+ * (ej. están en la hoja "Equipos" pero el sistema ya no los tiene en
+ *  esa sucursal: probablemente se vendieron o movieron sin actualizar).
+ * =================================================================== */
+function revisarDescuadres_(ss) {
+  var eqSh = ss.getSheetByName("Equipos");
+  var invSh = ss.getSheetByName("Inventario");
+  if (!eqSh || !invSh) return 0;
+
+  function k3(mo, ca, su) {
+    return [String(mo || "").trim().toUpperCase(), String(ca || "").trim().toUpperCase(), String(su || "").trim().toUpperCase()].join("|");
+  }
+  // Stock físico del sistema por Modelo|Capacidad|Sucursal (Virtual+Consig+Comprometido)
+  var sys = {};
+  sheetToObjects(invSh).forEach(function (o) {
+    var k = k3(o["Modelo"], o["Capacidad"], o["Sucursal"]);
+    var fis = (Number(o["CantidadVirtual"]) || 0) + (Number(o["CantidadConsignacion"]) || 0) + (Number(o["Comprometido"]) || 0);
+    sys[k] = (sys[k] || 0) + fis;
+  });
+  // Conteo de equipos individuales por Modelo|Capacidad|Sucursal
+  var eqc = {}, info = {};
+  sheetToObjects(eqSh).forEach(function (e) {
+    if (!String(e["Modelo"] || "").trim()) return;
+    var k = k3(e["Modelo"], e["Capacidad"], e["Sucursal"]);
+    eqc[k] = (eqc[k] || 0) + 1; info[k] = e;
+  });
+
+  var desc = [];
+  Object.keys(eqc).forEach(function (k) {
+    var enEq = eqc[k], enSys = sys[k] || 0;
+    if (enEq > enSys) {
+      var e = info[k];
+      desc.push([e["Modelo"] || "", e["Capacidad"] || "", e["Sucursal"] || "", enEq, enSys, enEq - enSys]);
+    }
+  });
+
+  var d = ss.getSheetByName("Descuadres") || ss.insertSheet("Descuadres");
+  d.clearContents();
+  d.getRange(1, 1, 1, 6).setValues([["Modelo", "Capacidad", "Sucursal", "En Equipos", "En Sistema", "Descuadre"]]);
+  d.setFrozenRows(1);
+  if (desc.length) d.getRange(2, 1, desc.length, 6).setValues(desc);
+  return desc.length;
 }
 
 /* ===================================================================
@@ -544,5 +593,15 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("TechnologySales")
     .addItem("Construir inventario", "construirInventario")
+    .addItem("Revisar descuadres", "revisarDescuadres")
     .addToUi();
+}
+
+// Versión de menú: revisa descuadres bajo demanda y avisa el resultado.
+function revisarDescuadres() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var n = revisarDescuadres_(ss);
+  notificar_(n > 0
+    ? "⚠️ " + n + " equipos descuadran con el sistema. Revisa la hoja 'Descuadres'."
+    : "✅ Todo cuadra: ningún equipo individual descuadra con el sistema.");
 }
