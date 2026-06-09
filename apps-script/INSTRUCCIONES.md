@@ -19,6 +19,18 @@ Crudo  ──[Diccionarios]──►  Inventario  ──[+ Precios]──►  JS
 | **Precios** | `Marca · Modelo · Capacidad · Chip · Estado · Precio Mayorista · Precio Reventa · Precio Cliente Final` |
 | **Imagenes** | `Marca · Modelo · Imagen` (una imagen general por modelo) |
 | **Equipos** *(opcional)* | Venta por unidad: un teléfono por fila con su batería, ciclos, garantía y precios propios. Ver `Plantilla_Equipos.xlsx`. Aparecen en la categoría **"Equipos individuales"**. |
+| **Movimientos** *(se crea sola)* | Historial de cambios de sucursal. Cada vez que **Construir inventario**, compara con el estado anterior y registra los movimientos aquí. No la edites a mano. |
+| **Descuadres** *(se crea sola)* | Equipos individuales que no concuerdan con el sistema (están en `Equipos` pero el sistema ya no los tiene en esa sucursal). Menú **TechnologySales ▸ Revisar descuadres** o automático al construir. |
+
+## 📦 Historial de movimientos (hoja "Movimientos")
+
+Al **Construir inventario**, el sistema compara con el estado anterior y registra en la
+hoja **`Movimientos`**:
+- **Stock normal:** si una sucursal baja y otra sube → `Movimiento`; si cambia el total → `Cambio` (venta/ingreso).
+- **Equipos individuales (IMEI):** si cambia su sucursal → `Individual` (Desde → Hacia); altas/bajas como `Ingreso`/`Salida`.
+
+> La primera vez solo guarda la "foto" base (no registra todo como movimiento). De ahí en
+> adelante, cada reconstrucción registra solo lo que cambió.
 
 > Los diccionarios y la hoja Precios vienen **pre-generados** en
 > `Estructura_PreGenerada.xlsx` (298 modelos, 27 capacidades, 403 llaves de precio).
