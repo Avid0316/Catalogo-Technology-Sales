@@ -143,6 +143,32 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .modal-scroll th{background:#0f172a;color:white;position:sticky;top:0}
 .badge{display:inline-block;padding:5px 10px;border-radius:999px;color:white;font-size:12px;font-weight:bold}.nuevo{background:#16a34a}.usado{background:#f59e0b}.encaja{background:#2563eb}
 .modal-picker{margin-bottom:18px}
+.modal-header-b{display:flex;align-items:flex-start;gap:14px;margin-bottom:6px}
+.modal-img-b{width:84px;height:84px;border-radius:14px;object-fit:cover;background:#eef2f7;flex-shrink:0}
+.modal-hb-info{flex:1;min-width:0}
+.modal-hb-info h2{margin:0 0 6px;font-size:20px;line-height:1.2}
+.modal-price-b{font-weight:800}
+.mp-big{font-size:24px;color:#16a34a}
+.mp-multi{font-size:14px;color:#0f172a;font-weight:700}
+.mp-tba{font-size:15px;color:#94a3b8;font-weight:700}
+.pick-label{font-weight:800;color:#0f172a;margin:14px 0 8px;font-size:14px}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:3px;border:1.5px solid #d1d5db;background:#fff;border-radius:14px;padding:8px 12px;cursor:pointer;min-width:72px}
+.swatch.sel{border-color:#38bdf8;background:#eff6ff}
+.sw-dot{width:26px;height:26px;border-radius:50%;border:1px solid #94a3b8}
+.sw-name{font-size:12px;font-weight:700;color:#0f172a}
+.sw-stock{font-size:10px;color:#94a3b8;font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1.5px solid #d1d5db;background:#fff;border-radius:999px;padding:8px 16px;font-weight:700;font-size:13px;color:#0f172a;cursor:pointer}
+.pill.sel{border-color:#38bdf8;background:#dbeafe}
+.avail-line{margin-top:14px;font-size:13px;color:#15803d;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 12px}
+.avail-line span{color:#166534}
+.modal-breakdown{margin:16px 0 0;border-top:1px solid #eef2f7;padding-top:6px}
+.modal-breakdown summary{cursor:pointer;font-weight:700;color:#475569;font-size:13px;padding:8px 0;list-style:none}
+.modal-breakdown summary::-webkit-details-marker{display:none}
+.modal-breakdown summary::before{content:"› ";font-weight:800}
+.modal-breakdown[open] summary::before{content:"⌄ ";font-weight:800}
+.bd-table{overflow:auto}
 .picker-step{font-weight:800;color:#111827;font-size:16px;margin:14px 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:10px}
 .chip{border:2px solid #cbd5e1;background:white;color:#334155;border-radius:999px;padding:9px 16px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s}
@@ -385,10 +411,18 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 </div></main>
 <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-content">
   <div class="modal-top">
-    <div class="modal-header"><h2 id="modalTitle"></h2><button class="close-btn" onclick="closeModal()" aria-label="Cerrar detalle">✕</button></div>
-    <div class="modal-picker hidden" id="modalPicker"></div>
+    <div class="modal-header-b">
+      <img id="modalImg" class="modal-img-b" alt="" onerror="this.style.display='none'">
+      <div class="modal-hb-info"><h2 id="modalTitle"></h2><div class="modal-price-b" id="modalPrice"></div></div>
+      <button class="close-btn" onclick="closeModal()" aria-label="Cerrar detalle">✕</button>
+    </div>
   </div>
-  <div class="modal-scroll"><table><thead><tr id="modalHeadRow"><th>Sucursal</th><th>Color</th><th>Cantidad</th><th>Precio</th><th>Estado</th></tr></thead><tbody id="modalBody"></tbody></table></div>
+  <div class="modal-scroll">
+    <div class="modal-picker" id="modalPicker"></div>
+    <details class="modal-breakdown" id="modalBreakdown"><summary>Ver desglose por sucursal</summary>
+      <div class="bd-table"><table><thead><tr id="modalHeadRow"><th>Sucursal</th><th>Color</th><th>Cantidad</th><th>Precio</th><th>Estado</th></tr></thead><tbody id="modalBody"></tbody></table></div>
+    </details>
+  </div>
   <div class="modal-add-row hidden" id="modalAddRow"><div class="qcol"><div class="qsel"><button type="button" onclick="modalQtyChange(-1)" aria-label="Quitar uno">−</button><input type="text" id="modalQty" value="1" inputmode="none" readonly aria-label="Cantidad"><button type="button" onclick="modalQtyChange(1)" aria-label="Agregar uno">+</button></div><div class="qmax" id="modalQtyMax"></div></div><button class="btn-add" type="button" id="modalAddBtn" onclick="addFromModal()">🛒 Agregar al carrito</button></div>
 </div></div>
 <div class="modal" id="cotizModal" role="dialog" aria-modal="true" aria-labelledby="cotizModalTitle"><div class="modal-content">
@@ -535,13 +569,15 @@ function renderActiveFilters(){const c=document.getElementById("activeFilters");
 function clearFilter(k){if(k==="categoria"){currentCategory="";document.querySelectorAll(".cat-btn").forEach(b=>b.classList.remove("active"));const def=document.querySelector('.cat-btn[data-cat=""]');if(def)def.classList.add("active")}else if(k==="marca")setDDValue("marca","");else if(k==="estado")setDDValue("estado","");else if(k==="sucursal")setDDValue("sucursal","");else if(k==="search")searchInput.value="";else if(k==="price"){fMin=fMax="";document.getElementById("priceMin").value="";document.getElementById("priceMax").value=""}renderCards()}
 function clearAllFilters(){currentCategory="";fMarca=fEstado=fSucursal=fMin=fMax="";searchInput.value="";document.getElementById("priceMin").value="";document.getElementById("priceMax").value="";document.querySelectorAll(".cat-btn").forEach(b=>b.classList.remove("active"));const def=document.querySelector('.cat-btn[data-cat=""]');if(def)def.classList.add("active");buildDropdowns();renderCards()}
 /* ===== Detalle / selección ===== */
-function openDetail(key){const products=groupProducts(getFilteredData()),product=products.find(p=>p.key===key);if(!product)return;currentModalKey=key;modalProduct=product;document.getElementById("detailModal").style.display="flex";document.getElementById("modalTitle").textContent=`${product.modelo} ${product.capacidad}${product.chip?" · "+product.chip:""}`;const internal=isInternal();document.getElementById("modalHeadRow").innerHTML=`<th>Sucursal</th><th>Color</th><th>Cantidad</th>${internal?"<th>Consig.</th><th>En proforma</th>":""}<th>Precio</th><th>Estado</th>`;document.getElementById("modalBody").innerHTML=product.items.map(item=>{const estadoClass=(item.estado||"").toLowerCase().replace(/\s/g,"");return `<tr><td>${escapeHtml(item.sucursal)}</td><td>${escapeHtml(item.color)}</td><td>${escapeHtml(item.cantidad)}</td>${internal?`<td>${escapeHtml(item.consignacion||0)}</td><td>${escapeHtml(item.comprometido||0)}</td>`:""}<td>${escapeHtml(priceCell(item))}</td><td><span class="badge ${escapeHtml(estadoClass)}">${escapeHtml(item.estado)}</span></td></tr>`}).join("");const addRow=document.getElementById("modalAddRow"),picker=document.getElementById("modalPicker");if(canQuote()){addRow.classList.remove("hidden");document.getElementById("modalQty").value=1;const combos=productCombos(product);if(combos.length){selectedColor=combos[0].color;selectedEstado=combos[0].estado}else{selectedColor="";selectedEstado=""}if(combos.length>1){picker.classList.remove("hidden");renderPicker()}else picker.classList.add("hidden");updateModalAddBtn();updateModalQtyMax()}else{addRow.classList.add("hidden");picker.classList.add("hidden")}}
+function openDetail(key){const products=groupProducts(getFilteredData()),product=products.find(p=>p.key===key);if(!product)return;currentModalKey=key;modalProduct=product;document.getElementById("detailModal").style.display="flex";document.getElementById("modalTitle").textContent=`${product.modelo} ${product.capacidad}${product.chip?" · "+product.chip:""}`;const imgEl=document.getElementById("modalImg");if(imgEl){if(product.imagen){imgEl.src=product.imagen;imgEl.style.display="";}else{imgEl.removeAttribute("src");imgEl.style.display="none";}}const internal=isInternal();document.getElementById("modalHeadRow").innerHTML=`<th>Sucursal</th><th>Color</th><th>Cantidad</th>${internal?"<th>Consig.</th><th>En proforma</th>":""}<th>Precio</th><th>Estado</th>`;document.getElementById("modalBody").innerHTML=product.items.map(item=>{const estadoClass=(item.estado||"").toLowerCase().replace(/\s/g,"");return `<tr><td>${escapeHtml(item.sucursal)}</td><td>${escapeHtml(item.color)}</td><td>${escapeHtml(item.cantidad)}</td>${internal?`<td>${escapeHtml(item.consignacion||0)}</td><td>${escapeHtml(item.comprometido||0)}</td>`:""}<td>${escapeHtml(priceCell(item))}</td><td><span class="badge ${escapeHtml(estadoClass)}">${escapeHtml(item.estado)}</span></td></tr>`}).join("");const combos=productCombos(product);if(combos.length){selectedColor=combos[0].color;selectedEstado=combos[0].estado}else{selectedColor="";selectedEstado=""}renderPicker();updateModalPrice();const bd=document.getElementById("modalBreakdown");if(bd)bd.open=false;const addRow=document.getElementById("modalAddRow");if(canQuote()){addRow.classList.remove("hidden");document.getElementById("modalQty").value=1;updateModalAddBtn();updateModalQtyMax()}else{addRow.classList.add("hidden")}}
 function modalMax(){return availStock(currentModalKey,selectedColor,selectedEstado)||1}
 function clampModalQty(){const q=document.getElementById("modalQty");q.value=Math.max(1,Math.min(parseInt(q.value)||1,modalMax()))}
 function updateModalQtyMax(){document.getElementById("modalQtyMax").textContent="Máx: "+modalMax()}
-function renderPicker(){const product=modalProduct;if(!product)return;const combos=productCombos(product),colors=colorsOf(combos),estados=estadosForColor(combos,selectedColor);let html="",step=1;if(colors.length>1){html+=`<div class="picker-step">${step++} · Elige el color</div><div class="chips">`+colors.map(c=>`<button class="chip${c.color===selectedColor?" sel":""}" type="button" data-color="${escapeHtml(c.color)}"><span class="cdot" style="background:${colorHex(c.color)};margin:0 6px 0 0;vertical-align:middle"></span>${escapeHtml(c.color)} <span class="chip-stock">· ${c.stock} disp.</span></button>`).join("")+`</div>`}if(estados.length>1){html+=`<div class="picker-step">${step++} · Elige el estado</div><div class="chips">`+estados.map(e=>`<button class="chip${e.estado===selectedEstado?" sel":""}" type="button" data-estado="${escapeHtml(e.estado)}">${escapeHtml(e.estado||"—")} <span class="chip-stock">· ${e.stock} disp.</span></button>`).join("")+`</div>`}const sucs=sucursalesFor(product,selectedColor,selectedEstado);if(sucs.length){html+=`<div class="avail-box"><b>${escapeHtml(selectedColor)}${selectedEstado?" · "+escapeHtml(selectedEstado):""} — disponible en:</b><span>${escapeHtml(sucs.join(", "))}</span></div>`}document.getElementById("modalPicker").innerHTML=html}
-function selectColor(color){selectedColor=color;const ests=estadosForColor(productCombos(modalProduct),color);if(!ests.some(e=>e.estado===selectedEstado))selectedEstado=ests.length?ests[0].estado:"";clampModalQty();renderPicker();updateModalAddBtn();updateModalQtyMax()}
-function selectEstado(estado){selectedEstado=estado;clampModalQty();renderPicker();updateModalAddBtn();updateModalQtyMax()}
+function renderPicker(){const product=modalProduct;if(!product)return;const combos=productCombos(product),colors=colorsOf(combos),estados=estadosForColor(combos,selectedColor);let html="";if(colors.length>1){html+=`<div class="pick-label">Color</div><div class="swatches">`+colors.map(c=>`<button class="swatch${c.color===selectedColor?" sel":""}" type="button" data-color="${escapeHtml(c.color)}"><span class="sw-dot" style="background:${colorHex(c.color)}"></span><span class="sw-name">${escapeHtml(c.color)}</span><span class="sw-stock">${c.stock} disp</span></button>`).join("")+`</div>`}if(estados.length>1){html+=`<div class="pick-label">Estado</div><div class="pills">`+estados.map(e=>`<button class="pill${e.estado===selectedEstado?" sel":""}" type="button" data-estado="${escapeHtml(e.estado)}">${escapeHtml(e.estado||"—")} · ${e.stock} disp</button>`).join("")+`</div>`}const sucs=sucursalesFor(product,selectedColor,selectedEstado);if(sucs.length){html+=`<div class="avail-line"><b>${escapeHtml(selectedColor||"")}${selectedEstado?" · "+escapeHtml(selectedEstado):""}</b> disponible en: <span>${escapeHtml(sucs.join(", "))}</span></div>`}document.getElementById("modalPicker").innerHTML=html}
+function modalSelectedItem(){if(!modalProduct)return null;const its=modalProduct.items||[];return its.find(it=>(it.color||"Único")===selectedColor&&(it.estado||"")===selectedEstado)||its[0]||null}
+function updateModalPrice(){const el=document.getElementById("modalPrice");if(!el)return;const it=modalSelectedItem();if(!it){el.innerHTML="";return}if(isInternal()){const p=priceFor(it);el.innerHTML=p?`<span class="mp-multi">May ${escapeHtml(fmtPrice(p.mayoreo)||"—")} · Rev ${escapeHtml(fmtPrice(p.reventa)||"—")} · CF ${escapeHtml(fmtPrice(p.cliente)||"—")}</span>`:`<span class="mp-tba">Sin precio</span>`}else{const s=ownPriceStr(it);el.innerHTML=s?`<span class="mp-big">${escapeHtml(fmtPrice(s))}</span>`:`<span class="mp-tba">Precio a confirmar</span>`}}
+function selectColor(color){selectedColor=color;const ests=estadosForColor(productCombos(modalProduct),color);if(!ests.some(e=>e.estado===selectedEstado))selectedEstado=ests.length?ests[0].estado:"";clampModalQty();renderPicker();updateModalPrice();updateModalAddBtn();updateModalQtyMax()}
+function selectEstado(estado){selectedEstado=estado;clampModalQty();renderPicker();updateModalPrice();updateModalAddBtn();updateModalQtyMax()}
 function updateModalAddBtn(){const btn=document.getElementById("modalAddBtn");let label="🛒 Agregar al carrito";if(selectedColor)label+=` · ${selectedColor}`+(selectedEstado?` · ${selectedEstado}`:"");btn.textContent=label}
 function closeModal(){document.getElementById("detailModal").style.display="none"}
 /* ===== Carrito ===== */
