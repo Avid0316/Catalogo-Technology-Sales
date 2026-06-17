@@ -627,8 +627,8 @@ function registrar_(usuario, accion, producto, detalle) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sh = ss.getSheetByName("Registro");
     if (!sh) { sh = ss.insertSheet("Registro"); sh.appendRow(["Fecha", "Usuario", "Accion", "Producto", "Detalle"]); sh.setFrozenRows(1); }
-    var fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone() || "America/Tegucigalpa", "yyyy-MM-dd HH:mm");
-    sh.appendRow([fecha, usuario || "", accion || "", producto || "", detalle || ""]);
+    // Guarda la FECHA REAL (objeto Date), no texto, para no perder la zona horaria.
+    sh.appendRow([new Date(), usuario || "", accion || "", producto || "", detalle || ""]);
   } catch (e) { Logger.log("registrar_: " + e); }
 }
 
