@@ -666,7 +666,8 @@ function sincronizarSupabase() {
       sucursal: o["Sucursal"] || "",
       cantidad: sbInt_(o["Cantidad"]) || 0, consignacion: sbInt_(o["CantidadConsignacion"]) || 0,
       comprometido: sbInt_(o["Comprometido"]) || 0, estado: o["Estado"] || "",
-      imagen: imagenesMap[makeKeyModelo(o["Marca"], o["Modelo"])] || "", individual: false
+      imagen: imagenesMap[makeKeyModelo(o["Marca"], o["Modelo"])] || "", individual: false,
+      imei: "", bateria: null, ciclos: null, garantia: "", vence: ""
     });
   });
 
