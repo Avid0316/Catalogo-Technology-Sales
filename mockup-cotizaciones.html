@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup · Cotizaciones</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#eef2f7;color:#0f172a;padding:20px}
+.wrap{max-width:920px;margin:0 auto}
+h1{font-size:20px;margin-bottom:4px}
+.lead{color:#64748b;font-size:14px;margin-bottom:22px}
+.sec-t{font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#475569;margin:26px 0 10px}
+/* ===== IDEA 1: TABLERO (Kanban) ===== */
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kcol{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:10px;min-height:140px}
+.kcol h4{font-size:12px;font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.kcol .cnt{background:#eef2f7;border-radius:999px;padding:1px 8px;font-size:11px;color:#475569}
+.kc{background:#f8fafc;border:1px solid #eef2f7;border-radius:10px;padding:9px;margin-bottom:8px;font-size:12px}
+.kc b{font-size:13px}
+.kc .aten{color:#15803d;font-weight:700;font-size:11px;margin-top:3px}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
+.b-nueva{border-top:3px solid #0284c7}.b-rev{border-top:3px solid #f59e0b}.b-prof{border-top:3px solid #16a34a}.b-comp{border-top:3px solid #7c3aed}
+/* ===== IDEA 2: PROFORMA DESCARGABLE ===== */
+.proforma{background:#fff;border-radius:16px;box-shadow:0 10px 34px rgba(15,23,42,.12);overflow:hidden;max-width:640px;margin:0 auto}
+.pf-head{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:22px 26px;display:flex;justify-content:space-between;align-items:flex-start}
+.pf-logo{font-size:20px;font-weight:800;letter-spacing:.5px}
+.pf-logo span{color:#38bdf8}
+.pf-head .sub{font-size:12px;color:#cbd5e1;margin-top:3px}
+.pf-doc{text-align:right}
+.pf-doc .t{font-size:14px;font-weight:800}
+.pf-doc .n{font-size:12px;color:#cbd5e1;margin-top:2px}
+.pf-body{padding:22px 26px}
+.pf-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+.pf-block .l{font-size:10px;font-weight:800;letter-spacing:.5px;color:#94a3b8;text-transform:uppercase;margin-bottom:3px}
+.pf-block .v{font-size:13px;font-weight:600;line-height:1.4}
+.pf-badge{display:inline-block;background:#ede9fe;color:#7c3aed;font-weight:800;font-size:11px;padding:4px 12px;border-radius:999px}
+table{width:100%;border-collapse:collapse;margin-top:6px}
+th{text-align:left;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;border-bottom:2px solid #eef2f7;padding:8px 6px}
+td{font-size:13px;padding:10px 6px;border-bottom:1px solid #f1f5f9}
+td.r,th.r{text-align:right}
+.pf-total{display:flex;justify-content:flex-end;margin-top:16px}
+.pf-total .box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px 18px;text-align:right}
+.pf-total .lbl{font-size:11px;color:#0369a1;font-weight:700}
+.pf-total .amt{font-size:22px;font-weight:800;color:#0f172a}
+.pf-foot{border-top:1px dashed #e2e8f0;margin-top:18px;padding-top:14px;font-size:11px;color:#94a3b8;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.dl-bar{background:#f8fafc;border-top:1px solid #eef2f7;padding:12px 26px;display:flex;gap:10px;justify-content:flex-end}
+.dl-btn{border:none;border-radius:10px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer}
+.dl-pdf{background:#0f172a;color:#fff}.dl-wa{background:#25d366;color:#fff}
+.note{font-size:12px;color:#64748b;margin:8px 4px 0}
+@media(max-width:760px){.kanban{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.kanban{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📋 Mockup · Cómo mejorar las Cotizaciones</h1>
+  <p class="lead">Dos ideas: (1) un <b>tablero</b> para gestionarlas, y (2) la <b>cotización descargable</b> como documento.</p>
+
+  <div class="sec-t">Idea 1 · Tablero por estado (estilo Kanban)</div>
+  <div class="kanban">
+    <div class="kcol b-nueva"><h4>🆕 Nuevas <span class="cnt">2</span></h4>
+      <div class="kc"><b>Christian Ramos</b><div>1 producto · L 5,400</div></div>
+      <div class="kc"><b>David</b><div>1 producto · L 7,000</div></div>
+    </div>
+    <div class="kcol b-rev"><h4>🔄 Revisando <span class="cnt">1</span></h4>
+      <div class="kc"><b>Miguel</b><div>1 producto · A confirmar</div><div class="aten">🟢 Atiende: David</div></div>
+    </div>
+    <div class="kcol b-prof"><h4>📄 Proformada <span class="cnt">1</span></h4>
+      <div class="kc"><b>avid@ts.com</b><div>2 productos · L 12,400</div><div class="aten">🟢 Atiende: Miguel</div></div>
+    </div>
+    <div class="kcol b-comp"><h4>✅ Completadas <span class="cnt">1</span></h4>
+      <div class="kc"><b>Wilmer</b><div>1 producto · L 6,000</div><div class="aten">🟢 Atendió: David</div></div>
+    </div>
+  </div>
+  <p class="note">💡 Arrastras la tarjeta de una columna a otra para cambiar el estado. Se ve de un vistazo qué hay pendiente y quién atiende cada una.</p>
+
+  <div class="sec-t">Idea 2 · Cotización descargable (documento profesional)</div>
+  <div class="proforma">
+    <div class="pf-head">
+      <div><div class="pf-logo">Technology<span>Sales</span></div><div class="sub">Cotización oficial · technologysales.com</div></div>
+      <div class="pf-doc"><div class="t">PROFORMA</div><div class="n">N.º COT-000142</div><div class="n">17/06/2026</div></div>
+    </div>
+    <div class="pf-body">
+      <div class="pf-row">
+        <div class="pf-block"><div class="l">Cliente</div><div class="v"><b>Christian Ramos</b><br>9870-3676 · Mayorista<br>📦 Colón, Frente a comedor El Sazón</div></div>
+        <div class="pf-block" style="text-align:right"><div class="l">Estado</div><div class="v"><span class="pf-badge">Completado</span><br><span style="font-size:11px;color:#94a3b8">Atendió: David</span></div></div>
+      </div>
+      <table>
+        <thead><tr><th>Cant.</th><th>Producto</th><th class="r">Precio</th></tr></thead>
+        <tbody>
+          <tr><td>1×</td><td><b>Apple 11 Normal 64GB</b><br><span style="color:#94a3b8;font-size:12px">Morado · Usado</span></td><td class="r">L 5,400</td></tr>
+          <tr><td>1×</td><td><b>Apple 16 Pro 256GB</b><br><span style="color:#94a3b8;font-size:12px">Negro · eSIM</span></td><td class="r">L 7,000</td></tr>
+        </tbody>
+      </table>
+      <div class="pf-total"><div class="box"><div class="lbl">TOTAL ESTIMADO</div><div class="amt">L 12,400</div></div></div>
+      <div class="pf-foot"><span>* Precios sujetos a confirmación · Garantía según modelo</span><span>Gracias por tu preferencia 🙌</span></div>
+    </div>
+    <div class="dl-bar">
+      <button class="dl-btn dl-wa">📲 Enviar por WhatsApp</button>
+      <button class="dl-btn dl-pdf">⬇️ Descargar PDF</button>
+    </div>
+  </div>
+  <p class="note">💡 Desde el detalle de cualquier cotización, un botón <b>"Descargar / Compartir"</b> genera este documento (PDF o imagen) con tu marca, listo para enviar al cliente.</p>
+
+</div>
+</body>
+</html>
