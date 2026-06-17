@@ -159,6 +159,15 @@ function construirInventario() {
     msg += "\n\n⚠️ " + sinModelo.length + " productos sin modelo en el diccionario (ejemplos):\n- " +
            sinModelo.slice(0, 10).join("\n- ");
   }
+
+  // Sincroniza a Supabase automáticamente (solo si ya pegaste la clave service_role).
+  try {
+    if (SUPABASE_SERVICE_KEY && SUPABASE_SERVICE_KEY.indexOf("PEGA") === -1) {
+      sincronizarSupabase();
+      msg += "\n☁️ Sincronizado a Supabase.";
+    }
+  } catch (e) { msg += "\n⚠️ No se pudo sincronizar a Supabase: " + e.message; }
+
   notificar_(msg);
 }
 
@@ -587,12 +596,123 @@ function guardarPrecio_(body) {
   }
 }
 
+/* ===================================================================
+ * PARTE 4 — SINCRONIZAR A SUPABASE  (Sheet → Supabase)
+ * Empuja Inventario + Equipos (individuales) + Precios a las tablas de
+ * Supabase para que la web lea de ahí (rápida). Reemplazo total.
+ * =================================================================== */
+
+// ⚙️ CONFIG SUPABASE
+var SUPABASE_URL = "https://heeaqlzuqraxnrspnzat.supabase.co";
+// ⚠️ SECRETA: pega aquí tu clave "service_role" (Settings ▸ API Keys).
+//    NO la compartas con nadie ni la pongas en la página web.
+var SUPABASE_SERVICE_KEY = "PEGA_AQUI_TU_SERVICE_ROLE";
+
+function sbNum_(v) { if (v === "" || v == null) return null; var n = Number(v); return isNaN(n) ? null : n; }
+function sbInt_(v) { if (v === "" || v == null) return null; var n = parseInt(v, 10); return isNaN(n) ? null : n; }
+
+function sbHeaders_() {
+  return {
+    "apikey": SUPABASE_SERVICE_KEY,
+    "Authorization": "Bearer " + SUPABASE_SERVICE_KEY,
+    "Content-Type": "application/json"
+  };
+}
+
+// Borra TODAS las filas de una tabla (id es bigint > 0).
+function sbDeleteAll_(tabla) {
+  var res = UrlFetchApp.fetch(SUPABASE_URL + "/rest/v1/" + tabla + "?id=gte.0", {
+    method: "delete", headers: sbHeaders_(), muteHttpExceptions: true
+  });
+  if (res.getResponseCode() >= 300) throw new Error("DELETE " + tabla + " " + res.getResponseCode() + ": " + res.getContentText());
+}
+
+// Inserta en lotes de 500.
+function sbInsert_(tabla, filas) {
+  for (var i = 0; i < filas.length; i += 500) {
+    var lote = filas.slice(i, i + 500);
+    var h = sbHeaders_(); h["Prefer"] = "return=minimal";
+    var res = UrlFetchApp.fetch(SUPABASE_URL + "/rest/v1/" + tabla, {
+      method: "post", headers: h, payload: JSON.stringify(lote), muteHttpExceptions: true
+    });
+    if (res.getResponseCode() >= 300) throw new Error("INSERT " + tabla + " " + res.getResponseCode() + ": " + res.getContentText());
+  }
+}
+
+function sincronizarSupabase() {
+  if (!SUPABASE_SERVICE_KEY || SUPABASE_SERVICE_KEY.indexOf("PEGA") !== -1) {
+    throw new Error("Falta pegar tu clave service_role en SUPABASE_SERVICE_KEY.");
+  }
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var invSh = ss.getSheetByName("Inventario");
+  var prcSh = ss.getSheetByName("Precios");
+  var eqSh = ss.getSheetByName("Equipos");
+  var imgSh = ss.getSheetByName("Imagenes");
+  if (!invSh || !prcSh) throw new Error("Faltan las hojas Inventario o Precios.");
+
+  // Imágenes por Marca|Modelo
+  var imagenesMap = {};
+  if (imgSh) sheetToObjects(imgSh).forEach(function (it) {
+    imagenesMap[makeKeyModelo(it["Marca"], it["Modelo"])] = it["Imagen"] || "";
+  });
+
+  // inventario: productos normales
+  var invPayload = [];
+  sheetToObjects(invSh).forEach(function (o) {
+    if (!String(o["Modelo"] || "").trim()) return;
+    invPayload.push({
+      categoria: o["Categoria"] || "", marca: o["Marca"] || "", modelo: o["Modelo"] || "",
+      capacidad: o["Capacidad"] || "", color: o["Color"] || "", chip: o["Chip"] || "",
+      sucursal: o["Sucursal"] || "",
+      cantidad: sbInt_(o["Cantidad"]) || 0, consignacion: sbInt_(o["CantidadConsignacion"]) || 0,
+      comprometido: sbInt_(o["Comprometido"]) || 0, estado: o["Estado"] || "",
+      imagen: imagenesMap[makeKeyModelo(o["Marca"], o["Modelo"])] || "", individual: false
+    });
+  });
+
+  // inventario: individuales (hoja Equipos)
+  if (eqSh) sheetToObjects(eqSh).forEach(function (e) {
+    if (!String(e["Modelo"] || "").trim()) return;
+    invPayload.push({
+      categoria: "Equipos individuales", marca: e["Marca"] || "", modelo: e["Modelo"] || "",
+      capacidad: e["Capacidad"] || "", color: e["Color"] || "", chip: e["Chip"] || "",
+      sucursal: e["Sucursal"] || "", cantidad: 1, consignacion: 0, comprometido: 0,
+      estado: e["Estado"] || "",
+      imagen: e["Imagen"] || imagenesMap[makeKeyModelo(e["Marca"], e["Modelo"])] || "",
+      individual: true, imei: String(e["IMEI"] || e["Serie"] || ""),
+      bateria: sbInt_(e["Bateria"] || e["Batería"]), ciclos: sbInt_(e["Ciclos"]),
+      garantia: e["Garantia"] || e["Garantía"] || "",
+      vence: fmtFecha_(e["Vence"] || e["Vence Garantia"] || e["Vence Garantía"] || "")
+    });
+  });
+
+  // precios (solo con al menos un precio)
+  var prcPayload = [];
+  sheetToObjects(prcSh).forEach(function (p) {
+    if (!String(p["Modelo"] || "").trim()) return;
+    var may = sbNum_(p["Precio Mayorista"]), rev = sbNum_(p["Precio Reventa"]), pub = sbNum_(p["Precio Cliente Final"]);
+    if (may === null && rev === null && pub === null) return;
+    prcPayload.push({
+      marca: p["Marca"] || "", modelo: p["Modelo"] || "", capacidad: p["Capacidad"] || "",
+      chip: p["Chip"] || "", estado: p["Estado"] || "",
+      precio_mayorista: may, precio_reventa: rev, precio_publico: pub
+    });
+  });
+
+  // Reemplazo total en Supabase
+  sbDeleteAll_("inventario"); sbInsert_("inventario", invPayload);
+  sbDeleteAll_("precios");    sbInsert_("precios", prcPayload);
+
+  notificar_("✅ Sincronizado a Supabase:\n• " + invPayload.length + " productos (inventario + individuales)\n• " + prcPayload.length + " precios con valor");
+}
+
 /* ===================== MENÚ ===================== */
 
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("TechnologySales")
     .addItem("Construir inventario", "construirInventario")
+    .addItem("Sincronizar a Supabase", "sincronizarSupabase")
     .addItem("Revisar descuadres", "revisarDescuadres")
     .addToUi();
 }
