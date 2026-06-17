@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup · Tablero Kanban de Cotizaciones</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#eef2f7;color:#0f172a;padding:20px}
+.wrap{max-width:1280px;margin:0 auto}
+h1{font-size:20px;margin-bottom:3px}
+.lead{color:#64748b;font-size:14px;margin-bottom:20px}
+.board{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start}
+.col{background:#f1f5f9;border-radius:16px;padding:10px;min-height:200px}
+.col-h{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;padding:4px 6px 10px;color:#334155}
+.col-h .cnt{margin-left:auto;background:#fff;border:1px solid #e2e8f0;border-radius:999px;padding:1px 9px;font-size:11px;color:#475569}
+.dot{width:9px;height:9px;border-radius:50%}
+.d-nueva{background:#0284c7}.d-rev{background:#f59e0b}.d-inc{background:#ef4444}.d-prof{background:#16a34a}.d-comp{background:#7c3aed}
+.kc{background:#fff;border:1px solid #e8eef5;border-radius:12px;padding:11px;margin-bottom:9px;box-shadow:0 2px 6px rgba(15,23,42,.04);cursor:grab}
+.kc:active{cursor:grabbing}
+.kc .nm{font-weight:800;font-size:14px}
+.kc .meta{font-size:11px;color:#94a3b8;margin-top:2px}
+.kc .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.kc .it{font-size:11px;color:#64748b;font-weight:600}
+.kc .tot{font-weight:800;font-size:13px}
+.kc .aten{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:#15803d;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:999px;padding:2px 8px;margin-top:8px}
+.kc.top-nueva{border-top:3px solid #0284c7}
+.kc.top-rev{border-top:3px solid #f59e0b}
+.kc.top-inc{border-top:3px solid #ef4444}
+.kc.top-prof{border-top:3px solid #16a34a}
+.kc.top-comp{border-top:3px solid #7c3aed}
+.empty{font-size:12px;color:#94a3b8;text-align:center;padding:20px 0}
+.note{background:#fff;border-radius:14px;padding:14px 16px;margin-top:18px;font-size:13px;color:#1e293b;line-height:1.6}
+.note b{color:#0f172a}
+@media(max-width:1000px){.board{grid-template-columns:repeat(5,minmax(180px,1fr));overflow-x:auto;padding-bottom:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📋 Tablero Kanban de Cotizaciones</h1>
+  <p class="lead">Arrastras la tarjeta de una columna a otra para cambiar el estado. De un vistazo ves qué hay pendiente y quién atiende cada una.</p>
+
+  <div class="board">
+    <!-- NUEVA -->
+    <div class="col">
+      <div class="col-h"><span class="dot d-nueva"></span> 🆕 Nueva <span class="cnt">2</span></div>
+      <div class="kc top-nueva"><div class="nm">David</div><div class="meta">avid@ts.com · hace 5 min</div><div class="row"><span class="it">🛒 3 productos</span><span class="tot">L 21,400</span></div></div>
+      <div class="kc top-nueva"><div class="nm">Prueba</div><div class="meta">9999-9999 · hace 20 min</div><div class="row"><span class="it">🛒 1 producto</span><span class="tot">A confirmar</span></div></div>
+    </div>
+    <!-- REVISANDO -->
+    <div class="col">
+      <div class="col-h"><span class="dot d-rev"></span> 🔄 Revisando <span class="cnt">2</span></div>
+      <div class="kc top-rev"><div class="nm">Christian Ramos</div><div class="meta">9870-3676 · hace 1 h</div><div class="row"><span class="it">🛒 2 productos</span><span class="tot">L 12,400</span></div><span class="aten">🟢 David</span></div>
+      <div class="kc top-rev"><div class="nm">Mayorista</div><div class="meta">mayorista@ts.com · hace 2 h</div><div class="row"><span class="it">🛒 4 productos</span><span class="tot">L 31,400</span></div><span class="aten">🟢 Miguel</span></div>
+    </div>
+    <!-- INCOMPLETO -->
+    <div class="col">
+      <div class="col-h"><span class="dot d-inc"></span> ⚠️ Incompleto <span class="cnt">1</span></div>
+      <div class="kc top-inc"><div class="nm">prueba@ts.com</div><div class="meta">ayer · 04:10 p.m.</div><div class="row"><span class="it">🛒 1 producto</span><span class="tot">A confirmar</span></div><span class="aten">🟢 David</span></div>
+    </div>
+    <!-- PROFORMADA -->
+    <div class="col">
+      <div class="col-h"><span class="dot d-prof"></span> 📄 Proformada <span class="cnt">1</span></div>
+      <div class="kc top-prof"><div class="nm">Wilmer</div><div class="meta">wilmer@ts.com · ayer</div><div class="row"><span class="it">🛒 2 productos</span><span class="tot">L 9,800</span></div><span class="aten">🟢 Miguel</span></div>
+    </div>
+    <!-- COMPLETADO -->
+    <div class="col">
+      <div class="col-h"><span class="dot d-comp"></span> ✅ Completado <span class="cnt">3</span></div>
+      <div class="kc top-comp"><div class="nm">Christian Ramos</div><div class="meta">10-jun · entregado</div><div class="row"><span class="it">🛒 1 producto</span><span class="tot">L 5,400</span></div><span class="aten">🟢 David</span></div>
+      <div class="kc top-comp"><div class="nm">Miguel</div><div class="meta">05-jun</div><div class="row"><span class="it">🛒 1 producto</span><span class="tot">L 6,000</span></div><span class="aten">🟢 Wilmer</span></div>
+      <div class="kc top-comp"><div class="nm">avid@ts.com</div><div class="meta">05-jun</div><div class="row"><span class="it">🛒 2 productos</span><span class="tot">L 14,200</span></div><span class="aten">🟢 David</span></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Cómo funcionaría:</b><br>
+    • 🖱️ <b>Arrastras</b> una tarjeta entre columnas → cambia el estado solo (y queda en el historial: quién la movió y cuándo).<br>
+    • 🟢 La etiqueta verde muestra <b>quién la está atendiendo</b> (en vivo).<br>
+    • 👆 Tocas una tarjeta → se abre el <b>detalle</b> de siempre (productos, descargar, etc.).<br>
+    • 📱 En <b>celular</b>: las columnas se deslizan de lado (scroll horizontal), o se cambia a vista de lista por estado.<br><br>
+    <b>Ventaja:</b> ves TODO el flujo de un vistazo (qué hay nuevo, qué se está trabajando, qué ya se cerró) sin entrar a cada una.
+  </div>
+</div>
+</body>
+</html>
