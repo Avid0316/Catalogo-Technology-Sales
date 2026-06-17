@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup · Detalle de Cotización (limpio)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#cbd5e1;padding:20px;color:#0f172a}
+.wrap{max-width:430px;margin:0 auto}
+.cmp{display:grid;gap:18px}
+.lbl{font-size:12px;font-weight:800;color:#64748b;text-align:center;margin-bottom:-8px}
+.bad{font-size:11px;color:#ef4444;text-align:center;font-weight:700}
+.good{font-size:11px;color:#16a34a;text-align:center;font-weight:700}
+/* card */
+.card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 14px 40px rgba(15,23,42,.18)}
+.hd{padding:18px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid #f1f5f9}
+.hd .nm{font-size:20px;font-weight:800}
+.hd .sb{font-size:12px;color:#64748b;margin-top:3px}
+.est{font-size:11px;font-weight:800;color:#fff;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.e-comp{background:#7c3aed}
+.x{width:30px;height:30px;border-radius:50%;background:#fee2e2;color:#ef4444;border:none;font-weight:800;font-size:14px;cursor:pointer;flex:none}
+.bd{padding:16px 20px}
+/* fila atendiendo + contacto */
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.aten{font-size:12px;font-weight:700;color:#15803d;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:999px;padding:5px 11px}
+.ic{display:flex;gap:8px}
+.ic a{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;text-decoration:none}
+.ic .wa{background:#25d366}.ic .ll{background:#0f172a}
+.sec-l{font-size:10px;font-weight:800;letter-spacing:.5px;color:#94a3b8;text-transform:uppercase;margin-bottom:8px}
+.prod{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px}
+.prod .q{color:#64748b;font-weight:700;flex:none}
+.prod .nm{font-weight:700}
+.prod .m{color:#94a3b8;font-size:12px}
+.prod .pr{font-weight:800;white-space:nowrap}
+.tot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:11px 14px}
+.tot .l{font-size:12px;color:#0369a1;font-weight:700}
+.tot .a{font-size:19px;font-weight:800}
+/* estado segmentado */
+.estsec{margin-top:16px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.pill{font-size:12px;font-weight:700;border:1.5px solid #e2e8f0;color:#64748b;background:#fff;border-radius:999px;padding:7px 13px;cursor:pointer}
+.pill.on{background:#f59e0b;border-color:#f59e0b;color:#fff}
+/* acciones */
+.acts{display:flex;gap:9px;margin-top:16px}
+.btn{flex:1;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.b-dl{background:#0f172a;color:#fff}.b-wa{background:#25d366;color:#fff}
+/* historial COLAPSADO */
+.hist{margin-top:14px;border-top:1px solid #f1f5f9;padding-top:12px}
+.hist summary{cursor:pointer;font-size:13px;font-weight:800;color:#475569;list-style:none;display:flex;align-items:center;gap:6px}
+.hist summary::-webkit-details-marker{display:none}
+.hist[open] summary .chev{transform:rotate(90deg)}
+.chev{transition:.2s;color:#94a3b8}
+.cnt{background:#eef2f7;color:#475569;border-radius:999px;padding:1px 8px;font-size:11px;margin-left:auto}
+.hrow{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:7px 0;border-bottom:1px dashed #eef2f7}
+.hrow .by{color:#94a3b8;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap cmp">
+  <div class="lbl">✨ Detalle de cotización — versión limpia</div>
+
+  <div class="card">
+    <div class="hd">
+      <div><div class="nm">Christian Ramos</div><div class="sb">Mayorista · 9870-3676 · 17 jun</div></div>
+      <div style="display:flex;gap:8px;align-items:center"><span class="est e-comp">Revisando</span><button class="x">✕</button></div>
+    </div>
+    <div class="bd">
+
+      <div class="toprow">
+        <span class="aten">🟢 Atiende: <b>David</b></span>
+        <div class="ic"><a class="wa" href="#">📲</a><a class="ll" href="#">📞</a></div>
+      </div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:14px">📦 Entrega: Retiro en local</div>
+
+      <div class="sec-l">Productos</div>
+      <div class="prod"><div class="q">1×</div><div style="flex:1"><div class="nm">Apple 11 Normal 64GB</div><div class="m">Morado · Usado</div></div><div class="pr">L 5,400</div></div>
+      <div class="prod"><div class="q">1×</div><div style="flex:1"><div class="nm">Apple 16 Pro 256GB</div><div class="m">Negro · eSIM</div></div><div class="pr">L 7,000</div></div>
+      <div class="tot"><span class="l">TOTAL ESTIMADO</span><span class="a">L 12,400</span></div>
+
+      <div class="estsec">
+        <div class="sec-l">Estado</div>
+        <div class="pills"><span class="pill">Nueva</span><span class="pill on">Revisando</span><span class="pill">Incompleto</span><span class="pill">Proformada</span><span class="pill">Completado</span></div>
+      </div>
+
+      <div class="acts">
+        <button class="btn b-dl">⬇️ Descargar</button>
+        <button class="btn b-wa">📲 WhatsApp</button>
+      </div>
+
+      <details class="hist">
+        <summary><span class="chev">▸</span> Historial <span class="cnt">8</span></summary>
+        <div style="margin-top:8px">
+          <div class="hrow"><span>➡️ Cambió a Revisando</span><span class="by">David · 06:14 a.m.</span></div>
+          <div class="hrow"><span>🙋 Tomó la cotización</span><span class="by">David · 06:14 a.m.</span></div>
+          <div class="hrow"><span>➡️ Cambió a Incompleto</span><span class="by">David · 02:36 a.m.</span></div>
+          <div class="hrow"><span>➡️ Cambió a Revisando</span><span class="by">Miguel · 02:36 a.m.</span></div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <div class="lbl" style="margin-top:6px">Qué cambia vs. lo de ahora 👇</div>
+</div>
+<div class="wrap" style="margin-top:10px;font-size:13px;color:#1e293b;background:#fff;border-radius:14px;padding:14px 16px">
+  <b>Más limpio:</b><br>
+  • El <b>historial se colapsa</b> (botón "Historial (8)") — ya no es una lista larga siempre abierta.<br>
+  • El <b>estado</b> va arriba como badge + pastillas compactas.<br>
+  • <b>Atender + contacto</b> en una sola fila chica.<br>
+  • Acciones (<b>Descargar / WhatsApp</b>) juntas y claras.<br>
+  • Menos texto repetido, más jerarquía.
+</div>
+</body>
+</html>
