@@ -513,33 +513,129 @@ var ADMIN_EMAILS = [
   "avid0316@ts.com",
   "miguel@ts.com"
 ];
+// 👇 Asesores de ventas que TAMBIÉN pueden editar fotos y ver el historial
+//    (además de los admins). Agrega aquí sus correos.
+var ASESOR_EMAILS = [
+  "wilmer@ts.com"
+];
 // Clave pública del proyecto Firebase (la misma del sitio) — sirve para validar el token.
 var FIREBASE_API_KEY = "AIzaSyA9nOW0QXIdYk5MJk7wcBVrTSb-WMejOV8";
+
+function esAdmin_(email) {
+  return ADMIN_EMAILS.map(function (x) { return String(x).toLowerCase(); }).indexOf(String(email).toLowerCase()) !== -1;
+}
+function puedeEditarFotos_(email) {
+  var lista = ADMIN_EMAILS.concat(ASESOR_EMAILS).map(function (x) { return String(x).toLowerCase(); });
+  return lista.indexOf(String(email).toLowerCase()) !== -1;
+}
 
 function doPost(e) {
   try {
     var body = JSON.parse((e && e.postData && e.postData.contents) || "{}");
-
-    if (body.action !== "setPrecio") {
-      return jsonOutput({ error: true, mensaje: "Acción no soportada: " + body.action });
-    }
-
     var email = verificarTokenFirebase_(body.idToken);
-    if (!email) {
-      return jsonOutput({ error: true, mensaje: "Sesión inválida o expirada. Vuelve a iniciar sesión." });
-    }
-    var admins = ADMIN_EMAILS.map(function (x) { return String(x).toLowerCase(); });
-    if (admins.indexOf(email.toLowerCase()) === -1) {
-      return jsonOutput({ error: true, mensaje: "Tu correo (" + email + ") no está en la lista de admins." });
+    if (!email) return jsonOutput({ error: true, mensaje: "Sesión inválida o expirada. Vuelve a iniciar sesión." });
+
+    if (body.action === "setPrecio") {
+      if (!esAdmin_(email)) return jsonOutput({ error: true, mensaje: "Tu correo (" + email + ") no está en la lista de admins." });
+      guardarPrecio_(body);
+      try { sincronizarPreciosSupabase_(); } catch (e2) { Logger.log("Sync precios: " + e2); }
+      registrar_(email, "Precio", [body.marca, body.modelo, body.capacidad].filter(String).join(" "),
+        "May " + (body.precioMayorista || "-") + " · Rev " + (body.precioReventa || "-") + " · Pub " + (body.precioPublico || "-"));
+      return jsonOutput({ ok: true });
     }
 
-    guardarPrecio_(body);
-    // Refresca los precios en Supabase al instante (para que la web lo vea ya).
-    try { sincronizarPreciosSupabase_(); } catch (e) { Logger.log("Sync precios a Supabase: " + e); }
-    return jsonOutput({ ok: true });
+    if (body.action === "setFoto") {
+      if (!puedeEditarFotos_(email)) return jsonOutput({ error: true, mensaje: "Tu correo (" + email + ") no puede editar fotos." });
+      var url = guardarFoto_(body);
+      registrar_(email, "Foto", [body.marca, body.modelo].filter(String).join(" "), "Actualizó la foto del producto");
+      return jsonOutput({ ok: true, url: url });
+    }
+
+    if (body.action === "getHistorial") {
+      if (!puedeEditarFotos_(email)) return jsonOutput({ error: true, mensaje: "No autorizado." });
+      return jsonOutput({ ok: true, registros: leerHistorial_() });
+    }
+
+    return jsonOutput({ error: true, mensaje: "Acción no soportada: " + body.action });
   } catch (err) {
     return jsonOutput({ error: true, mensaje: err.message });
   }
+}
+
+/* ===================================================================
+ * FOTOS — sube la imagen a Supabase Storage y la enlaza al modelo
+ * =================================================================== */
+function guardarFoto_(body) {
+  if (!SUPABASE_SERVICE_KEY || SUPABASE_SERVICE_KEY.indexOf("PEGA") !== -1) throw new Error("Falta la clave service_role en el script.");
+  if (!body.dataB64) throw new Error("No se recibió la imagen.");
+  var bytes = Utilities.base64Decode(body.dataB64);
+  var mime = body.mime || "image/jpeg";
+  var ext = mime.indexOf("png") !== -1 ? "png" : (mime.indexOf("webp") !== -1 ? "webp" : "jpg");
+  var slug = (String(body.marca || "") + "-" + String(body.modelo || "")).toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "producto";
+  var nombre = slug + "-" + Date.now() + "." + ext;
+
+  var up = UrlFetchApp.fetch(SUPABASE_URL + "/storage/v1/object/productos/" + nombre, {
+    method: "post", contentType: mime, payload: bytes, muteHttpExceptions: true,
+    headers: { "Authorization": "Bearer " + SUPABASE_SERVICE_KEY, "apikey": SUPABASE_SERVICE_KEY, "x-upsert": "true" }
+  });
+  if (up.getResponseCode() >= 300) throw new Error("Storage " + up.getResponseCode() + ": " + up.getContentText());
+  var publicUrl = SUPABASE_URL + "/storage/v1/object/public/productos/" + nombre;
+
+  guardarImagenHoja_(body.marca, body.modelo, publicUrl);     // hoja Imagenes (upsert por Marca|Modelo)
+  actualizarImagenSupabase_(body.marca, body.modelo, publicUrl); // inventario de Supabase (al instante)
+  return publicUrl;
+}
+
+function guardarImagenHoja_(marca, modelo, url) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName("Imagenes");
+  if (!sh) { sh = ss.insertSheet("Imagenes"); sh.appendRow(["Marca", "Modelo", "Imagen"]); sh.setFrozenRows(1); }
+  var values = sh.getDataRange().getValues();
+  var head = values[0].map(function (h) { return String(h).trim(); });
+  var iMa = head.indexOf("Marca"), iMo = head.indexOf("Modelo"), iIm = head.indexOf("Imagen");
+  if (iMa < 0) iMa = 0; if (iMo < 0) iMo = 1;
+  if (iIm < 0) { iIm = head.length; sh.getRange(1, iIm + 1).setValue("Imagen"); }
+  var key = makeKeyModelo(marca, modelo), fila = -1;
+  for (var r = 1; r < values.length; r++) {
+    if (makeKeyModelo(values[r][iMa], values[r][iMo]) === key) { fila = r; break; }
+  }
+  if (fila === -1) {
+    var nueva = []; for (var k = 0; k <= iIm; k++) nueva.push("");
+    nueva[iMa] = marca || ""; nueva[iMo] = modelo || ""; nueva[iIm] = url || "";
+    sh.appendRow(nueva);
+  } else {
+    sh.getRange(fila + 1, iIm + 1).setValue(url || "");
+  }
+}
+
+function actualizarImagenSupabase_(marca, modelo, url) {
+  if (!SUPABASE_SERVICE_KEY || SUPABASE_SERVICE_KEY.indexOf("PEGA") !== -1) return;
+  var q = "?marca=eq." + encodeURIComponent(marca) + "&modelo=eq." + encodeURIComponent(modelo);
+  var res = UrlFetchApp.fetch(SUPABASE_URL + "/rest/v1/inventario" + q, {
+    method: "patch", payload: JSON.stringify({ imagen: url }), muteHttpExceptions: true,
+    headers: { "Authorization": "Bearer " + SUPABASE_SERVICE_KEY, "apikey": SUPABASE_SERVICE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal" }
+  });
+  if (res.getResponseCode() >= 300) Logger.log("PATCH imagen: " + res.getContentText());
+}
+
+/* ===================================================================
+ * HISTORIAL / AUDITORÍA — registro de cambios (hoja "Registro")
+ * =================================================================== */
+function registrar_(usuario, accion, producto, detalle) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sh = ss.getSheetByName("Registro");
+    if (!sh) { sh = ss.insertSheet("Registro"); sh.appendRow(["Fecha", "Usuario", "Accion", "Producto", "Detalle"]); sh.setFrozenRows(1); }
+    var fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone() || "America/Tegucigalpa", "yyyy-MM-dd HH:mm");
+    sh.appendRow([fecha, usuario || "", accion || "", producto || "", detalle || ""]);
+  } catch (e) { Logger.log("registrar_: " + e); }
+}
+
+function leerHistorial_() {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Registro");
+  if (!sh) return [];
+  return sheetToObjects(sh).reverse().slice(0, 300);  // más reciente primero, máx 300
 }
 
 // Valida el idToken con Google/Firebase y devuelve el email verificado (o "" si no es válido).
