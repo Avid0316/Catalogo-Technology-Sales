@@ -363,11 +363,12 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
     <button class="cat-btn" data-cat="Equipos individuales" onclick="setCategory('Equipos individuales',event)">✨ Equipos individuales <span class="cat-count" data-catcount="Equipos individuales"></span></button>
     <button class="cat-btn" data-cat="Celulares" onclick="setCategory('Celulares',event)">📱 Celulares <span class="cat-count" data-catcount="Celulares"></span></button>
     <button class="cat-btn" data-cat="Tablets" onclick="setCategory('Tablets',event)">📟 Tablets <span class="cat-count" data-catcount="Tablets"></span></button>
-    <button class="cat-btn" data-cat="Laptops" onclick="setCategory('Laptops',event)">💻 Laptops <span class="cat-count" data-catcount="Laptops"></span></button>
+    <button class="cat-btn" data-cat="Computadoras" onclick="setCategory('Computadoras',event)">💻 Computadoras <span class="cat-count" data-catcount="Computadoras"></span></button>
     <button class="cat-btn" data-cat="Relojes" onclick="setCategory('Relojes',event)">⌚ Relojes <span class="cat-count" data-catcount="Relojes"></span></button>
     <button class="cat-btn" data-cat="Consolas" onclick="setCategory('Consolas',event)">🎮 Consolas <span class="cat-count" data-catcount="Consolas"></span></button>
     <button class="cat-btn" data-cat="Televisores" onclick="setCategory('Televisores',event)">📺 Televisores <span class="cat-count" data-catcount="Televisores"></span></button>
     <button class="cat-btn" data-cat="Accesorios" onclick="setCategory('Accesorios',event)">🎧 Accesorios <span class="cat-count" data-catcount="Accesorios"></span></button>
+    <button class="cat-btn" data-cat="Audio" onclick="setCategory('Audio',event)">🔊 Audio <span class="cat-count" data-catcount="Audio"></span></button>
   </div></div>
   <div class="card">
     <div class="filter-row">
@@ -511,6 +512,8 @@ function canQuote(){return !!currentRole}
 function canSeeTaller(){return currentRole==="admin"||currentRole==="asesor"}
 function applyRoleVisibility(){if(!canSeeTaller())inventoryData=inventoryData.filter(it=>!/taller/i.test(it.sucursal||""))}
 const API_URL="https://script.google.com/macros/s/AKfycbyO1hzcv7fvk0vwDgphPvl6TMvq8ptHYJ1cEbizdWeWUQYLKadeosJ179t5-OBEifLS/exec";
+const SUPABASE_URL="https://heeaqlzuqraxnrspnzat.supabase.co";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlZWFxbHp1cXJheG5yc3BuemF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTkzMDAsImV4cCI6MjA5NzIzNTMwMH0.MBf2QP0L-QsKexXoFddB-UYth7_mcYj16tUsErHDWpk";
 let inventoryData=[],currentRole="",currentUser="",currentUserEmail="",currentCategory="",cart=[],currentModalKey="",modalProduct=null,selectedColor="",selectedEstado="",currentProfile=null;
 let prcSearch="",prcFilter="";
 let fMarca="",fEstado="",fSucursal="",fChip="",fMin="",fMax="";
@@ -534,7 +537,8 @@ document.getElementById("modalPicker").addEventListener("click",e=>{const c=e.ta
 document.getElementById("cartBody").addEventListener("click",e=>{const dec=e.target.closest("[data-dec]");if(dec){changeCartQty(dec.dataset.dec,-1);return}const inc=e.target.closest("[data-inc]");if(inc){changeCartQty(inc.dataset.inc,1);return}const rm=e.target.closest("[data-remove]");if(rm)removeFromCart(rm.dataset.remove)});
 document.addEventListener("click",e=>{if(!e.target.closest(".dd"))closeAllDD()});
 /* ===== Carga e ingreso ===== */
-async function loadInventory(){const res=await fetch(API_URL);if(!res.ok)throw new Error("La API respondió con estado "+res.status);const data=await res.json();if(!Array.isArray(data))throw new Error("La API no devolvió una lista válida");inventoryData=data.map(row=>({categoria:row["Categoria"]||"",marca:row["Marca"]||"",modelo:row["Modelo"]||"",capacidad:row["Capacidad"]||"",color:row["Color"]||"",chip:row["Chip"]||"",sucursal:row["Sucursal"]||"",cantidad:Number(row["Cantidad"])||0,consignacion:Number(row["Consignacion"]||row["CantidadConsignacion"])||0,comprometido:Number(row["Comprometido"])||0,precioMayorista:row["Precio Mayorista"]||"",precioReventa:row["Precio Reventa"]||"",precioPublico:row["Precio Publico"]||row["Precio Público"]||row["Precio al Publico"]||"",estado:row["Estado"]||"",imagen:row["Imagen"]||"",individual:!!row["Individual"],imei:row["IMEI"]||"",bateria:row["Bateria"]||"",ciclos:row["Ciclos"]||"",garantia:row["Garantia"]||"",vence:row["Vence"]||""}))}
+async function sbFetch(path){const res=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}});if(!res.ok)throw new Error("Supabase respondió "+res.status+" en "+path);return res.json()}
+async function loadInventory(){const[inv,precios]=await Promise.all([sbFetch("inventario?select=*&limit=20000"),sbFetch("precios?select=*&limit=20000")]);if(!Array.isArray(inv))throw new Error("Respuesta de inventario inválida");const pk=(m,mo,c,ch,e)=>[m,mo,c,ch,e].map(x=>String(x||"").trim().toUpperCase()).join("|");const pmap={};(Array.isArray(precios)?precios:[]).forEach(p=>{pmap[pk(p.marca,p.modelo,p.capacidad,p.chip,p.estado)]=p});inventoryData=inv.map(row=>{const pr=pmap[pk(row.marca,row.modelo,row.capacidad,row.chip,row.estado)]||{};return{categoria:row.categoria||"",marca:row.marca||"",modelo:row.modelo||"",capacidad:row.capacidad||"",color:row.color||"",chip:row.chip||"",sucursal:row.sucursal||"",cantidad:Number(row.cantidad)||0,consignacion:Number(row.consignacion)||0,comprometido:Number(row.comprometido)||0,precioMayorista:pr.precio_mayorista!=null?String(pr.precio_mayorista):"",precioReventa:pr.precio_reventa!=null?String(pr.precio_reventa):"",precioPublico:pr.precio_publico!=null?String(pr.precio_publico):"",estado:row.estado||"",imagen:row.imagen||"",individual:!!row.individual,imei:row.imei||"",bateria:row.bateria!=null?String(row.bateria):"",ciclos:row.ciclos!=null?String(row.ciclos):"",garantia:row.garantia||"",vence:row.vence||""}})}
 async function resolveProfile(email){if(window.fbGetUser){const u=await window.fbGetUser(email);if(u&&u.role)return{...u,role:normalizeRole(u.role),name:u.name||email}}if(ROLES[email])return {...ROLES[email]};return{role:"revendedor",name:email}}
 function isAdminRole(){return currentRole==="admin"}
 function canHaveProfile(){return currentRole==="mayorista"||currentRole==="revendedor"||currentRole==="vendedor"}
