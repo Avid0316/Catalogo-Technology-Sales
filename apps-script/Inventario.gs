@@ -534,6 +534,8 @@ function doPost(e) {
     }
 
     guardarPrecio_(body);
+    // Refresca los precios en Supabase al instante (para que la web lo vea ya).
+    try { sincronizarPreciosSupabase_(); } catch (e) { Logger.log("Sync precios a Supabase: " + e); }
     return jsonOutput({ ok: true });
   } catch (err) {
     return jsonOutput({ error: true, mensaje: err.message });
@@ -687,7 +689,19 @@ function sincronizarSupabase() {
     });
   });
 
-  // precios (solo con al menos un precio)
+  // Reemplazo total en Supabase
+  sbDeleteAll_("inventario"); sbInsert_("inventario", invPayload);
+  var nPrc = sincronizarPreciosSupabase_();
+
+  notificar_("✅ Sincronizado a Supabase:\n• " + invPayload.length + " productos (inventario + individuales)\n• " + nPrc + " precios con valor");
+}
+
+// Refresca SOLO la tabla de precios en Supabase (rápido). Se usa al guardar un
+// precio desde la web, para que el cambio se vea al instante sin sincronizar todo.
+function sincronizarPreciosSupabase_() {
+  if (!SUPABASE_SERVICE_KEY || SUPABASE_SERVICE_KEY.indexOf("PEGA") !== -1) return 0;
+  var prcSh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Precios");
+  if (!prcSh) return 0;
   var prcPayload = [];
   sheetToObjects(prcSh).forEach(function (p) {
     if (!String(p["Modelo"] || "").trim()) return;
@@ -699,12 +713,9 @@ function sincronizarSupabase() {
       precio_mayorista: may, precio_reventa: rev, precio_publico: pub
     });
   });
-
-  // Reemplazo total en Supabase
-  sbDeleteAll_("inventario"); sbInsert_("inventario", invPayload);
-  sbDeleteAll_("precios");    sbInsert_("precios", prcPayload);
-
-  notificar_("✅ Sincronizado a Supabase:\n• " + invPayload.length + " productos (inventario + individuales)\n• " + prcPayload.length + " precios con valor");
+  sbDeleteAll_("precios");
+  sbInsert_("precios", prcPayload);
+  return prcPayload.length;
 }
 
 /* ===================== MENÚ ===================== */
