@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup · Estados renombrados</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#eef2f7;color:#0f172a;padding:22px}
+.wrap{max-width:920px;margin:0 auto}
+h1{font-size:20px;margin-bottom:3px}
+.lead{color:#64748b;font-size:14px;margin-bottom:22px}
+.sec-t{font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#475569;margin:26px 0 12px}
+.card{background:#fff;border-radius:16px;padding:18px 20px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+/* tabla antes/despues */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;padding:8px 6px;border-bottom:2px solid #eef2f7}
+td{padding:11px 6px;border-bottom:1px solid #f1f5f9;font-size:14px}
+.old{color:#94a3b8;text-decoration:line-through}
+.arrow{color:#cbd5e1;padding:0 6px}
+.bdg{display:inline-block;color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.b-nueva{background:#0284c7}.b-rev{background:#f59e0b}.b-falto{background:#ef4444}.b-prof{background:#16a34a}.b-comp{background:#7c3aed}
+/* pills detalle */
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-size:13px;font-weight:700;border:1.5px solid #e2e8f0;color:#64748b;background:#fff;border-radius:999px;padding:9px 15px}
+.pill.on{color:#fff;border-color:transparent}
+/* kanban */
+.board{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.col{background:#f1f5f9;border-radius:14px;padding:9px;min-height:90px}
+.col h4{font-size:11.5px;font-weight:800;display:flex;align-items:center;gap:6px;padding:3px 4px 9px;color:#334155}
+.dot{width:8px;height:8px;border-radius:50%}
+.cnt{margin-left:auto;background:#fff;border:1px solid #e2e8f0;border-radius:999px;padding:0 7px;font-size:10px;color:#475569}
+.kc{background:#fff;border:1px solid #e8eef5;border-radius:9px;padding:7px;font-size:11px;margin-bottom:6px}
+.kc b{font-size:12px}
+.note{background:#fff;border-radius:14px;padding:14px 16px;margin-top:18px;font-size:13px;color:#1e293b;line-height:1.6}
+@media(max-width:720px){.board{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🏷️ Estados renombrados (vista interna)</h1>
+  <p class="lead">Cómo se verían los estados con nombres más descriptivos para el equipo. <b>Solo cambia lo que ustedes ven</b> — al cliente le sigue llegando la versión amigable.</p>
+
+  <div class="sec-t">1 · Antes → Después</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Ahora</th><th></th><th>Propuesto</th><th>El cliente ve</th></tr></thead>
+      <tbody>
+        <tr><td class="old">Nueva</td><td class="arrow">→</td><td><span class="bdg b-nueva">Nueva</span></td><td style="color:#64748b">📥 Recibida</td></tr>
+        <tr><td class="old">Revisando</td><td class="arrow">→</td><td><span class="bdg b-rev">En revisión</span></td><td style="color:#64748b">🔍 En revisión</td></tr>
+        <tr><td class="old">Proformada</td><td class="arrow">→</td><td><span class="bdg b-prof">Proforma lista</span></td><td style="color:#64748b">🔄 En proceso</td></tr>
+        <tr><td class="old">Incompleto</td><td class="arrow">→</td><td><span class="bdg b-falto">Faltó artículo</span></td><td style="color:#64748b">✅ Completada · faltó un artículo</td></tr>
+        <tr><td class="old">Completado</td><td class="arrow">→</td><td><span class="bdg b-comp">Completado</span></td><td style="color:#64748b">✅ Completada</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-t">2 · En el detalle de la cotización (cambiar estado)</div>
+  <div class="card">
+    <div style="font-size:11px;font-weight:800;color:#94a3b8;letter-spacing:.5px;margin-bottom:8px">ESTADO</div>
+    <div class="pills">
+      <span class="pill">Nueva</span>
+      <span class="pill">En revisión</span>
+      <span class="pill on" style="background:#16a34a">Proforma lista</span>
+      <span class="pill">Faltó artículo</span>
+      <span class="pill">Completado</span>
+    </div>
+  </div>
+
+  <div class="sec-t">3 · En el tablero Kanban (PC)</div>
+  <div class="board">
+    <div class="col"><h4><span class="dot" style="background:#0284c7"></span>Nueva<span class="cnt">2</span></h4><div class="kc"><b>Christian R.</b><div>1 prod · L 5,400</div></div></div>
+    <div class="col"><h4><span class="dot" style="background:#f59e0b"></span>En revisión<span class="cnt">3</span></h4><div class="kc"><b>Miguel</b><div>2 prod</div></div></div>
+    <div class="col"><h4><span class="dot" style="background:#16a34a"></span>Proforma lista<span class="cnt">14</span></h4><div class="kc"><b>Wilmer</b><div>4 prod</div></div></div>
+    <div class="col"><h4><span class="dot" style="background:#ef4444"></span>Faltó artículo<span class="cnt">1</span></h4><div class="kc"><b>avid</b><div>1 prod</div></div></div>
+    <div class="col"><h4><span class="dot" style="background:#7c3aed"></span>Completado<span class="cnt">1</span></h4><div class="kc"><b>David</b><div>3 prod</div></div></div>
+  </div>
+
+  <div class="note">
+    <b>Qué cambia:</b><br>
+    • Internamente (panel, Kanban, detalle) los estados se llamarían: <b>Nueva · En revisión · Proforma lista · Faltó artículo · Completado</b>.<br>
+    • Para el cliente <b>no cambia nada</b> — sigue viendo las etiquetas amigables (Recibida, En proceso, Completada…).<br>
+    • Es solo un cambio de <b>nombres</b>, los colores y el flujo siguen igual.
+  </div>
+</div>
+</body>
+</html>
