@@ -61,10 +61,12 @@ create table if not exists public.equipos_registro (
   proveedor       text,
   forma_pago      text,
   estado_compra   text default 'Pendiente',         -- 'Pendiente' | 'Ingresado al sistema' | 'Revisado'
-  -- auditoría
+  -- auditoría / historial de acciones (para el dashboard/reportes)
   recibido_por    text,
   recibido_email  text,
-  creado_en       timestamptz not null default now()
+  historial       jsonb default '[]',               -- [{accion,usuario,email,ts,fecha}]
+  creado_en       timestamptz not null default now(),
+  actualizado_en  timestamptz default now()
 );
 
 -- Columnas nuevas para instalaciones que ya tenían la tabla anterior:
@@ -79,7 +81,11 @@ alter table public.equipos_registro add column if not exists solicita         te
 alter table public.equipos_registro add column if not exists proveedor        text;
 alter table public.equipos_registro add column if not exists forma_pago       text;
 alter table public.equipos_registro add column if not exists estado_compra    text default 'Pendiente';
+alter table public.equipos_registro add column if not exists historial        jsonb default '[]';
+alter table public.equipos_registro add column if not exists actualizado_en   timestamptz default now();
 alter table public.traslados        add column if not exists categoria        text;
+alter table public.tareas           add column if not exists historial        jsonb default '[]';
+alter table public.tareas           add column if not exists actualizado_en   timestamptz default now();
 
 -- ---------------------------------------------------------------------
 -- 2) Solicitudes de traslado de equipos entre sucursales
@@ -122,7 +128,9 @@ create table if not exists public.tareas (
   prioridad       text default 'media',
   estado          text default 'pendiente',
   fecha_limite    date,
+  historial       jsonb default '[]',               -- [{accion,usuario,email,ts,fecha}]
   creado_en       timestamptz not null default now(),
+  actualizado_en  timestamptz default now(),
   completado_en   timestamptz
 );
 
