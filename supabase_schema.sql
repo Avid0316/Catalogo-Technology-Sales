@@ -1,7 +1,36 @@
 -- =====================================================================
 --  Technology Sales · Módulos internos (Supabase / Postgres)
+--  Seguridad: PUENTE CON FIREBASE (RLS real por usuario interno).
 --  Ejecuta este script en: Supabase → SQL Editor → New query → Run
 -- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- 0) Allowlist de usuarios internos (admin / asesor / vendedor)
+--    Solo los correos aquí podrán leer/escribir los módulos internos.
+--    Ajusta estos correos a los reales de tu equipo.
+-- ---------------------------------------------------------------------
+create table if not exists public.internos (
+  email   text primary key,
+  nombre  text,
+  rol     text                                  -- 'admin' | 'asesor' | 'vendedor'
+);
+
+insert into public.internos (email, nombre, rol) values
+  ('avid@ts.com',     'David',  'admin'),
+  ('avid0316@ts.com', 'David',  'admin'),
+  ('miguel@ts.com',   'Miguel', 'admin'),
+  ('wilmer@ts.com',   'Wilmer', 'asesor'),
+  ('ventas@ts.com',   'Ventas', 'vendedor')
+on conflict (email) do nothing;
+
+-- Helper: ¿el usuario autenticado (token de Firebase) es interno?
+create or replace function public.is_interno() returns boolean
+language sql stable as $$
+  select exists (
+    select 1 from public.internos
+    where email = (auth.jwt() ->> 'email')
+  );
+$$;
 
 -- ---------------------------------------------------------------------
 -- 1) Registro de equipos tomados en cambio o comprados localmente
@@ -68,22 +97,28 @@ create table if not exists public.tareas (
 );
 
 -- =====================================================================
---  Seguridad (RLS)
---  MVP: la app ya está detrás del login de Firebase, por lo que damos
---  acceso a los roles anon/authenticated. Más adelante se puede endurecer
---  puenteando el token de Firebase como proveedor de auth en Supabase.
+--  Seguridad (RLS) — solo usuarios internos autenticados vía Firebase
 -- =====================================================================
-alter table public.equipos_registro enable row level security;
-alter table public.traslados        enable row level security;
-alter table public.tareas           enable row level security;
+alter table public.internos          enable row level security;
+alter table public.equipos_registro  enable row level security;
+alter table public.traslados         enable row level security;
+alter table public.tareas            enable row level security;
+
+-- Cada interno puede ver la lista de internos (para asignar tareas, etc.)
+drop policy if exists "read internos" on public.internos;
+create policy "read internos" on public.internos
+  for select to authenticated using (public.is_interno());
 
 drop policy if exists "rw equipos"   on public.equipos_registro;
 drop policy if exists "rw traslados" on public.traslados;
 drop policy if exists "rw tareas"    on public.tareas;
 
-create policy "rw equipos"   on public.equipos_registro for all to anon, authenticated using (true) with check (true);
-create policy "rw traslados" on public.traslados        for all to anon, authenticated using (true) with check (true);
-create policy "rw tareas"    on public.tareas           for all to anon, authenticated using (true) with check (true);
+create policy "rw equipos"   on public.equipos_registro for all to authenticated
+  using (public.is_interno()) with check (public.is_interno());
+create policy "rw traslados" on public.traslados        for all to authenticated
+  using (public.is_interno()) with check (public.is_interno());
+create policy "rw tareas"    on public.tareas           for all to authenticated
+  using (public.is_interno()) with check (public.is_interno());
 
 -- =====================================================================
 --  Storage: bucket para las imágenes de traslados (envío / recibo)
@@ -92,6 +127,15 @@ insert into storage.buckets (id, name, public)
 values ('traslados', 'traslados', true)
 on conflict (id) do nothing;
 
-drop policy if exists "rw traslados storage" on storage.objects;
-create policy "rw traslados storage" on storage.objects for all to anon, authenticated
-  using (bucket_id = 'traslados') with check (bucket_id = 'traslados');
+drop policy if exists "read traslados storage"  on storage.objects;
+drop policy if exists "write traslados storage" on storage.objects;
+
+-- Lectura pública del bucket (las URLs se muestran en la app)
+create policy "read traslados storage" on storage.objects
+  for select to anon, authenticated using (bucket_id = 'traslados');
+
+-- Subir/editar/borrar solo internos autenticados
+create policy "write traslados storage" on storage.objects
+  for all to authenticated
+  using (bucket_id = 'traslados' and public.is_interno())
+  with check (bucket_id = 'traslados' and public.is_interno());
