@@ -120,7 +120,9 @@ create table if not exists public.tareas (
 );
 
 -- =====================================================================
---  Seguridad (RLS) — solo usuarios internos autenticados vía Firebase
+--  Seguridad (RLS) — solo usuarios internos (validado por el CORREO del
+--  token de Firebase, vía is_interno()). No depende del rol 'authenticated',
+--  así no hace falta desplegar Blocking Functions de Firebase.
 -- =====================================================================
 alter table public.internos          enable row level security;
 alter table public.equipos_registro  enable row level security;
@@ -129,17 +131,17 @@ alter table public.tareas            enable row level security;
 
 drop policy if exists "read internos" on public.internos;
 create policy "read internos" on public.internos
-  for select to authenticated using (public.is_interno());
+  for select using (public.is_interno());
 
 drop policy if exists "rw equipos"   on public.equipos_registro;
 drop policy if exists "rw traslados" on public.traslados;
 drop policy if exists "rw tareas"    on public.tareas;
 
-create policy "rw equipos"   on public.equipos_registro for all to authenticated
+create policy "rw equipos"   on public.equipos_registro for all
   using (public.is_interno()) with check (public.is_interno());
-create policy "rw traslados" on public.traslados        for all to authenticated
+create policy "rw traslados" on public.traslados        for all
   using (public.is_interno()) with check (public.is_interno());
-create policy "rw tareas"    on public.tareas           for all to authenticated
+create policy "rw tareas"    on public.tareas           for all
   using (public.is_interno()) with check (public.is_interno());
 
 -- =====================================================================
@@ -160,8 +162,8 @@ create policy "read internos storage" on storage.objects
   for select to anon, authenticated
   using (bucket_id in ('traslados','equipos'));
 
--- Subir/editar/borrar solo internos autenticados
+-- Subir/editar/borrar solo internos (validado por correo del token)
 create policy "write internos storage" on storage.objects
-  for all to authenticated
+  for all
   using (bucket_id in ('traslados','equipos') and public.is_interno())
   with check (bucket_id in ('traslados','equipos') and public.is_interno());
