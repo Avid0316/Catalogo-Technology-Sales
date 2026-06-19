@@ -76,6 +76,7 @@ alter table public.equipos_registro add column if not exists solicita         te
 alter table public.equipos_registro add column if not exists proveedor        text;
 alter table public.equipos_registro add column if not exists forma_pago       text;
 alter table public.equipos_registro add column if not exists estado_compra    text default 'Pendiente';
+alter table public.traslados        add column if not exists categoria        text;
 
 -- ---------------------------------------------------------------------
 -- 2) Solicitudes de traslado de equipos entre sucursales
@@ -84,6 +85,7 @@ alter table public.equipos_registro add column if not exists estado_compra    te
 create table if not exists public.traslados (
   id                 uuid primary key default gen_random_uuid(),
   equipo             text not null,
+  categoria          text,
   marca              text,
   modelo             text,
   capacidad          text,
