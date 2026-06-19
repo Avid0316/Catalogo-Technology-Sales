@@ -674,18 +674,27 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     </div>
     <div class="card" style="padding:12px 16px;font-size:13px;color:var(--muted)">💡 Flujo: <b>Solicitado → Aprobado → En tránsito → Recibido</b>. Puedes adjuntar fotos del equipo al enviarlo y al recibirlo.</div>
     <div class="card mod-form">
+      <div class="mod-section-title">Equipo a trasladar</div>
       <div class="mf-grid">
-        <input class="mod-input" id="trMarca" placeholder="Marca">
-        <input class="mod-input" id="trModelo" placeholder="Modelo">
-        <input class="mod-input" id="trCap" placeholder="Capacidad">
-        <input class="mod-input" id="trImei" placeholder="IMEI / Serie">
-        <select class="mod-sel" id="trOrigen"></select>
-        <select class="mod-sel" id="trDestino"></select>
+        <div class="mf-field"><label>Categoría</label><select class="mod-sel" id="trCategoria"></select></div>
+        <div class="mf-field"><label>Marca</label><input class="mod-input" id="trMarca" placeholder="Marca"></div>
+        <div class="mf-field"><label>Modelo</label><input class="mod-input" id="trModelo" placeholder="Modelo"></div>
+        <div class="mf-field"><label>Capacidad</label><input class="mod-input" id="trCap" placeholder="Capacidad"></div>
+        <div class="mf-field"><label>IMEI / Serie</label><input class="mod-input" id="trImei" placeholder="IMEI / Serie"></div>
       </div>
-      <textarea class="mod-input" id="trMotivo" rows="2" placeholder="Motivo del traslado"></textarea>
-      <label class="mod-hint">📤 Fotos del equipo que se envía (opcional)</label>
-      <input class="mod-input" id="trFotos" type="file" accept="image/*" multiple>
-      <div><button class="mod-btn" id="trSaveBtn" onclick="saveTraslado()">Crear solicitud</button></div>
+      <div class="mod-section">
+        <div class="mod-section-title">Ruta del traslado</div>
+        <div class="mf-grid">
+          <div class="mf-field"><label>Sucursal origen</label><select class="mod-sel" id="trOrigen"></select></div>
+          <div class="mf-field"><label>Sucursal destino</label><select class="mod-sel" id="trDestino"></select></div>
+        </div>
+        <textarea class="mod-input" id="trMotivo" rows="2" placeholder="Motivo del traslado" style="margin-top:10px"></textarea>
+      </div>
+      <div class="mod-section">
+        <div class="mod-section-title">Fotografías</div>
+        <div class="mf-field"><label>📤 Fotos del equipo que se envía (opcional)</label><input class="mod-input" id="trFotos" type="file" accept="image/*" multiple></div>
+      </div>
+      <div class="mod-section" style="border:0;padding-top:4px"><button class="mod-btn" id="trSaveBtn" onclick="saveTraslado()">Crear solicitud</button></div>
     </div>
     <div id="trList"></div>
   </div>
@@ -696,14 +705,15 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     </div>
     <div class="card" style="padding:12px 16px;font-size:13px;color:var(--muted)">💡 Crea tareas y asígnalas a un miembro del equipo. Cada quien actualiza el avance.</div>
     <div class="card mod-form">
+      <div class="mod-section-title">Nueva tarea</div>
       <div class="mf-grid">
-        <input class="mod-input" id="tkTitulo" placeholder="Título de la tarea">
-        <select class="mod-sel" id="tkAsignado"><option value="">— Sin asignar —</option></select>
-        <select class="mod-sel" id="tkPri"><option value="alta">Prioridad alta</option><option value="media" selected>Prioridad media</option><option value="baja">Prioridad baja</option></select>
-        <input class="mod-input" id="tkFecha" type="date">
+        <div class="mf-field"><label>Título de la tarea</label><input class="mod-input" id="tkTitulo" placeholder="¿Qué hay que hacer?"></div>
+        <div class="mf-field"><label>Asignar a</label><select class="mod-sel" id="tkAsignado"><option value="">— Sin asignar —</option></select></div>
+        <div class="mf-field"><label>Prioridad</label><select class="mod-sel" id="tkPri"><option value="alta">🔴 Alta</option><option value="media" selected>🟠 Media</option><option value="baja">⚪ Baja</option></select></div>
+        <div class="mf-field"><label>Fecha límite</label><input class="mod-input" id="tkFecha" type="date"></div>
       </div>
-      <textarea class="mod-input" id="tkDesc" rows="2" placeholder="Descripción (opcional)"></textarea>
-      <div><button class="mod-btn" id="tkSaveBtn" onclick="saveTarea()">Crear tarea</button></div>
+      <textarea class="mod-input" id="tkDesc" rows="2" placeholder="Descripción (opcional)" style="margin-top:10px"></textarea>
+      <div class="mod-section" style="border:0;padding-top:12px"><button class="mod-btn" id="tkSaveBtn" onclick="saveTarea()">Crear tarea</button></div>
     </div>
     <div id="tkList"></div>
   </div>
@@ -1057,9 +1067,9 @@ async function deleteEquipo(id){if(!confirm("¿Eliminar este registro?"))return;
 let trasladosData=[];
 function trBadge(estado){return{"Solicitado":"st-solicitado","Aprobado":"st-aprobado","En tránsito":"st-transito","Recibido":"st-recibido","Rechazado":"st-rechazado"}[estado]||"st-solicitado"}
 function trThumbs(arr,label){return arr&&arr.length?`<div class="mod-hint">${label}</div><div class="mod-thumbs">${arr.map(u=>`<img src="${escapeHtml(u)}" alt="" onclick="window.open('${escapeHtml(u)}','_blank')">`).join("")}</div>`:""}
-function trasladoCard(t){const meta=[t.marca,t.modelo,t.capacidad].filter(Boolean).join(" · ")||t.equipo||"Equipo";let acts="";if(t.estado==="Solicitado")acts=`<button class="mod-btn ok" data-trap="${t.id}">Aprobar</button><button class="mod-btn warn" data-trrej="${t.id}">Rechazar</button>`;else if(t.estado==="Aprobado")acts=`<button class="mod-btn blue" data-trtran="${t.id}">Marcar en tránsito</button>`;else if(t.estado==="En tránsito")acts=`<label class="mod-btn ok" style="cursor:pointer">📥 Recibir<input type="file" accept="image/*" multiple hidden data-trrec="${t.id}"></label>`;return `<div class="mod-card"><div class="mod-top"><div><div class="mod-title">${escapeHtml(meta)}</div><div class="mod-sub">${escapeHtml(t.origen||"")} → ${escapeHtml(t.destino||"")}${t.imei?" · IMEI "+escapeHtml(t.imei):""}</div></div><div class="mod-badge ${trBadge(t.estado)}">${escapeHtml(t.estado)}</div></div>${t.motivo?`<div class="mod-sub" style="margin-top:6px">📝 ${escapeHtml(t.motivo)}</div>`:""}<div class="mod-sub" style="margin-top:6px">Solicitó: ${escapeHtml(t.solicitante||"—")} · ${escapeHtml(fmtFecha(t.creado_en))}${t.aprobado_por?" · Aprobó: "+escapeHtml(t.aprobado_por):""}${t.recibido_por?" · Recibió: "+escapeHtml(t.recibido_por):""}</div>${trThumbs(t.img_envio,"📤 Enviado")}${trThumbs(t.img_recibo,"📥 Recibido")}<div class="mod-acts">${acts}<button class="mod-btn warn" data-trdel="${t.id}">Eliminar</button></div></div>`}
-async function renderTraslados(){const list=document.getElementById("trList");if(!list)return;const o=document.getElementById("trOrigen"),d=document.getElementById("trDestino");if(o){o.innerHTML=sucOptions();d.innerHTML=sucOptions();if(d.options.length>1)d.selectedIndex=1}list.innerHTML=`<div class="cotiz-empty">Cargando…</div>`;try{trasladosData=await sbReq("GET","traslados?select=*&order=creado_en.desc&limit=500")||[];document.getElementById("trCount").textContent=`${trasladosData.length} solicitud(es)`;if(!trasladosData.length){list.innerHTML=`<div class="cotiz-empty">No hay solicitudes de traslado todavía.</div>`;return}list.innerHTML=trasladosData.map(trasladoCard).join("")}catch(err){console.error(err);list.innerHTML=`<div class="cotiz-empty">No se pudo cargar.<br>${escapeHtml(err.message||"")}</div>`}}
-async function saveTraslado(){const g=id=>document.getElementById(id).value.trim();const marca=g("trMarca"),modelo=g("trModelo");const origen=document.getElementById("trOrigen").value,destino=document.getElementById("trDestino").value;if(!marca&&!modelo){alert("Indica el equipo (marca o modelo).");return}if(origen===destino){alert("El origen y el destino no pueden ser iguales.");return}const btn=document.getElementById("trSaveBtn");btn.disabled=true;btn.textContent="Enviando…";try{let urls=[];const inp=document.getElementById("trFotos");const files=inp&&inp.files?[...inp.files]:[];if(files.length){btn.textContent="Subiendo fotos…";urls=await Promise.all(files.map(f=>sbUpload(f)))}const body={equipo:[marca,modelo].filter(Boolean).join(" "),marca,modelo,capacidad:g("trCap"),imei:g("trImei"),origen,destino,motivo:g("trMotivo"),estado:"Solicitado",solicitante:currentUser,solicitante_email:currentUserEmail,img_envio:urls,historial:[{accion:"crear",usuario:currentUser,ts:Date.now()}]};await sbReq("POST","traslados",body);["trMarca","trModelo","trCap","trImei","trMotivo"].forEach(i=>document.getElementById(i).value="");if(inp)inp.value="";showToast("✓ Solicitud creada");renderTraslados()}catch(err){console.error(err);alert("No se pudo crear la solicitud.\n\n"+(err.message||err))}finally{btn.disabled=false;btn.textContent="Crear solicitud"}}
+function trasladoCard(t){const meta=[catLabel(t.categoria),t.marca,t.modelo,t.capacidad].filter(Boolean).join(" · ")||t.equipo||"Equipo";let acts="";if(t.estado==="Solicitado")acts=`<button class="mod-btn ok" data-trap="${t.id}">Aprobar</button><button class="mod-btn warn" data-trrej="${t.id}">Rechazar</button>`;else if(t.estado==="Aprobado")acts=`<button class="mod-btn blue" data-trtran="${t.id}">Marcar en tránsito</button>`;else if(t.estado==="En tránsito")acts=`<label class="mod-btn ok" style="cursor:pointer">📥 Recibir<input type="file" accept="image/*" multiple hidden data-trrec="${t.id}"></label>`;return `<div class="mod-card"><div class="mod-top"><div><div class="mod-title">${escapeHtml(meta)}</div><div class="mod-sub">${escapeHtml(t.origen||"")} → ${escapeHtml(t.destino||"")}${t.imei?" · IMEI "+escapeHtml(t.imei):""}</div></div><div class="mod-badge ${trBadge(t.estado)}">${escapeHtml(t.estado)}</div></div>${t.motivo?`<div class="mod-sub" style="margin-top:6px">📝 ${escapeHtml(t.motivo)}</div>`:""}<div class="mod-sub" style="margin-top:6px">Solicitó: ${escapeHtml(t.solicitante||"—")} · ${escapeHtml(fmtFecha(t.creado_en))}${t.aprobado_por?" · Aprobó: "+escapeHtml(t.aprobado_por):""}${t.recibido_por?" · Recibió: "+escapeHtml(t.recibido_por):""}</div>${trThumbs(t.img_envio,"📤 Enviado")}${trThumbs(t.img_recibo,"📥 Recibido")}<div class="mod-acts">${acts}<button class="mod-btn warn" data-trdel="${t.id}">Eliminar</button></div></div>`}
+async function renderTraslados(){const list=document.getElementById("trList");if(!list)return;const o=document.getElementById("trOrigen"),d=document.getElementById("trDestino");if(o){o.innerHTML=sucOptions();d.innerHTML=sucOptions();if(d.options.length>1)d.selectedIndex=1}const tc=document.getElementById("trCategoria");if(tc&&tc.options.length<=1)tc.innerHTML=`<option value="">Seleccionar categoría…</option>`+EQ_CATEGORIAS.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join("");list.innerHTML=`<div class="cotiz-empty">Cargando…</div>`;try{trasladosData=await sbReq("GET","traslados?select=*&order=creado_en.desc&limit=500")||[];document.getElementById("trCount").textContent=`${trasladosData.length} solicitud(es)`;if(!trasladosData.length){list.innerHTML=`<div class="cotiz-empty">No hay solicitudes de traslado todavía.</div>`;return}list.innerHTML=trasladosData.map(trasladoCard).join("")}catch(err){console.error(err);list.innerHTML=`<div class="cotiz-empty">No se pudo cargar.<br>${escapeHtml(err.message||"")}</div>`}}
+async function saveTraslado(){const g=id=>document.getElementById(id).value.trim();const marca=g("trMarca"),modelo=g("trModelo");const origen=document.getElementById("trOrigen").value,destino=document.getElementById("trDestino").value;if(!marca&&!modelo){alert("Indica el equipo (marca o modelo).");return}if(origen===destino){alert("El origen y el destino no pueden ser iguales.");return}const btn=document.getElementById("trSaveBtn");btn.disabled=true;btn.textContent="Enviando…";try{let urls=[];const inp=document.getElementById("trFotos");const files=inp&&inp.files?[...inp.files]:[];if(files.length){btn.textContent="Subiendo fotos…";urls=await Promise.all(files.map(f=>sbUpload(f)))}const body={equipo:[marca,modelo].filter(Boolean).join(" "),categoria:document.getElementById("trCategoria").value,marca,modelo,capacidad:g("trCap"),imei:g("trImei"),origen,destino,motivo:g("trMotivo"),estado:"Solicitado",solicitante:currentUser,solicitante_email:currentUserEmail,img_envio:urls,historial:[{accion:"crear",usuario:currentUser,ts:Date.now()}]};await sbReq("POST","traslados",body);["trMarca","trModelo","trCap","trImei","trMotivo"].forEach(i=>document.getElementById(i).value="");if(inp)inp.value="";showToast("✓ Solicitud creada");renderTraslados()}catch(err){console.error(err);alert("No se pudo crear la solicitud.\n\n"+(err.message||err))}finally{btn.disabled=false;btn.textContent="Crear solicitud"}}
 async function trPatch(id,patch,accion){const t=trasladosData.find(x=>x.id===id)||{};const hist=Array.isArray(t.historial)?t.historial.slice():[];hist.push({accion,usuario:currentUser,ts:Date.now()});await sbReq("PATCH","traslados?id=eq."+id,{...patch,historial:hist,actualizado_en:new Date().toISOString()});renderTraslados()}
 async function trAprobar(id){try{await trPatch(id,{estado:"Aprobado",aprobado_por:currentUser},"aprobar")}catch(err){alert("No se pudo aprobar.\n\n"+(err.message||err))}}
 async function trRechazar(id){if(!confirm("¿Rechazar esta solicitud?"))return;try{await trPatch(id,{estado:"Rechazado"},"rechazar")}catch(err){alert("No se pudo rechazar.\n\n"+(err.message||err))}}
