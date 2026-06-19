@@ -40,6 +40,7 @@ $$;
 create table if not exists public.equipos_registro (
   id              uuid primary key default gen_random_uuid(),
   tipo            text not null default 'cambio',   -- 'cambio' | 'compra'
+  categoria       text,                             -- telefono|computadora|tablet|reloj|consola|audifonos|otros
   fecha           date,
   sucursal        text,
   dispositivo     text,                             -- marca / modelo / capacidad
@@ -64,6 +65,7 @@ create table if not exists public.equipos_registro (
 );
 
 -- Columnas nuevas para instalaciones que ya tenían la tabla anterior:
+alter table public.equipos_registro add column if not exists categoria        text;
 alter table public.equipos_registro add column if not exists fecha            date;
 alter table public.equipos_registro add column if not exists dispositivo      text;
 alter table public.equipos_registro add column if not exists foto_imei        text;
