@@ -25,8 +25,11 @@ insert into public.internos (email, nombre, rol) values
 on conflict (email) do nothing;
 
 -- Helper: ¿el usuario autenticado (token de Firebase) es interno?
+-- SECURITY DEFINER: la consulta interna a 'internos' salta el RLS, evitando
+-- la recursión infinita (la política de 'internos' también usa esta función).
 create or replace function public.is_interno() returns boolean
-language sql stable as $$
+language sql stable security definer set search_path = public
+as $$
   select exists (
     select 1 from public.internos
     where email = (auth.jwt() ->> 'email')
