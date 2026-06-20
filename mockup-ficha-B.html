@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup B · Ficha con pestañas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+body{background:#cbd5e1;color:#0f172a;min-height:100vh;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;max-height:96vh;overflow:auto;position:relative;padding-bottom:88px}
+.grip{width:42px;height:5px;background:#e2e8f0;border-radius:999px;margin:10px auto 6px}
+.pad{padding:6px 20px 0}
+.head{display:flex;align-items:center;gap:13px;margin-top:6px}
+.h-ico{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#eef2ff,#e0e7ff);display:flex;align-items:center;justify-content:center;font-size:25px;flex:none}
+.h-title{font-size:19px;font-weight:800}
+.h-sub{font-size:13px;color:#64748b;margin-top:2px}
+.topline{display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px}
+.amount{font-size:26px;font-weight:800}
+.badge{font-size:11px;font-weight:800;padding:5px 12px;border-radius:999px;background:#dcfce7;color:#166534}
+/* tabs */
+.tabs{display:flex;gap:6px;background:#f1f5f9;border-radius:12px;padding:4px;margin:14px 0 4px;position:sticky;top:0;z-index:2}
+.tab{flex:1;text-align:center;padding:9px;border-radius:9px;font-size:13.5px;font-weight:700;color:#64748b;cursor:pointer;border:none;background:transparent}
+.tab.on{background:#fff;color:#0f172a;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.panel{display:none;padding-top:8px}
+.panel.on{display:block}
+/* detalle */
+.row{display:flex;justify-content:space-between;padding:12px 2px;border-bottom:1px solid #f1f5f9;font-size:14.5px}
+.row .k{color:#94a3b8;font-weight:600}.row .v{font-weight:700}
+/* fotos */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ph img{width:100%;height:130px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0}
+.ph .lbl{font-size:11px;color:#64748b;font-weight:700;margin:5px 0 2px}
+/* timeline */
+.tl{position:relative;padding-left:24px}
+.tl:before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:#e2e8f0}
+.ev{position:relative;padding:0 0 18px}
+.ev:before{content:"";position:absolute;left:-22px;top:3px;width:12px;height:12px;border-radius:50%;background:#6366f1;border:2px solid #fff;box-shadow:0 0 0 2px #e0e7ff}
+.ev .acc{font-weight:700;font-size:14px}
+.ev .by{font-size:12.5px;color:#94a3b8;margin-top:2px}
+.bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1px solid #eef2f7;padding:12px 20px;display:flex;gap:10px}
+.btn{border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;color:#fff}
+.btn.blue{background:#0284c7;flex:1}.btn.warn{background:#fee2e2;color:#b91c1c;flex:none;padding:14px 18px}
+</style></head>
+<body>
+<div class="sheet">
+  <div class="grip"></div>
+  <div class="pad">
+    <div class="head">
+      <div class="h-ico">🔄</div>
+      <div><div class="h-title">iPhone 17 Pro Max</div><div class="h-sub">🔄 Cambio · 📱 Teléfono · Nova Prisa</div></div>
+    </div>
+    <div class="topline"><div class="amount">L 30,000</div><span class="badge">Ingresado al sistema</span></div>
+
+    <div class="tabs">
+      <button class="tab on" onclick="tab(0)">Detalle</button>
+      <button class="tab" onclick="tab(1)">Fotos</button>
+      <button class="tab" onclick="tab(2)">Historial</button>
+    </div>
+
+    <div class="panel on" id="p0">
+      <div class="row"><span class="k">Responsable</span><span class="v">David</span></div>
+      <div class="row"><span class="k">Estado físico</span><span class="v">Bueno</span></div>
+      <div class="row"><span class="k">Sucursal</span><span class="v">Nova Prisa</span></div>
+      <div class="row"><span class="k">Categoría</span><span class="v">📱 Teléfono</span></div>
+      <div class="row"><span class="k">Observaciones</span><span class="v">Openbox</span></div>
+    </div>
+
+    <div class="panel" id="p1">
+      <div class="grid2">
+        <div class="ph"><div class="lbl">📷 IMEI recibido</div><img src="https://picsum.photos/seed/imei/240" alt=""></div>
+        <div class="ph"><div class="lbl">📷 Garantía</div><img src="https://picsum.photos/seed/gar/240" alt=""></div>
+        <div class="ph" style="grid-column:1/-1"><div class="lbl">📷 Dispositivo</div><img src="https://picsum.photos/seed/disp/480" alt="" style="height:170px"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="p2">
+      <div class="tl">
+        <div class="ev"><div class="acc">✓ Ingresado al sistema</div><div class="by">David · 19/06/26 16:10</div></div>
+        <div class="ev"><div class="acc">📝 Registro creado</div><div class="by">David · 19/06/26 14:55</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="bar">
+    <button class="btn blue">↩ Marcar pendiente</button>
+    <button class="btn warn">🗑️ Eliminar</button>
+  </div>
+</div>
+<script>
+function tab(i){document.querySelectorAll('.tab').forEach((t,k)=>t.classList.toggle('on',k===i));document.querySelectorAll('.panel').forEach((p,k)=>p.classList.toggle('on',k===i))}
+</script>
+</body></html>
