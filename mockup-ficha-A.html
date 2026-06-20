@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup A · Ficha limpia</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+body{background:#cbd5e1;color:#0f172a;min-height:100vh;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;max-height:96vh;overflow:auto;position:relative;padding-bottom:88px}
+.grip{width:42px;height:5px;background:#e2e8f0;border-radius:999px;margin:10px auto 6px}
+.pad{padding:6px 20px 0}
+/* header */
+.head{display:flex;align-items:center;gap:13px;margin-top:6px}
+.h-ico{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#eef2ff,#e0e7ff);display:flex;align-items:center;justify-content:center;font-size:26px;flex:none}
+.h-main{flex:1;min-width:0}
+.h-title{font-size:20px;font-weight:800}
+.h-chips{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px}
+.chip.tipo{background:#eef2ff;color:#4338ca}
+.chip.ing{background:#dcfce7;color:#166534}
+.amount{margin:16px 0 4px;font-size:30px;font-weight:800;letter-spacing:-.5px}
+.amount small{font-size:13px;color:#94a3b8;font-weight:600;display:block;letter-spacing:0}
+/* info grid */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#eef2f7;border-radius:16px;overflow:hidden;margin:16px 0}
+.cell{background:#fff;padding:13px 14px}
+.cell.full{grid-column:1/-1}
+.k{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8}
+.v{font-size:14.5px;margin-top:3px;font-weight:600}
+/* fotos */
+.sec{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin:20px 0 10px}
+.gallery{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.gallery::-webkit-scrollbar{display:none}
+.ph{flex:none;width:124px}
+.ph img{width:124px;height:124px;object-fit:cover;border-radius:14px;border:1px solid #e2e8f0}
+.ph .lbl{font-size:11px;color:#64748b;font-weight:700;margin-top:6px;text-align:center}
+.meta{font-size:12.5px;color:#94a3b8;margin:18px 0 4px;text-align:center}
+/* sticky actions */
+.bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1px solid #eef2f7;padding:12px 20px;display:flex;gap:10px}
+.btn{border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;color:#fff}
+.btn.blue{background:#0284c7;flex:1}.btn.warn{background:#fee2e2;color:#b91c1c;flex:none;padding:14px 18px}
+</style></head>
+<body>
+<div class="sheet">
+  <div class="grip"></div>
+  <div class="pad">
+    <div class="head">
+      <div class="h-ico">🔄</div>
+      <div class="h-main">
+        <div class="h-title">iPhone 17 Pro Max</div>
+        <div class="h-chips"><span class="chip tipo">📱 Teléfono</span><span class="chip ing">Ingresado al sistema</span></div>
+      </div>
+    </div>
+    <div class="amount">L 30,000 <small>Valoración del equipo</small></div>
+
+    <div class="grid">
+      <div class="cell"><div class="k">Tipo</div><div class="v">🔄 Cambio</div></div>
+      <div class="cell"><div class="k">Responsable</div><div class="v">David</div></div>
+      <div class="cell"><div class="k">Estado físico</div><div class="v">Bueno</div></div>
+      <div class="cell"><div class="k">Sucursal</div><div class="v">Nova Prisa</div></div>
+      <div class="cell full"><div class="k">Observaciones</div><div class="v">Openbox</div></div>
+    </div>
+
+    <div class="sec">📷 Fotografías</div>
+    <div class="gallery">
+      <div class="ph"><img src="https://picsum.photos/seed/imei/240" alt=""><div class="lbl">IMEI recibido</div></div>
+      <div class="ph"><img src="https://picsum.photos/seed/disp/240" alt=""><div class="lbl">Dispositivo</div></div>
+      <div class="ph"><img src="https://picsum.photos/seed/gar/240" alt=""><div class="lbl">Garantía</div></div>
+    </div>
+
+    <div class="meta">Registrado el 19/06/26 · 14:55 por David</div>
+  </div>
+  <div class="bar">
+    <button class="btn blue">✓ Marcar pendiente</button>
+    <button class="btn warn">🗑️ Eliminar</button>
+  </div>
+</div>
+</body></html>
