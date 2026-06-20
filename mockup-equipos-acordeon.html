@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup A · Equipos (acordeón)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+body{background:#eef2f7;color:#0f172a;padding:16px;max-width:520px;margin:0 auto}
+h1{font-size:18px;margin-bottom:4px}
+.sub{color:#64748b;font-size:13px;margin-bottom:16px}
+.sec-head{display:flex;justify-content:space-between;align-items:center;margin:18px 4px 10px}
+.sec-title{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#475569}
+.sec-link{font-size:13px;font-weight:700;color:#2563eb;text-decoration:none}
+/* tarjeta compacta */
+.row{background:#fff;border:1px solid #e9eef5;border-radius:16px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.04);overflow:hidden}
+.row-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none}
+.r-ico{width:40px;height:40px;border-radius:11px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.r-main{flex:1;min-width:0}
+.r-title{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-meta{color:#64748b;font-size:12.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-right{text-align:right;flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.r-monto{font-weight:800;font-size:15px}
+.badge{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.st-pend{background:#fef3c7;color:#92400e}.st-ing{background:#dcfce7;color:#166534}
+.chev{color:#94a3b8;font-size:13px;transition:transform .2s;flex:none}
+.row.open .chev{transform:rotate(90deg)}
+/* detalle expandible */
+.r-body{display:none;padding:0 16px 16px;border-top:1px dashed #eef2f7}
+.row.open .r-body{display:block}
+.d-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin:12px 0}
+.d-item .k{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8}
+.d-item .v{font-size:13.5px;margin-top:1px}
+.d-photos{font-size:11px;color:#64748b;font-weight:700;margin:8px 0 6px}
+.thumbs{display:flex;gap:7px;flex-wrap:wrap}
+.thumbs img{width:62px;height:62px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0}
+.acts{display:flex;gap:8px;margin-top:14px}
+.btn{border:none;border-radius:10px;padding:10px 14px;font-size:13.5px;font-weight:700;cursor:pointer;color:#fff}
+.btn.blue{background:#0284c7}.btn.warn{background:#dc2626}.btn.alt{background:#e2e8f0;color:#0f172a}
+.note{font-size:12px;color:#94a3b8;margin-top:10px}
+</style></head>
+<body>
+<h1>🔄 Equipos en cambio / compra</h1>
+<div class="sub">Mockup A — tarjeta compacta que se expande al tocar</div>
+
+<div class="sec-head">
+  <span class="sec-title">🕒 Últimas 24 horas</span>
+  <a class="sec-link" href="#">Ver todo el historial →</a>
+</div>
+
+<!-- Item expandido (ejemplo de estado abierto) -->
+<div class="row open">
+  <div class="row-head" onclick="this.parentNode.classList.toggle('open')">
+    <div class="r-ico">🔄</div>
+    <div class="r-main">
+      <div class="r-title">iPhone 17 Pro Max</div>
+      <div class="r-meta">📱 Teléfono · David · Nova Prisa · 19/06 14:55</div>
+    </div>
+    <div class="r-right"><span class="badge st-pend">Pendiente</span><span class="r-monto">L 30,000</span></div>
+    <span class="chev">▸</span>
+  </div>
+  <div class="r-body">
+    <div class="d-grid">
+      <div class="d-item"><div class="k">Responsable</div><div class="v">David</div></div>
+      <div class="d-item"><div class="k">Estado físico</div><div class="v">Bueno</div></div>
+      <div class="d-item"><div class="k">Sucursal</div><div class="v">Nova Prisa</div></div>
+      <div class="d-item"><div class="k">Observaciones</div><div class="v">Openbox</div></div>
+    </div>
+    <div class="d-photos">📷 Fotografías</div>
+    <div class="thumbs">
+      <img src="https://picsum.photos/seed/imei/120" alt="">
+      <img src="https://picsum.photos/seed/disp/120" alt="">
+      <img src="https://picsum.photos/seed/gar/120" alt="">
+    </div>
+    <div class="acts">
+      <button class="btn blue">✓ Ingresar al sistema</button>
+      <button class="btn warn">Eliminar</button>
+    </div>
+    <div class="note">Registrado 19/06/26 14:55 · David</div>
+  </div>
+</div>
+
+<!-- Items colapsados -->
+<div class="row">
+  <div class="row-head" onclick="this.parentNode.classList.toggle('open')">
+    <div class="r-ico">🔄</div>
+    <div class="r-main">
+      <div class="r-title">iPhone 16 Pro Max</div>
+      <div class="r-meta">📱 Teléfono · David · Bueno · City Plaza</div>
+    </div>
+    <div class="r-right"><span class="badge st-pend">Pendiente</span><span class="r-monto">L 20,000</span></div>
+    <span class="chev">▸</span>
+  </div>
+  <div class="r-body">
+    <div class="d-grid">
+      <div class="d-item"><div class="k">Responsable</div><div class="v">David</div></div>
+      <div class="d-item"><div class="k">Estado físico</div><div class="v">Bueno</div></div>
+      <div class="d-item"><div class="k">Sucursal</div><div class="v">City Plaza</div></div>
+      <div class="d-item"><div class="k">Observaciones</div><div class="v">Versión sim físico</div></div>
+    </div>
+    <div class="d-photos">📷 Fotografías</div>
+    <div class="thumbs">
+      <img src="https://picsum.photos/seed/a2/120" alt="">
+      <img src="https://picsum.photos/seed/b2/120" alt="">
+    </div>
+    <div class="acts">
+      <button class="btn blue">✓ Ingresar al sistema</button>
+      <button class="btn warn">Eliminar</button>
+    </div>
+    <div class="note">Registrado 19/06/26 11:20 · David</div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="row-head" onclick="this.parentNode.classList.toggle('open')">
+    <div class="r-ico">🛒</div>
+    <div class="r-main">
+      <div class="r-title">MacBook Air M2</div>
+      <div class="r-meta">💻 Computadora · Compra · Town Center</div>
+    </div>
+    <div class="r-right"><span class="badge st-ing">Ingresado</span><span class="r-monto">L 28,500</span></div>
+    <span class="chev">▸</span>
+  </div>
+  <div class="r-body">
+    <div class="d-grid">
+      <div class="d-item"><div class="k">Proveedor</div><div class="v">Juan Pérez</div></div>
+      <div class="d-item"><div class="k">Forma de pago</div><div class="v">Transferencia</div></div>
+      <div class="d-item"><div class="k">Solicita</div><div class="v">Miguel</div></div>
+      <div class="d-item"><div class="k">Sucursal</div><div class="v">Town Center</div></div>
+    </div>
+    <div class="d-photos">📷 Fotografías</div>
+    <div class="thumbs">
+      <img src="https://picsum.photos/seed/c3/120" alt="">
+      <img src="https://picsum.photos/seed/d3/120" alt="">
+    </div>
+    <div class="acts">
+      <button class="btn alt">↩ Marcar pendiente</button>
+      <button class="btn warn">Eliminar</button>
+    </div>
+    <div class="note">Registrado 19/06/26 09:02 · Miguel</div>
+  </div>
+</div>
+
+</body></html>
