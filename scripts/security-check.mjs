@@ -108,6 +108,18 @@ forbidMatch(
 );
 
 requireMatch(
+  "scripts/set-staging-auth-claims.mjs",
+  /role:\s*"authenticated"/,
+  "el script de staging debe asignar el claim requerido por Supabase"
+);
+
+forbidMatch(
+  "scripts/set-staging-auth-claims.mjs",
+  /@ts\.com|avid0316/i,
+  "el script de claims no debe apuntar a usuarios reales de producción"
+);
+
+requireMatch(
   "firestore.rules",
   /allow delete: if isAdmin\(\)/,
   "solo administradores deben eliminar cotizaciones"
