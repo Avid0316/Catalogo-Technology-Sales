@@ -173,6 +173,24 @@ requireMatch(
   "las pestañas deben desplazarse dentro de un área central fija"
 );
 
+requireMatch(
+  "index.html",
+  /const acts=isAdminRole\(\)\?eqEstadoBtn\(e\)/,
+  "solo administración debe recibir controles para modificar cambios"
+);
+
+requireMatch(
+  "supabase_admin_only_equipment_changes.sql",
+  /for update using \(public\.is_admin\(\)\)/i,
+  "Supabase debe limitar la actualización de cambios a administradores"
+);
+
+requireMatch(
+  "supabase_admin_only_equipment_changes.sql",
+  /for delete using \(public\.is_admin\(\)\)/i,
+  "Supabase debe limitar la eliminación de cambios a administradores"
+);
+
 forbidMatch(
   "supabase_staging_seed.sql",
   /@ts\.com|technology-sales-web|avid0316/i,

@@ -28,6 +28,16 @@ as $$
   );
 $$;
 
+create or replace function public.is_admin() returns boolean
+language sql stable security definer set search_path = public
+as $$
+  select exists (
+    select 1 from public.internos
+    where lower(email) = lower(auth.jwt() ->> 'email')
+      and lower(coalesce(rol, '')) = 'admin'
+  );
+$$;
+
 -- ---------------------------------------------------------------------
 -- 1) Equipos tomados en cambio o comprados localmente
 --    Una sola tabla con dos flujos (tipo = 'cambio' | 'compra').
@@ -144,11 +154,21 @@ create policy "read internos" on public.internos
   for select using (public.is_interno());
 
 drop policy if exists "rw equipos"   on public.equipos_registro;
+drop policy if exists "read equipos" on public.equipos_registro;
+drop policy if exists "create equipos" on public.equipos_registro;
+drop policy if exists "admin update equipos" on public.equipos_registro;
+drop policy if exists "admin delete equipos" on public.equipos_registro;
 drop policy if exists "rw traslados" on public.traslados;
 drop policy if exists "rw tareas"    on public.tareas;
 
-create policy "rw equipos"   on public.equipos_registro for all
-  using (public.is_interno()) with check (public.is_interno());
+create policy "read equipos" on public.equipos_registro
+  for select using (public.is_interno());
+create policy "create equipos" on public.equipos_registro
+  for insert with check (public.is_interno());
+create policy "admin update equipos" on public.equipos_registro
+  for update using (public.is_admin()) with check (public.is_admin());
+create policy "admin delete equipos" on public.equipos_registro
+  for delete using (public.is_admin());
 create policy "rw traslados" on public.traslados        for all
   using (public.is_interno()) with check (public.is_interno());
 create policy "rw tareas"    on public.tareas           for all
