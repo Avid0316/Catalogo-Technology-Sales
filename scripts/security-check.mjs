@@ -143,6 +143,24 @@ forbidMatch(
   "los buckets internos no deben generar URLs públicas"
 );
 
+requireMatch(
+  "index.html",
+  /function deletePrivatePhoto\(ref\)[\s\S]*method:"DELETE"/,
+  "los archivos privados deben poder eliminarse de Storage"
+);
+
+requireMatch(
+  "index.html",
+  /deletePrivatePhotos\(\[row\.foto_imei,row\.foto_garantia/,
+  "eliminar un equipo debe retirar también sus fotografías"
+);
+
+requireMatch(
+  "index.html",
+  /deletePrivatePhotos\(\[\.\.\.\(row\.img_envio\|\|\[\]\),\.\.\.\(row\.img_recibo\|\|\[\]\)\]\)/,
+  "eliminar un traslado debe retirar también sus fotografías"
+);
+
 forbidMatch(
   "supabase_staging_seed.sql",
   /@ts\.com|technology-sales-web|avid0316/i,
