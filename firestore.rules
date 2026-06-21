@@ -1,0 +1,88 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null && request.auth.token.email is string;
+    }
+
+    function email() {
+      return request.auth.token.email;
+    }
+
+    function profile() {
+      return get(/databases/$(database)/documents/usuarios/$(email())).data;
+    }
+
+    function role() {
+      return signedIn() && exists(/databases/$(database)/documents/usuarios/$(email()))
+        ? profile().role
+        : "cliente";
+    }
+
+    function isInternal() {
+      return role() in ["admin", "asesor", "vendedor"];
+    }
+
+    function isAdmin() {
+      return role() == "admin";
+    }
+
+    function validQuote() {
+      return request.resource.data.keys().hasOnly([
+          "cliente", "comentario", "items", "totalEstimado", "estado", "fecha"
+        ])
+        && request.resource.data.cliente is map
+        && request.resource.data.cliente.keys().hasOnly([
+          "nombre", "contacto", "rol", "email", "direccionEnvio"
+        ])
+        && request.resource.data.cliente.nombre is string
+        && request.resource.data.cliente.nombre.size() > 0
+        && request.resource.data.cliente.nombre.size() <= 120
+        && request.resource.data.cliente.contacto is string
+        && request.resource.data.cliente.contacto.size() > 0
+        && request.resource.data.cliente.contacto.size() <= 160
+        && request.resource.data.comentario is string
+        && request.resource.data.comentario.size() <= 1000
+        && request.resource.data.items is list
+        && request.resource.data.items.size() > 0
+        && request.resource.data.items.size() <= 50
+        && request.resource.data.estado == "Nueva";
+    }
+
+    match /cotizaciones/{quoteId} {
+      allow create: if validQuote()
+        && (
+          (!signedIn() && request.resource.data.cliente.email == "")
+          || (signedIn() && request.resource.data.cliente.email == email())
+        );
+
+      allow read: if isInternal()
+        || (
+          signedIn()
+          && resource.data.cliente.email == email()
+        );
+
+      allow update: if isInternal();
+      allow delete: if isAdmin();
+    }
+
+    match /usuarios/{userEmail} {
+      allow read: if signedIn() && (email() == userEmail || isAdmin());
+      allow create, delete: if isAdmin();
+
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && email() == userEmail
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(["name", "telefono", "contactoAlt", "negocio", "direcciones"])
+        );
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

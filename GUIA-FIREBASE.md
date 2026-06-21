@@ -90,41 +90,25 @@ en el siguiente paso del proyecto.
 
 ## Paso 6 · Reglas para recibir cotizaciones (carrito)
 
-El catálogo ya permite que **mayoristas, revendedores y clientes generales**
-armen un carrito y envíen una **solicitud de cotización**. Esas solicitudes se
-guardan en Firestore, en una colección llamada `cotizaciones`.
+Las reglas completas viven en el archivo `firestore.rules`. No copies reglas
+parciales desde esta guía y no uses una condición basada únicamente en
+`request.auth != null`: cualquier cliente autenticado podría leer o modificar
+cotizaciones ajenas.
 
-Para que se puedan guardar (incluso las de clientes que no inician sesión),
-hay que pegar unas reglas. Es rápido:
+El archivo actual aplica estas restricciones:
 
-1. En el menú izquierdo, entra a **"Firestore Database"**.
-2. Arriba, clic en la pestaña **"Reglas"** (Rules).
-3. **Borra** lo que haya y **pega exactamente esto**:
+- Un visitante puede crear una cotización validada, pero no leerla después.
+- Un cliente autenticado solo puede leer sus propias cotizaciones.
+- Admin, asesor y vendedor pueden leer y actualizar cotizaciones.
+- Solo admin puede eliminarlas.
+- Campos, tamaños y estado inicial son validados.
 
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
+Las reglas se despliegan automáticamente junto con producción mediante
+`.github/workflows/firebase-deploy.yml`. Para un despliegue manual:
 
-       // Cualquiera puede ENVIAR una cotización (también clientes sin sesión).
-       // Solo usuarios con sesión (asesores) pueden verlas o cambiarlas.
-       match /cotizaciones/{id} {
-         allow create: if true;
-         allow read, update, delete: if request.auth != null;
-       }
-
-     }
-   }
-   ```
-
-4. Clic en **"Publicar"** (Publish).
-
-✅ Listo. Ahora las cotizaciones llegan a tu base de datos. En el panel del
-asesor (siguiente etapa) las verás y podrás cambiarles el estado.
-
-> 🔒 **Nota de seguridad:** `allow create: if true` solo permite *crear* una
-> cotización nueva; nadie puede leer, editar ni borrar las de otros sin sesión.
-> Más adelante afinamos esto para que solo tú y Miguel (admins) puedan leerlas.
+```bash
+firebase deploy --only firestore:rules --project technology-sales-web
+```
 
 ---
 
@@ -148,61 +132,30 @@ los **roles viven en la base de datos**, en una colección llamada `usuarios`.
    | `name` | string | `Carlos`                    |
 
    Valores válidos para **`role`**:
-   `admin` · `asesor` · `vendedor` · `mayorista` · `revendedor` · `cliente`
+   `admin` · `asesor` · `vendedor` · `comisionista` · `mayorista` ·
+   `revendedor` · `cliente`
 
    > 💡 Repite para cada persona. Para cambiarle el rol a alguien, solo editas
    > su campo `role` — sin tocar código.
 
-### 7.2 · Regla para que cada quien lea su propio rol
+### 7.2 · Lectura segura del rol
 
-En **Firestore → Reglas**, dentro de las llaves, agrega este bloque (junto al
-de `cotizaciones`):
-
-```
-match /usuarios/{email} {
-  allow read: if request.auth != null && request.auth.token.email == email;
-}
-```
-
-Clic en **"Publicar"**.
-
-✅ Listo. Al iniciar sesión, la página lee el rol de cada usuario y le muestra
-lo que le corresponde (precios, panel, etc.). Si un usuario aún no está en
-`usuarios`, entra como **revendedor** por defecto.
+`firestore.rules` permite que cada usuario lea únicamente su propio perfil y
+que el administrador consulte la lista. Si un usuario no existe en `usuarios`,
+entra como **cliente** y solo recibe el catálogo público.
 
 ---
 
 ## Paso 8 · Reglas para el panel de usuarios
 
-Para que el **admin pueda crear/editar usuarios desde la web**, y para que cada
-**mayorista/revendedor pueda guardar sus direcciones de envío**, hay que ampliar
-la regla de `usuarios`.
+No edites bloques aislados desde la consola. Usa `firestore.rules`, que permite:
 
-1. **Firestore → Reglas.**
-2. **Reemplaza** el bloque `match /usuarios/{email} { ... }` del Paso 7 por este:
-
-   ```
-   function isAdmin() {
-     return request.auth != null &&
-       get(/databases/$(database)/documents/usuarios/$(request.auth.token.email)).data.role == 'admin';
-   }
-
-   match /usuarios/{email} {
-     // Cada quien lee su propio perfil; el admin lee todos.
-     allow read: if request.auth != null && (request.auth.token.email == email || isAdmin());
-     // Solo el admin crea o elimina usuarios.
-     allow create, delete: if isAdmin();
-     // El admin edita todo; cada quien edita su propio perfil
-     // PERO no puede cambiarse el rol a sí mismo.
-     allow update: if isAdmin() ||
-       (request.auth != null && request.auth.token.email == email
-        && request.resource.data.role == resource.data.role);
-   }
-   ```
-
-   *(La función `isAdmin()` va dentro de `match /databases/{database}/documents { ... }`, junto a las demás reglas.)*
-
-3. Clic en **"Publicar"**.
+- Administración completa únicamente a usuarios con `role: admin`.
+- Lectura del perfil propio.
+- Edición personal limitada a nombre, contacto, negocio y direcciones.
+- Prohibición de cambiar el rol propio.
+- El rol `comisionista` puede consultar los tres precios, pero no recibe acceso
+  al panel de cotizaciones ni a los módulos internos.
 
 > ⚠️ **MUY importante:** para que `isAdmin()` te reconozca, **tu propio usuario
 > admin debe existir en la colección `usuarios` con `role: admin`**. O sea,

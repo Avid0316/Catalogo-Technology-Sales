@@ -1,0 +1,28 @@
+name: Verificación de seguridad
+
+on:
+  push:
+    branches:
+      - main
+      - "codex/**"
+      - "claude/**"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Revisar invariantes de seguridad
+        run: node scripts/security-check.mjs
+

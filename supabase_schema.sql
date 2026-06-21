@@ -83,9 +83,6 @@ alter table public.equipos_registro add column if not exists forma_pago       te
 alter table public.equipos_registro add column if not exists estado_compra    text default 'Pendiente';
 alter table public.equipos_registro add column if not exists historial        jsonb default '[]';
 alter table public.equipos_registro add column if not exists actualizado_en   timestamptz default now();
-alter table public.traslados        add column if not exists categoria        text;
-alter table public.tareas           add column if not exists historial        jsonb default '[]';
-alter table public.tareas           add column if not exists actualizado_en   timestamptz default now();
 
 -- ---------------------------------------------------------------------
 -- 2) Solicitudes de traslado de equipos entre sucursales
@@ -133,6 +130,12 @@ create table if not exists public.tareas (
   actualizado_en  timestamptz default now(),
   completado_en   timestamptz
 );
+
+-- Columnas para instalaciones que ya tenían versiones anteriores.
+-- Deben ejecutarse después de crear las tablas.
+alter table public.traslados add column if not exists categoria text;
+alter table public.tareas add column if not exists historial jsonb default '[]';
+alter table public.tareas add column if not exists actualizado_en timestamptz default now();
 
 -- =====================================================================
 --  Seguridad (RLS) — solo usuarios internos (validado por el CORREO del

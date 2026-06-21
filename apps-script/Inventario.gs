@@ -160,9 +160,9 @@ function construirInventario() {
            sinModelo.slice(0, 10).join("\n- ");
   }
 
-  // Sincroniza a Supabase automáticamente (solo si ya pegaste la clave service_role).
+  // Sincroniza a Supabase automáticamente si la propiedad privada está configurada.
   try {
-    if (SUPABASE_SERVICE_KEY && SUPABASE_SERVICE_KEY.indexOf("PEGA") === -1) {
+    if (getSupabaseServiceKey_()) {
       sincronizarSupabase();
       msg += "\n☁️ Sincronizado a Supabase.";
     }
@@ -353,67 +353,13 @@ function revisarDescuadres_(ss) {
  * =================================================================== */
 
 function doGet() {
-  try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var inventarioSheet = ss.getSheetByName("Inventario");
-    var preciosSheet = ss.getSheetByName("Precios");
-
-    if (!inventarioSheet) return jsonOutput({ error: true, mensaje: "No existe la hoja Inventario" });
-    if (!preciosSheet)    return jsonOutput({ error: true, mensaje: "No existe la hoja Precios" });
-
-    var inventario = sheetToObjects(inventarioSheet);
-    var precios = sheetToObjects(preciosSheet);
-
-    // Imágenes generales por modelo (hoja opcional "Imagenes": Marca · Modelo · Imagen)
-    var imagenesSheet = ss.getSheetByName("Imagenes");
-    var imagenes = imagenesSheet ? sheetToObjects(imagenesSheet) : [];
-    var imagenesMap = {};
-    imagenes.forEach(function (item) {
-      imagenesMap[makeKeyModelo(item["Marca"], item["Modelo"])] = item["Imagen"] || "";
-    });
-
-    // Mapa de precios por Marca|Modelo|Capacidad
-    var preciosMap = {};
-    precios.forEach(function (item) {
-      var key = makeKey(item["Marca"], item["Modelo"], item["Capacidad"], item["Chip"], item["Estado"]);
-      preciosMap[key] = {
-        precioMayorista:    formatLempiras(item["Precio Mayorista"]),
-        precioReventa:      formatLempiras(item["Precio Reventa"]),
-        precioClienteFinal: formatLempiras(item["Precio Cliente Final"]),
-        imagen:             item["Imagen"] || ""
-      };
-    });
-
-    var resultado = inventario.map(function (item) {
-      var key = makeKey(item["Marca"], item["Modelo"], item["Capacidad"], item["Chip"], item["Estado"]);
-      var p = preciosMap[key] || {};
-      return {
-        Categoria:    item["Categoria"] || "",
-        Marca:        item["Marca"] || "",
-        Modelo:       item["Modelo"] || "",
-        Capacidad:    item["Capacidad"] || "",
-        Color:        item["Color"] || "",
-        Chip:         item["Chip"] || "",
-        Sucursal:     item["Sucursal"] || "",
-        Cantidad:     item["Cantidad"] || 0,
-        Consignacion: item["CantidadConsignacion"] || 0,
-        Comprometido: item["Comprometido"] || 0,
-        Estado:       item["Estado"] || "",
-        "Precio Mayorista": p.precioMayorista || "",
-        "Precio Reventa":   p.precioReventa || "",
-        "Precio Publico":   p.precioClienteFinal || "",   // Cliente Final → "Precio Publico" (lo que usa el sitio)
-        // Imagen general por modelo (hoja Imagenes); si no hay, cae a la de Precios.
-        Imagen: imagenesMap[makeKeyModelo(item["Marca"], item["Modelo"])] || p.imagen || ""
-      };
-    });
-
-    // Equipos individuales (hoja "Equipos"): cada teléfono con su ficha y precio propio.
-    resultado = resultado.concat(leerEquipos_(ss, imagenesMap));
-
-    return jsonOutput(resultado);
-  } catch (error) {
-    return jsonOutput({ error: true, mensaje: error.message });
-  }
+  return jsonOutput({
+    ok: true,
+    servicio: "Technology Sales",
+    estado: "activo",
+    catalogoPublico: "Supabase catalogo_publico",
+    datos: "Este endpoint ya no publica inventario, precios ni identificadores."
+  });
 }
 
 /* ===================== HELPERS (los tuyos) ===================== */
@@ -556,6 +502,20 @@ function doPost(e) {
       return jsonOutput({ ok: true, registros: leerHistorial_() });
     }
 
+    if (body.action === "setUserAccess") {
+      if (!esAdmin_(email)) return jsonOutput({ error: true, mensaje: "Solo un administrador puede cambiar accesos." });
+      sincronizarAccesoUsuario_(body.email, body.role, body.name);
+      registrar_(email, "Acceso", body.email || "", "Rol actualizado a " + (body.role || "cliente"));
+      return jsonOutput({ ok: true });
+    }
+
+    if (body.action === "deleteUserAccess") {
+      if (!esAdmin_(email)) return jsonOutput({ error: true, mensaje: "Solo un administrador puede retirar accesos." });
+      eliminarAccesoUsuario_(body.email);
+      registrar_(email, "Acceso", body.email || "", "Acceso retirado");
+      return jsonOutput({ ok: true });
+    }
+
     return jsonOutput({ error: true, mensaje: "Acción no soportada: " + body.action });
   } catch (err) {
     return jsonOutput({ error: true, mensaje: err.message });
@@ -566,7 +526,8 @@ function doPost(e) {
  * FOTOS — sube la imagen a Supabase Storage y la enlaza al modelo
  * =================================================================== */
 function guardarFoto_(body) {
-  if (!SUPABASE_SERVICE_KEY || SUPABASE_SERVICE_KEY.indexOf("PEGA") !== -1) throw new Error("Falta la clave service_role en el script.");
+  var serviceKey = getSupabaseServiceKey_();
+  if (!serviceKey) throw new Error("Falta SUPABASE_SERVICE_KEY en las propiedades del script.");
   if (!body.dataB64) throw new Error("No se recibió la imagen.");
   var bytes = Utilities.base64Decode(body.dataB64);
   var mime = body.mime || "image/jpeg";
@@ -577,7 +538,7 @@ function guardarFoto_(body) {
 
   var up = UrlFetchApp.fetch(SUPABASE_URL + "/storage/v1/object/productos/" + nombre, {
     method: "post", contentType: mime, payload: bytes, muteHttpExceptions: true,
-    headers: { "Authorization": "Bearer " + SUPABASE_SERVICE_KEY, "apikey": SUPABASE_SERVICE_KEY, "x-upsert": "true" }
+    headers: { "Authorization": "Bearer " + serviceKey, "apikey": serviceKey, "x-upsert": "true" }
   });
   if (up.getResponseCode() >= 300) throw new Error("Storage " + up.getResponseCode() + ": " + up.getContentText());
   var publicUrl = SUPABASE_URL + "/storage/v1/object/public/productos/" + nombre;
@@ -610,11 +571,12 @@ function guardarImagenHoja_(marca, modelo, url) {
 }
 
 function actualizarImagenSupabase_(marca, modelo, url) {
-  if (!SUPABASE_SERVICE_KEY || SUPABASE_SERVICE_KEY.indexOf("PEGA") !== -1) return;
+  var serviceKey = getSupabaseServiceKey_();
+  if (!serviceKey) return;
   var q = "?marca=eq." + encodeURIComponent(marca) + "&modelo=eq." + encodeURIComponent(modelo);
   var res = UrlFetchApp.fetch(SUPABASE_URL + "/rest/v1/inventario" + q, {
     method: "patch", payload: JSON.stringify({ imagen: url }), muteHttpExceptions: true,
-    headers: { "Authorization": "Bearer " + SUPABASE_SERVICE_KEY, "apikey": SUPABASE_SERVICE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal" }
+    headers: { "Authorization": "Bearer " + serviceKey, "apikey": serviceKey, "Content-Type": "application/json", "Prefer": "return=minimal" }
   });
   if (res.getResponseCode() >= 300) Logger.log("PATCH imagen: " + res.getContentText());
 }
@@ -702,44 +664,133 @@ function guardarPrecio_(body) {
 
 // ⚙️ CONFIG SUPABASE
 var SUPABASE_URL = "https://heeaqlzuqraxnrspnzat.supabase.co";
-// ⚠️ SECRETA: pega aquí tu clave "service_role" (Settings ▸ API Keys).
-//    NO la compartas con nadie ni la pongas en la página web.
-var SUPABASE_SERVICE_KEY = "PEGA_AQUI_TU_SERVICE_ROLE";
+
+// La clave service_role vive en:
+// Apps Script → Configuración del proyecto → Propiedades del script
+// Nombre: SUPABASE_SERVICE_KEY
+function getSupabaseServiceKey_() {
+  return String(
+    PropertiesService.getScriptProperties().getProperty("SUPABASE_SERVICE_KEY") || ""
+  ).trim();
+}
 
 function sbNum_(v) { if (v === "" || v == null) return null; var n = Number(v); return isNaN(n) ? null : n; }
 function sbInt_(v) { if (v === "" || v == null) return null; var n = parseInt(v, 10); return isNaN(n) ? null : n; }
 
 function sbHeaders_() {
+  var serviceKey = getSupabaseServiceKey_();
+  if (!serviceKey) throw new Error("Falta SUPABASE_SERVICE_KEY en las propiedades del script.");
   return {
-    "apikey": SUPABASE_SERVICE_KEY,
-    "Authorization": "Bearer " + SUPABASE_SERVICE_KEY,
+    "apikey": serviceKey,
+    "Authorization": "Bearer " + serviceKey,
     "Content-Type": "application/json"
   };
 }
 
-// Borra TODAS las filas de una tabla (id es bigint > 0).
-function sbDeleteAll_(tabla) {
-  var res = UrlFetchApp.fetch(SUPABASE_URL + "/rest/v1/" + tabla + "?id=gte.0", {
-    method: "delete", headers: sbHeaders_(), muteHttpExceptions: true
+function sbRpc_(nombre, payload) {
+  var res = UrlFetchApp.fetch(SUPABASE_URL + "/rest/v1/rpc/" + nombre, {
+    method: "post",
+    headers: sbHeaders_(),
+    payload: JSON.stringify(payload || {}),
+    muteHttpExceptions: true
   });
-  if (res.getResponseCode() >= 300) throw new Error("DELETE " + tabla + " " + res.getResponseCode() + ": " + res.getContentText());
-}
-
-// Inserta en lotes de 500.
-function sbInsert_(tabla, filas) {
-  for (var i = 0; i < filas.length; i += 500) {
-    var lote = filas.slice(i, i + 500);
-    var h = sbHeaders_(); h["Prefer"] = "return=minimal";
-    var res = UrlFetchApp.fetch(SUPABASE_URL + "/rest/v1/" + tabla, {
-      method: "post", headers: h, payload: JSON.stringify(lote), muteHttpExceptions: true
-    });
-    if (res.getResponseCode() >= 300) throw new Error("INSERT " + tabla + " " + res.getResponseCode() + ": " + res.getContentText());
+  if (res.getResponseCode() >= 300) {
+    throw new Error("RPC " + nombre + " " + res.getResponseCode() + ": " + res.getContentText());
   }
 }
 
+function sbDeleteByEmail_(tabla, email) {
+  var res = UrlFetchApp.fetch(
+    SUPABASE_URL + "/rest/v1/" + tabla + "?email=eq." + encodeURIComponent(email),
+    {
+      method: "delete",
+      headers: sbHeaders_(),
+      muteHttpExceptions: true
+    }
+  );
+  if (res.getResponseCode() >= 300) {
+    throw new Error("DELETE " + tabla + " " + res.getResponseCode() + ": " + res.getContentText());
+  }
+}
+
+function sbUpsert_(tabla, body) {
+  var headers = sbHeaders_();
+  headers["Prefer"] = "resolution=merge-duplicates,return=minimal";
+  var res = UrlFetchApp.fetch(
+    SUPABASE_URL + "/rest/v1/" + tabla + "?on_conflict=email",
+    {
+      method: "post",
+      headers: headers,
+      payload: JSON.stringify(body),
+      muteHttpExceptions: true
+    }
+  );
+  if (res.getResponseCode() >= 300) {
+    throw new Error("UPSERT " + tabla + " " + res.getResponseCode() + ": " + res.getContentText());
+  }
+}
+
+function sincronizarAccesoUsuario_(userEmail, role, name) {
+  var cleanEmail = String(userEmail || "").trim().toLowerCase();
+  var cleanRole = String(role || "cliente").trim().toLowerCase();
+  if (!cleanEmail) throw new Error("Falta el correo del usuario.");
+
+  var internos = ["admin", "asesor", "vendedor"];
+  var comerciales = ["cliente", "revendedor", "mayorista", "comisionista"];
+  if (internos.indexOf(cleanRole) !== -1) {
+    sbUpsert_("internos", {
+      email: cleanEmail,
+      nombre: String(name || cleanEmail),
+      rol: cleanRole
+    });
+    sbDeleteByEmail_("catalogo_accesos", cleanEmail);
+    return;
+  }
+
+  if (comerciales.indexOf(cleanRole) === -1) cleanRole = "cliente";
+  sbUpsert_("catalogo_accesos", {
+    email: cleanEmail,
+    rol: cleanRole,
+    activo: true,
+    actualizado_en: new Date().toISOString()
+  });
+  sbDeleteByEmail_("internos", cleanEmail);
+}
+
+function eliminarAccesoUsuario_(userEmail) {
+  var cleanEmail = String(userEmail || "").trim().toLowerCase();
+  if (!cleanEmail) throw new Error("Falta el correo del usuario.");
+  sbDeleteByEmail_("catalogo_accesos", cleanEmail);
+  sbDeleteByEmail_("internos", cleanEmail);
+}
+
+function crearPreciosPayload_() {
+  var prcSh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Precios");
+  if (!prcSh) return [];
+  var prcPayload = [];
+  sheetToObjects(prcSh).forEach(function (p) {
+    if (!String(p["Modelo"] || "").trim()) return;
+    var may = sbNum_(p["Precio Mayorista"]);
+    var rev = sbNum_(p["Precio Reventa"]);
+    var pub = sbNum_(p["Precio Cliente Final"]);
+    if (may === null && rev === null && pub === null) return;
+    prcPayload.push({
+      marca: p["Marca"] || "",
+      modelo: p["Modelo"] || "",
+      capacidad: p["Capacidad"] || "",
+      chip: p["Chip"] || "",
+      estado: p["Estado"] || "",
+      precio_mayorista: may,
+      precio_reventa: rev,
+      precio_publico: pub
+    });
+  });
+  return prcPayload;
+}
+
 function sincronizarSupabase() {
-  if (!SUPABASE_SERVICE_KEY || SUPABASE_SERVICE_KEY.indexOf("PEGA") !== -1) {
-    throw new Error("Falta pegar tu clave service_role en SUPABASE_SERVICE_KEY.");
+  if (!getSupabaseServiceKey_()) {
+    throw new Error("Falta SUPABASE_SERVICE_KEY en las propiedades del script.");
   }
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var invSh = ss.getSheetByName("Inventario");
@@ -785,9 +836,13 @@ function sincronizarSupabase() {
     });
   });
 
-  // Reemplazo total en Supabase
-  sbDeleteAll_("inventario"); sbInsert_("inventario", invPayload);
-  var nPrc = sincronizarPreciosSupabase_();
+  // Reemplazo total atómico: inventario y precios cambian juntos o no cambia nada.
+  var prcPayload = crearPreciosPayload_();
+  sbRpc_("replace_catalog_data", {
+    inventory_rows: invPayload,
+    price_rows: prcPayload
+  });
+  var nPrc = prcPayload.length;
 
   notificar_("✅ Sincronizado a Supabase:\n• " + invPayload.length + " productos (inventario + individuales)\n• " + nPrc + " precios con valor");
 }
@@ -795,22 +850,9 @@ function sincronizarSupabase() {
 // Refresca SOLO la tabla de precios en Supabase (rápido). Se usa al guardar un
 // precio desde la web, para que el cambio se vea al instante sin sincronizar todo.
 function sincronizarPreciosSupabase_() {
-  if (!SUPABASE_SERVICE_KEY || SUPABASE_SERVICE_KEY.indexOf("PEGA") !== -1) return 0;
-  var prcSh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Precios");
-  if (!prcSh) return 0;
-  var prcPayload = [];
-  sheetToObjects(prcSh).forEach(function (p) {
-    if (!String(p["Modelo"] || "").trim()) return;
-    var may = sbNum_(p["Precio Mayorista"]), rev = sbNum_(p["Precio Reventa"]), pub = sbNum_(p["Precio Cliente Final"]);
-    if (may === null && rev === null && pub === null) return;
-    prcPayload.push({
-      marca: p["Marca"] || "", modelo: p["Modelo"] || "", capacidad: p["Capacidad"] || "",
-      chip: p["Chip"] || "", estado: p["Estado"] || "",
-      precio_mayorista: may, precio_reventa: rev, precio_publico: pub
-    });
-  });
-  sbDeleteAll_("precios");
-  sbInsert_("precios", prcPayload);
+  if (!getSupabaseServiceKey_()) return 0;
+  var prcPayload = crearPreciosPayload_();
+  sbRpc_("replace_prices", { price_rows: prcPayload });
   return prcPayload.length;
 }
 
