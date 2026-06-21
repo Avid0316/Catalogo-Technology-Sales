@@ -107,6 +107,24 @@ requireMatch(
   "la carga protegida debe refrescar el token después de asignar claims"
 );
 
+requireMatch(
+  "index.html",
+  /function resetSessionUiState\(\)[\s\S]*cartStage="cart"[\s\S]*misPedidos=\[\]/,
+  "el cambio de usuario debe limpiar carrito, filtros, vistas y pedidos anteriores"
+);
+
+requireMatch(
+  "index.html",
+  /function enterPortal\(\)\{resetSessionUiState\(\)/,
+  "cada sesión debe comenzar con una interfaz limpia"
+);
+
+requireMatch(
+  "index.html",
+  /function logout\(\)\{resetSessionUiState\(\)/,
+  "cerrar sesión debe eliminar el estado visual del usuario anterior"
+);
+
 forbidMatch(
   "supabase_staging_seed.sql",
   /@ts\.com|technology-sales-web|avid0316/i,
