@@ -8,21 +8,13 @@
 -- ---------------------------------------------------------------------
 -- 0) Allowlist de usuarios internos (admin / asesor / vendedor)
 --    Solo los correos aquí podrán leer/escribir los módulos internos.
---    Ajusta estos correos a los reales de tu equipo.
+--    Se administra desde el panel web o mediante una migración controlada.
 -- ---------------------------------------------------------------------
 create table if not exists public.internos (
   email   text primary key,
   nombre  text,
   rol     text                                  -- 'admin' | 'asesor' | 'vendedor'
 );
-
-insert into public.internos (email, nombre, rol) values
-  ('avid@ts.com',     'David',  'admin'),
-  ('avid0316@ts.com', 'David',  'admin'),
-  ('miguel@ts.com',   'Miguel', 'admin'),
-  ('wilmer@ts.com',   'Wilmer', 'asesor'),
-  ('ventas@ts.com',   'Ventas', 'vendedor')
-on conflict (email) do nothing;
 
 -- Helper: ¿el usuario autenticado (token de Firebase) es interno?
 -- SECURITY DEFINER: la consulta interna a 'internos' salta el RLS, evitando
@@ -166,19 +158,19 @@ create policy "rw tareas"    on public.tareas           for all
 --  Storage: buckets para imágenes (traslados y equipos)
 -- =====================================================================
 insert into storage.buckets (id, name, public) values
-  ('traslados', 'traslados', true),
-  ('equipos',   'equipos',   true)
-on conflict (id) do nothing;
+  ('traslados', 'traslados', false),
+  ('equipos',   'equipos',   false)
+on conflict (id) do update set public = false;
 
 drop policy if exists "read internos storage"  on storage.objects;
 drop policy if exists "write internos storage" on storage.objects;
 drop policy if exists "read traslados storage"  on storage.objects;  -- limpia versión anterior
 drop policy if exists "write traslados storage" on storage.objects;
 
--- Lectura pública de ambos buckets (las URLs se muestran en la app)
+-- Las fotografías son privadas y solo las consulta personal interno.
 create policy "read internos storage" on storage.objects
-  for select to anon, authenticated
-  using (bucket_id in ('traslados','equipos'));
+  for select to authenticated
+  using (bucket_id in ('traslados','equipos') and public.is_interno());
 
 -- Subir/editar/borrar solo internos (validado por correo del token)
 create policy "write internos storage" on storage.objects

@@ -90,6 +90,24 @@ requireMatch(
 );
 
 requireMatch(
+  "supabase_staging_base.sql",
+  /create table if not exists public\.inventario/i,
+  "staging debe poder instalar inventario desde una base vacía"
+);
+
+requireMatch(
+  "supabase_staging_seed.sql",
+  /comisionista\.staging@example\.com/,
+  "staging debe incluir cuentas ficticias para probar los roles"
+);
+
+forbidMatch(
+  "supabase_staging_seed.sql",
+  /@ts\.com|technology-sales-web|avid0316/i,
+  "staging no debe contener correos o identificadores reales de producción"
+);
+
+requireMatch(
   "firestore.rules",
   /allow delete: if isAdmin\(\)/,
   "solo administradores deben eliminar cotizaciones"

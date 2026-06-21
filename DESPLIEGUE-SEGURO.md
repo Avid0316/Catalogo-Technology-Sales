@@ -3,6 +3,20 @@
 No publiques primero `index.html`. El nuevo cliente depende de las vistas y
 funciones protegidas de Supabase.
 
+## Instalación del entorno de pruebas
+
+En un proyecto Supabase vacío ejecuta estos archivos en SQL Editor, uno por uno:
+
+1. `supabase_staging_base.sql`
+2. `supabase_schema.sql`
+3. `supabase_security_hardening.sql`
+4. `supabase_staging_seed.sql`
+
+Después configura **Authentication → Third-Party Auth → Firebase** con el ID
+del proyecto Firebase de pruebas. Los usuarios de Firebase también deben tener
+el custom claim `role: authenticated`; sin él, Supabase los tratará como
+anónimos aunque hayan iniciado sesión.
+
 ## Orden obligatorio
 
 1. Crea una copia de seguridad de `inventario`, `precios`, `internos`,
