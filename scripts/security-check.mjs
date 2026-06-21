@@ -125,6 +125,24 @@ requireMatch(
   "cerrar sesión debe eliminar el estado visual del usuario anterior"
 );
 
+requireMatch(
+  "index.html",
+  /\/storage\/v1\/object\/sign\//,
+  "las fotografías internas deben mostrarse mediante URLs firmadas"
+);
+
+requireMatch(
+  "index.html",
+  /return `storage:\/\/\$\{bucket\}\/\$\{name\}`/,
+  "la base debe guardar referencias privadas, no URLs públicas"
+);
+
+forbidMatch(
+  "index.html",
+  /storage\/v1\/object\/public\/\$\{bucket\}/,
+  "los buckets internos no deben generar URLs públicas"
+);
+
 forbidMatch(
   "supabase_staging_seed.sql",
   /@ts\.com|technology-sales-web|avid0316/i,
