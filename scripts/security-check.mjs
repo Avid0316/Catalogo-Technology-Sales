@@ -97,8 +97,14 @@ requireMatch(
 
 requireMatch(
   "supabase_staging_seed.sql",
-  /comisionista\.staging@example\.com/,
+  /comisionista@prueba\.com/,
   "staging debe incluir cuentas ficticias para probar los roles"
+);
+
+requireMatch(
+  "index.html",
+  /getIdToken\(true\)/,
+  "la carga protegida debe refrescar el token después de asignar claims"
 );
 
 forbidMatch(

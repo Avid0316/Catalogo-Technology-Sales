@@ -37,19 +37,18 @@ insert into public.precios (
    14000, 15000, 16500);
 
 insert into public.internos (email, nombre, rol) values
-  ('admin.staging@example.com', 'Admin Pruebas', 'admin'),
-  ('asesor.staging@example.com', 'Asesor Pruebas', 'asesor'),
-  ('vendedor.staging@example.com', 'Vendedor Pruebas', 'vendedor')
+  ('admin@prueba.com', 'Admin Pruebas', 'admin'),
+  ('asesor@prueba.com', 'Asesor Pruebas', 'asesor'),
+  ('vendedor@prueba.com', 'Vendedor Pruebas', 'vendedor')
 on conflict (email) do update
 set nombre = excluded.nombre, rol = excluded.rol;
 
 insert into public.catalogo_accesos (email, rol, activo) values
-  ('comisionista.staging@example.com', 'comisionista', true),
-  ('mayorista.staging@example.com', 'mayorista', true),
-  ('revendedor.staging@example.com', 'revendedor', true),
-  ('cliente.staging@example.com', 'cliente', true)
+  ('comisionista@prueba.com', 'comisionista', true),
+  ('mayorista@prueba.com', 'mayorista', true),
+  ('revendedor@prueba.com', 'revendedor', true),
+  ('cliente@prueba.com', 'cliente', true)
 on conflict (email) do update
 set rol = excluded.rol, activo = true, actualizado_en = now();
 
 commit;
-
