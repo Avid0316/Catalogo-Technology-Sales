@@ -113,6 +113,24 @@ requireMatch(
   "el script de staging debe asignar el claim requerido por Supabase"
 );
 
+requireMatch(
+  "scripts/set-staging-auth-claims.mjs",
+  /collection\("usuarios"\).*doc\(profile\.email\)/s,
+  "el script de staging debe crear los perfiles de rol en Firestore"
+);
+
+requireMatch(
+  "index.html",
+  /ENTORNO DE PRUEBAS · DATOS FICTICIOS · NO ES PRODUCCIÓN/,
+  "la vista previa debe distinguirse visualmente de producción"
+);
+
+requireMatch(
+  "index.html",
+  /apiUrl:""\s*\}/,
+  "staging no debe tener configurado el Apps Script de producción"
+);
+
 forbidMatch(
   "scripts/set-staging-auth-claims.mjs",
   /@ts\.com|avid0316/i,
