@@ -161,6 +161,18 @@ requireMatch(
   "eliminar un traslado debe retirar también sus fotografías"
 );
 
+requireMatch(
+  "index.html",
+  /\.ov-sheet \.sheet\{[^}]*height:min\(94dvh,760px\)[^}]*display:flex[^}]*flex-direction:column/,
+  "la ficha interna debe mantener una altura estable"
+);
+
+requireMatch(
+  "index.html",
+  /<div class="sh-content"><div class="sh-panel on"/,
+  "las pestañas deben desplazarse dentro de un área central fija"
+);
+
 forbidMatch(
   "supabase_staging_seed.sql",
   /@ts\.com|technology-sales-web|avid0316/i,
