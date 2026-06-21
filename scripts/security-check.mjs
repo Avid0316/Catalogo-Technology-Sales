@@ -174,6 +174,23 @@ forbidMatch(
 );
 
 const html = read("index.html");
+const stagingConfig = html.match(
+  /window\.TS_CONFIG=window\.TS_ENV==="staging"\?\{[\s\S]*?supabaseUrl:"([^"]+)",\s*supabaseKey:"([^"]+)"/
+);
+if (!stagingConfig) {
+  failures.push("index.html: no se pudo validar la configuración de Supabase staging");
+} else {
+  try {
+    const payload = JSON.parse(
+      Buffer.from(stagingConfig[2].split(".")[1], "base64url").toString("utf8")
+    );
+    if (payload.iss !== "supabase" || payload.ref !== "hvubspslexrzlqpxwzwp" || payload.role !== "anon") {
+      failures.push("index.html: la clave pública de Supabase staging no corresponde al proyecto configurado");
+    }
+  } catch {
+    failures.push("index.html: la clave pública de Supabase staging no es un JWT válido");
+  }
+}
 const scripts = [...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];
 scripts.forEach((match, index) => {
   let source = match[2];
