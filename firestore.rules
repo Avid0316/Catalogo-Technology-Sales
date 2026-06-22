@@ -24,8 +24,55 @@ service cloud.firestore {
       return role() in ["admin", "asesor", "vendedor"];
     }
 
+    function canManageQuotes() {
+      return role() in ["admin", "asesor"];
+    }
+
     function isAdmin() {
       return role() == "admin";
+    }
+
+    function validQuoteItem(item) {
+      return item is map
+        && item.keys().hasOnly([
+          "recordId", "modelo", "marca", "capacidad", "chip", "color",
+          "estadoEquipo", "sucursal", "cantidad", "precio"
+        ])
+        && item.recordId is string && item.recordId.size() <= 120
+        && item.modelo is string && item.modelo.size() > 0 && item.modelo.size() <= 160
+        && item.marca is string && item.marca.size() <= 100
+        && item.capacidad is string && item.capacidad.size() <= 80
+        && item.chip is string && item.chip.size() <= 40
+        && item.color is string && item.color.size() <= 80
+        && item.estadoEquipo is string && item.estadoEquipo.size() <= 80
+        && item.sucursal is string && item.sucursal.size() <= 120
+        && item.cantidad is int && item.cantidad > 0 && item.cantidad <= 1000
+        && item.precio is string && item.precio.size() <= 80;
+    }
+
+    function validQuoteItems(items) {
+      return items is list
+        && items.size() > 0
+        && items.size() <= 10
+        && validQuoteItem(items[0])
+        && (items.size() < 2 || validQuoteItem(items[1]))
+        && (items.size() < 3 || validQuoteItem(items[2]))
+        && (items.size() < 4 || validQuoteItem(items[3]))
+        && (items.size() < 5 || validQuoteItem(items[4]))
+        && (items.size() < 6 || validQuoteItem(items[5]))
+        && (items.size() < 7 || validQuoteItem(items[6]))
+        && (items.size() < 8 || validQuoteItem(items[7]))
+        && (items.size() < 9 || validQuoteItem(items[8]))
+        && (items.size() < 10 || validQuoteItem(items[9]));
+    }
+
+    function validQuoteTotal(total) {
+      return total == null
+        || (
+          total is number
+          && total >= 0
+          && total <= 100000000
+        );
     }
 
     function validQuote() {
@@ -42,28 +89,86 @@ service cloud.firestore {
         && request.resource.data.cliente.contacto is string
         && request.resource.data.cliente.contacto.size() > 0
         && request.resource.data.cliente.contacto.size() <= 160
+        && request.resource.data.cliente.rol is string
+        && request.resource.data.cliente.rol in [
+          "admin", "asesor", "vendedor", "comisionista",
+          "mayorista", "revendedor", "cliente"
+        ]
+        && request.resource.data.cliente.email is string
+        && request.resource.data.cliente.email.size() <= 254
+        && request.resource.data.cliente.direccionEnvio is string
+        && request.resource.data.cliente.direccionEnvio.size() <= 500
         && request.resource.data.comentario is string
         && request.resource.data.comentario.size() <= 1000
-        && request.resource.data.items is list
-        && request.resource.data.items.size() > 0
-        && request.resource.data.items.size() <= 50
-        && request.resource.data.estado == "Nueva";
+        && validQuoteItems(request.resource.data.items)
+        && validQuoteTotal(request.resource.data.totalEstimado)
+        && request.resource.data.estado == "Nueva"
+        && request.resource.data.fecha is timestamp;
+    }
+
+    function validQuoteUpdate() {
+      let changed = request.resource.data.diff(resource.data).affectedKeys();
+      return changed.hasOnly([
+          "estado", "historial", "atendidoPor", "atendidoEn",
+          "items", "totalEstimado"
+        ])
+        && (
+          !changed.hasAny(["estado"])
+          || request.resource.data.estado in [
+            "Nueva", "Revisando", "Incompleto", "Proformada", "Completado"
+          ]
+        )
+        && (
+          !changed.hasAny(["historial"])
+          || (
+            request.resource.data.historial is list
+            && request.resource.data.historial.size() <= 500
+          )
+        )
+        && (
+          !changed.hasAny(["atendidoPor"])
+          || (
+            request.resource.data.atendidoPor is string
+            && request.resource.data.atendidoPor.size() <= 160
+          )
+        )
+        && (
+          !changed.hasAny(["atendidoEn"])
+          || request.resource.data.atendidoEn == null
+          || request.resource.data.atendidoEn is int
+        )
+        && (
+          !changed.hasAny(["items"])
+          || validQuoteItems(request.resource.data.items)
+        )
+        && (
+          !changed.hasAny(["totalEstimado"])
+          || validQuoteTotal(request.resource.data.totalEstimado)
+        );
     }
 
     match /cotizaciones/{quoteId} {
       allow create: if validQuote()
         && (
-          (!signedIn() && request.resource.data.cliente.email == "")
-          || (signedIn() && request.resource.data.cliente.email == email())
+          (
+            !signedIn()
+            && request.resource.data.cliente.email == ""
+            && request.resource.data.cliente.rol == "cliente"
+          )
+          || (
+            signedIn()
+            && request.resource.data.cliente.email == email()
+            && request.resource.data.cliente.rol == role()
+          )
         );
 
-      allow read: if isInternal()
+      allow read: if canManageQuotes()
         || (
           signedIn()
           && resource.data.cliente.email == email()
         );
 
-      allow update: if isInternal();
+      allow update: if canManageQuotes() && validQuoteUpdate();
       allow delete: if isAdmin();
     }
 

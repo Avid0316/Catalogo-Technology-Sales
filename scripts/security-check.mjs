@@ -233,6 +233,36 @@ requireMatch(
   "solo administradores deben eliminar cotizaciones"
 );
 
+requireMatch(
+  "firestore.rules",
+  /function canManageQuotes\(\)[\s\S]*return role\(\) in \["admin", "asesor"\]/,
+  "solo admin y asesor deben gestionar la bandeja general de cotizaciones"
+);
+
+requireMatch(
+  "firestore.rules",
+  /allow update: if canManageQuotes\(\) && validQuoteUpdate\(\)/,
+  "vendedor no debe modificar cotizaciones directamente"
+);
+
+requireMatch(
+  "firestore.rules",
+  /function validQuoteItem\(item\)[\s\S]*item\.cantidad is int/,
+  "Firestore debe validar los campos de cada artículo cotizado"
+);
+
+requireMatch(
+  "firestore.rules",
+  /function validQuoteUpdate\(\)[\s\S]*changed\.hasOnly\(\[[\s\S]*"items", "totalEstimado"/,
+  "las actualizaciones de cotizaciones deben limitar los campos modificables"
+);
+
+requireMatch(
+  "firestore.rules",
+  /!signedIn\(\)[\s\S]*cliente\.rol == "cliente"[\s\S]*cliente\.rol == role\(\)/,
+  "el rol declarado en una cotización debe coincidir con la identidad"
+);
+
 forbidMatch(
   "firestore.rules",
   /return role\(\) in \[[^\]]*"comisionista"/,
@@ -243,6 +273,36 @@ forbidMatch(
   "firestore.rules",
   /allow read,\s*update,\s*delete:\s*if request\.auth != null/,
   "no se permite acceso global por el mero hecho de iniciar sesión"
+);
+
+forbidMatch(
+  ".github/workflows/firebase-deploy.yml",
+  /continue-on-error:\s*true/,
+  "el despliegue no debe continuar si fallan las reglas de Firestore"
+);
+
+requireMatch(
+  ".github/workflows/firebase-deploy.yml",
+  /Desplegar reglas de Firestore[\s\S]*Desplegar a Firebase Hosting/,
+  "las reglas deben publicarse antes que la aplicación"
+);
+
+forbidMatch(
+  "index.html",
+  /user-scalable=no|maximum-scale=1\.0|gesturestart/,
+  "la aplicación no debe bloquear el zoom accesible"
+);
+
+requireMatch(
+  "index.html",
+  /recordId:c\.recordId\|\|""[\s\S]*chip:c\.chip\|\|""[\s\S]*sucursal:c\.sucursal\|\|""/,
+  "las cotizaciones deben conservar variante, equipo individual y sucursal"
+);
+
+requireMatch(
+  "index.html",
+  /recordId:product\.individual\?\(product\.recordId\|\|""\):""/,
+  "solo los equipos individuales deben fijar un recordId concreto"
 );
 
 requireMatch(
