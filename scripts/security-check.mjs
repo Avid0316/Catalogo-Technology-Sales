@@ -312,6 +312,12 @@ requireMatch(
 );
 
 requireMatch(
+  "index.html",
+  /const warTxt=war\?\("Garantía Apple"\+\(p\.vence\?/,
+  "la fecha de garantía de equipos individuales debe identificarse como Garantía Apple"
+);
+
+requireMatch(
   "apps-script/Inventario.gs",
   /datos:\s*"Este endpoint ya no publica inventario/,
   "doGet no debe publicar el catálogo heredado"
