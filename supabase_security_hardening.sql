@@ -246,7 +246,7 @@ begin
     raise exception 'not authorized';
   end if;
 
-  delete from public.inventario;
+  delete from public.inventario where true;
 
   insert into public.inventario (
     categoria, marca, modelo, capacidad, color, chip, sucursal,
@@ -266,7 +266,7 @@ begin
     imei text, bateria integer, ciclos integer, garantia text, vence text
   );
 
-  delete from public.precios;
+  delete from public.precios where true;
 
   insert into public.precios (
     marca, modelo, capacidad, chip, estado,
@@ -296,7 +296,7 @@ begin
     raise exception 'not authorized';
   end if;
 
-  delete from public.precios;
+  delete from public.precios where true;
 
   insert into public.precios (
     marca, modelo, capacidad, chip, estado,
