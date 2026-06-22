@@ -23,3 +23,15 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           channelId: live
           projectId: technology-sales-web
+
+      - name: Preparar credenciales para reglas
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          node -e "require('fs').writeFileSync(process.env.RUNNER_TEMP + '/firebase-service-account.json', process.env.FIREBASE_SERVICE_ACCOUNT_JSON)"
+
+      - name: Desplegar reglas de Firestore
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
+        run: npx --yes firebase-tools@14 deploy --only firestore:rules --project technology-sales-web --non-interactive

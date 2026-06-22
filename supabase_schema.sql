@@ -8,21 +8,13 @@
 -- ---------------------------------------------------------------------
 -- 0) Allowlist de usuarios internos (admin / asesor / vendedor)
 --    Solo los correos aquí podrán leer/escribir los módulos internos.
---    Ajusta estos correos a los reales de tu equipo.
+--    Se administra desde el panel web o mediante una migración controlada.
 -- ---------------------------------------------------------------------
 create table if not exists public.internos (
   email   text primary key,
   nombre  text,
   rol     text                                  -- 'admin' | 'asesor' | 'vendedor'
 );
-
-insert into public.internos (email, nombre, rol) values
-  ('avid@ts.com',     'David',  'admin'),
-  ('avid0316@ts.com', 'David',  'admin'),
-  ('miguel@ts.com',   'Miguel', 'admin'),
-  ('wilmer@ts.com',   'Wilmer', 'asesor'),
-  ('ventas@ts.com',   'Ventas', 'vendedor')
-on conflict (email) do nothing;
 
 -- Helper: ¿el usuario autenticado (token de Firebase) es interno?
 -- SECURITY DEFINER: la consulta interna a 'internos' salta el RLS, evitando
@@ -33,6 +25,16 @@ as $$
   select exists (
     select 1 from public.internos
     where email = (auth.jwt() ->> 'email')
+  );
+$$;
+
+create or replace function public.is_admin() returns boolean
+language sql stable security definer set search_path = public
+as $$
+  select exists (
+    select 1 from public.internos
+    where lower(email) = lower(auth.jwt() ->> 'email')
+      and lower(coalesce(rol, '')) = 'admin'
   );
 $$;
 
@@ -83,9 +85,6 @@ alter table public.equipos_registro add column if not exists forma_pago       te
 alter table public.equipos_registro add column if not exists estado_compra    text default 'Pendiente';
 alter table public.equipos_registro add column if not exists historial        jsonb default '[]';
 alter table public.equipos_registro add column if not exists actualizado_en   timestamptz default now();
-alter table public.traslados        add column if not exists categoria        text;
-alter table public.tareas           add column if not exists historial        jsonb default '[]';
-alter table public.tareas           add column if not exists actualizado_en   timestamptz default now();
 
 -- ---------------------------------------------------------------------
 -- 2) Solicitudes de traslado de equipos entre sucursales
@@ -134,6 +133,12 @@ create table if not exists public.tareas (
   completado_en   timestamptz
 );
 
+-- Columnas para instalaciones que ya tenían versiones anteriores.
+-- Deben ejecutarse después de crear las tablas.
+alter table public.traslados add column if not exists categoria text;
+alter table public.tareas add column if not exists historial jsonb default '[]';
+alter table public.tareas add column if not exists actualizado_en timestamptz default now();
+
 -- =====================================================================
 --  Seguridad (RLS) — solo usuarios internos (validado por el CORREO del
 --  token de Firebase, vía is_interno()). No depende del rol 'authenticated',
@@ -149,11 +154,21 @@ create policy "read internos" on public.internos
   for select using (public.is_interno());
 
 drop policy if exists "rw equipos"   on public.equipos_registro;
+drop policy if exists "read equipos" on public.equipos_registro;
+drop policy if exists "create equipos" on public.equipos_registro;
+drop policy if exists "admin update equipos" on public.equipos_registro;
+drop policy if exists "admin delete equipos" on public.equipos_registro;
 drop policy if exists "rw traslados" on public.traslados;
 drop policy if exists "rw tareas"    on public.tareas;
 
-create policy "rw equipos"   on public.equipos_registro for all
-  using (public.is_interno()) with check (public.is_interno());
+create policy "read equipos" on public.equipos_registro
+  for select using (public.is_interno());
+create policy "create equipos" on public.equipos_registro
+  for insert with check (public.is_interno());
+create policy "admin update equipos" on public.equipos_registro
+  for update using (public.is_admin()) with check (public.is_admin());
+create policy "admin delete equipos" on public.equipos_registro
+  for delete using (public.is_admin());
 create policy "rw traslados" on public.traslados        for all
   using (public.is_interno()) with check (public.is_interno());
 create policy "rw tareas"    on public.tareas           for all
@@ -163,19 +178,19 @@ create policy "rw tareas"    on public.tareas           for all
 --  Storage: buckets para imágenes (traslados y equipos)
 -- =====================================================================
 insert into storage.buckets (id, name, public) values
-  ('traslados', 'traslados', true),
-  ('equipos',   'equipos',   true)
-on conflict (id) do nothing;
+  ('traslados', 'traslados', false),
+  ('equipos',   'equipos',   false)
+on conflict (id) do update set public = false;
 
 drop policy if exists "read internos storage"  on storage.objects;
 drop policy if exists "write internos storage" on storage.objects;
 drop policy if exists "read traslados storage"  on storage.objects;  -- limpia versión anterior
 drop policy if exists "write traslados storage" on storage.objects;
 
--- Lectura pública de ambos buckets (las URLs se muestran en la app)
+-- Las fotografías son privadas y solo las consulta personal interno.
 create policy "read internos storage" on storage.objects
-  for select to anon, authenticated
-  using (bucket_id in ('traslados','equipos'));
+  for select to authenticated
+  using (bucket_id in ('traslados','equipos') and public.is_interno());
 
 -- Subir/editar/borrar solo internos (validado por correo del token)
 create policy "write internos storage" on storage.objects
