@@ -152,7 +152,19 @@ function construirInventario() {
   var desc = 0;
   try { desc = revisarDescuadres_(ss); } catch (e) { Logger.log("Descuadres: " + e); }
 
+  var nuevasVariantesPrecio = 0;
+  var errorPrecios = "";
+  try {
+    nuevasVariantesPrecio = agregarVariantesFaltantesPrecios_(ss);
+  } catch (e) {
+    errorPrecios = e.message || String(e);
+  }
+
   var msg = "Inventario construido: " + (salida.length - 1) + " filas con stock.";
+  if (nuevasVariantesPrecio > 0) {
+    msg += "\n" + nuevasVariantesPrecio + " variantes nuevas agregadas a la hoja 'Precios'.";
+  }
+  if (errorPrecios) msg += "\nPrecios pendientes de preparar: " + errorPrecios;
   if (movs > 0) msg += "\n📦 " + movs + " movimientos registrados en la hoja 'Movimientos'.";
   if (desc > 0) msg += "\n⚠️ " + desc + " equipos descuadran con el sistema (revisa la hoja 'Descuadres').";
   if (sinModelo.length) {
@@ -162,7 +174,7 @@ function construirInventario() {
 
   // Sincroniza a Supabase automáticamente si la propiedad privada está configurada.
   try {
-    if (getSupabaseServiceKey_()) {
+    if (!errorPrecios && getSupabaseServiceKey_()) {
       sincronizarSupabase();
       msg += "\n☁️ Sincronizado a Supabase.";
     }
@@ -386,6 +398,194 @@ function makeKeyModelo(marca, modelo) {
   return [marca || "", modelo || ""]
     .map(function (v) { return String(v).trim().toUpperCase(); })
     .join("|");
+}
+
+var PRICE_HEADERS = [
+  "Marca", "Modelo", "Capacidad", "Chip", "Estado",
+  "Precio Mayorista", "Precio Reventa", "Precio Cliente Final"
+];
+
+function validarEncabezadosPrecios_(sheet) {
+  if (!sheet) throw new Error('No existe la hoja "Precios".');
+  var current = sheet.getRange(1, 1, 1, PRICE_HEADERS.length).getValues()[0];
+  var errors = [];
+  PRICE_HEADERS.forEach(function (expected, index) {
+    if (String(current[index] || "").trim() !== expected) {
+      errors.push("columna " + (index + 1) + ': "' + expected + '"');
+    }
+  });
+  if (errors.length) {
+    throw new Error(
+      'La fila 1 de "Precios" no es válida. Faltan o cambiaron: ' +
+      errors.join(", ") +
+      '. Ejecuta "Preparar hoja de precios" antes de sincronizar.'
+    );
+  }
+}
+
+function leerPreciosCrudos_(sheet) {
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, PRICE_HEADERS.length).getValues();
+  return values.map(function (row) {
+    return {
+      marca: row[0] || "",
+      modelo: row[1] || "",
+      capacidad: row[2] || "",
+      chip: row[3] || "",
+      estado: row[4] || "",
+      precioMayorista: row[5],
+      precioReventa: row[6],
+      precioPublico: row[7]
+    };
+  }).filter(function (row) {
+    return String(row.modelo || "").trim();
+  });
+}
+
+function tienePrecio_(row) {
+  return !!row && (
+    sbNum_(row.precioMayorista) !== null ||
+    sbNum_(row.precioReventa) !== null ||
+    sbNum_(row.precioPublico) !== null
+  );
+}
+
+function leerPreciosSupabase_() {
+  var serviceKey = getSupabaseServiceKey_();
+  if (!serviceKey) {
+    throw new Error(
+      "Falta SUPABASE_SERVICE_KEY. No se puede preparar Precios sin comprobar los valores ya publicados."
+    );
+  }
+  var url = SUPABASE_URL +
+    "/rest/v1/precios?select=marca,modelo,capacidad,chip,estado," +
+    "precio_mayorista,precio_reventa,precio_publico&limit=10000";
+  var res = UrlFetchApp.fetch(url, {
+    method: "get",
+    headers: sbHeaders_(),
+    muteHttpExceptions: true
+  });
+  if (res.getResponseCode() >= 300) {
+    throw new Error("No se pudieron leer los precios actuales de Supabase: " + res.getContentText());
+  }
+  var rows = JSON.parse(res.getContentText() || "[]");
+  return rows.map(function (row) {
+    return {
+      marca: row.marca || "",
+      modelo: row.modelo || "",
+      capacidad: row.capacidad || "",
+      chip: row.chip || "",
+      estado: row.estado || "",
+      precioMayorista: row.precio_mayorista,
+      precioReventa: row.precio_reventa,
+      precioPublico: row.precio_publico
+    };
+  });
+}
+
+function variantesVigentes_(ss) {
+  var out = {};
+  function agregar(row) {
+    var modelo = String(row["Modelo"] || "").trim();
+    if (!modelo) return;
+    var item = {
+      marca: row["Marca"] || "",
+      modelo: modelo,
+      capacidad: row["Capacidad"] || "",
+      chip: row["Chip"] || "",
+      estado: row["Estado"] || ""
+    };
+    out[makeKey(item.marca, item.modelo, item.capacidad, item.chip, item.estado)] = item;
+  }
+  var inv = ss.getSheetByName("Inventario");
+  var equipos = ss.getSheetByName("Equipos");
+  if (!inv) throw new Error('No existe la hoja "Inventario".');
+  sheetToObjects(inv).forEach(agregar);
+  if (equipos) sheetToObjects(equipos).forEach(agregar);
+  return Object.keys(out).map(function (key) { return out[key]; }).sort(function (a, b) {
+    return makeKey(a.marca, a.modelo, a.capacidad, a.chip, a.estado)
+      .localeCompare(makeKey(b.marca, b.modelo, b.capacidad, b.chip, b.estado));
+  });
+}
+
+function agregarVariantesFaltantesPrecios_(ss) {
+  var sheet = ss.getSheetByName("Precios");
+  validarEncabezadosPrecios_(sheet);
+  var existing = {};
+  leerPreciosCrudos_(sheet).forEach(function (row) {
+    existing[makeKey(row.marca, row.modelo, row.capacidad, row.chip, row.estado)] = true;
+  });
+  var rows = [];
+  variantesVigentes_(ss).forEach(function (item) {
+    var key = makeKey(item.marca, item.modelo, item.capacidad, item.chip, item.estado);
+    if (existing[key]) return;
+    rows.push([item.marca, item.modelo, item.capacidad, item.chip, item.estado, "", "", ""]);
+    existing[key] = true;
+  });
+  if (rows.length) {
+    sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, PRICE_HEADERS.length).setValues(rows);
+  }
+  return rows.length;
+}
+
+function prepararHojaPrecios() {
+  var ui = SpreadsheetApp.getUi();
+  var answer = ui.alert(
+    "Preparar hoja de precios",
+    "Se creará un respaldo y Precios se reconstruirá con las variantes vigentes de Inventario. " +
+    "Solo se conservarán importes cuando Marca, Modelo, Capacidad, Chip y Estado coincidan exactamente.",
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (answer !== ui.Button.OK) return;
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Precios");
+  if (!sheet) sheet = ss.insertSheet("Precios");
+  var oldRows = leerPreciosCrudos_(sheet);
+  var publishedRows = leerPreciosSupabase_();
+  var oldByKey = {};
+  oldRows.forEach(function (row) {
+    oldByKey[makeKey(row.marca, row.modelo, row.capacidad, row.chip, row.estado)] = row;
+  });
+  publishedRows.forEach(function (row) {
+    var key = makeKey(row.marca, row.modelo, row.capacidad, row.chip, row.estado);
+    if (!tienePrecio_(oldByKey[key]) && tienePrecio_(row)) oldByKey[key] = row;
+  });
+
+  if (sheet.getLastRow() > 0 || sheet.getLastColumn() > 0) {
+    var stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyyMMdd-HHmmss");
+    sheet.copyTo(ss).setName("Precios respaldo " + stamp);
+  }
+
+  var variants = variantesVigentes_(ss);
+  var kept = 0;
+  var rows = variants.map(function (item) {
+    var old = oldByKey[makeKey(item.marca, item.modelo, item.capacidad, item.chip, item.estado)];
+    if (tienePrecio_(old)) kept++;
+    return [
+      item.marca, item.modelo, item.capacidad, item.chip, item.estado,
+      old ? old.precioMayorista : "",
+      old ? old.precioReventa : "",
+      old ? old.precioPublico : ""
+    ];
+  });
+
+  sheet.clear();
+  sheet.getRange(1, 1, 1, PRICE_HEADERS.length).setValues([PRICE_HEADERS]);
+  if (rows.length) sheet.getRange(2, 1, rows.length, PRICE_HEADERS.length).setValues(rows);
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, PRICE_HEADERS.length);
+  sheet.getRange(1, 1, 1, PRICE_HEADERS.length)
+    .setFontWeight("bold")
+    .setBackground("#0f172a")
+    .setFontColor("#ffffff");
+
+  notificar_(
+    "✅ Hoja Precios preparada:\n" +
+    "• " + rows.length + " variantes vigentes\n" +
+    "• " + kept + " precios conservados por coincidencia exacta\n" +
+    "• Respaldo creado antes del cambio"
+  );
 }
 
 function formatLempiras(valor) {
@@ -621,6 +821,7 @@ function verificarTokenFirebase_(idToken) {
 function guardarPrecio_(body) {
   var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Precios");
   if (!sh) throw new Error('No existe la hoja "Precios".');
+  validarEncabezadosPrecios_(sh);
 
   var values = sh.getDataRange().getValues();
   var head = values[0].map(function (h) { return String(h).trim(); });
@@ -766,7 +967,7 @@ function eliminarAccesoUsuario_(userEmail) {
 
 function crearPreciosPayload_() {
   var prcSh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Precios");
-  if (!prcSh) return [];
+  validarEncabezadosPrecios_(prcSh);
   var prcPayload = [];
   sheetToObjects(prcSh).forEach(function (p) {
     if (!String(p["Modelo"] || "").trim()) return;
@@ -785,6 +986,12 @@ function crearPreciosPayload_() {
       precio_publico: pub
     });
   });
+  if (prcSh.getLastRow() > 1 && prcPayload.length === 0) {
+    throw new Error(
+      'La hoja "Precios" contiene variantes, pero ninguna tiene importes válidos. ' +
+      "Se canceló la sincronización para no vaciar los precios de Supabase."
+    );
+  }
   return prcPayload;
 }
 
@@ -862,6 +1069,7 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("TechnologySales")
     .addItem("Construir inventario", "construirInventario")
+    .addItem("Preparar hoja de precios", "prepararHojaPrecios")
     .addItem("Sincronizar a Supabase", "sincronizarSupabase")
     .addItem("Revisar descuadres", "revisarDescuadres")
     .addToUi();

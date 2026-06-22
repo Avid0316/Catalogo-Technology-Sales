@@ -311,6 +311,36 @@ requireMatch(
   "doGet no debe publicar el catálogo heredado"
 );
 
+requireMatch(
+  "apps-script/Inventario.gs",
+  /function validarEncabezadosPrecios_\(sheet\)[\s\S]*Preparar hoja de precios/,
+  "la sincronización debe bloquear encabezados de precios dañados"
+);
+
+requireMatch(
+  "apps-script/Inventario.gs",
+  /function prepararHojaPrecios\(\)[\s\S]*sheet\.copyTo\(ss\)[\s\S]*variantesVigentes_/,
+  "la conciliación de precios debe respaldar la hoja y usar variantes vigentes"
+);
+
+requireMatch(
+  "apps-script/Inventario.gs",
+  /function leerPreciosSupabase_\(\)[\s\S]*\/rest\/v1\/precios[\s\S]*publishedRows/,
+  "la conciliación debe conservar precios que ya estén publicados en Supabase"
+);
+
+requireMatch(
+  "apps-script/Inventario.gs",
+  /function agregarVariantesFaltantesPrecios_\(ss\)[\s\S]*variantesVigentes_[\s\S]*setValues\(rows\)/,
+  "construir inventario debe agregar variantes nuevas sin sobrescribir precios"
+);
+
+requireMatch(
+  "apps-script/Inventario.gs",
+  /prcPayload\.length === 0[\s\S]*no vaciar los precios de Supabase/,
+  "una hoja sin importes no debe borrar precios publicados"
+);
+
 forbidMatch(
   "apps-script/Inventario.gs",
   /SUPABASE_SERVICE_KEY\s*=\s*["']/,
