@@ -2,12 +2,15 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 <title>Technology Sales - Catálogo</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>/* Evita el zoom accidental (pellizco/doble-tap) en toda la web, incl. iOS Safari */
+(function(){["gesturestart","gesturechange","gestureend"].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();},{passive:false});});document.addEventListener("touchmove",function(e){if(e.touches&&e.touches.length>1)e.preventDefault();},{passive:false});})();</script>
 <style>
 :root{--black:#0f172a;--blue:#38bdf8;--yellow:#e4c441;--text:#111827;--muted:#64748b;--border:#dbe7f5}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif}
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .hidden{display:none!important}
 .env-banner{background:#7c2d12;color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:800;letter-spacing:.03em}
