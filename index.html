@@ -474,8 +474,6 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
       <div><label for="passwordInput">Contraseña</label><input type="password" id="passwordInput" placeholder="Tu contraseña" autocomplete="current-password" required></div>
       <button class="login-btn" type="submit">Ingresar</button>
     </form>
-    <div class="login-divider" style="display:flex;align-items:center;gap:12px;color:#94a3b8;font-size:13px;font-weight:700;margin:18px 0">o</div>
-    <button class="public-btn" type="button" onclick="enterPublic()" style="width:100%;border:2px solid #0f172a;border-radius:18px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;background:white;color:#0f172a">🛒 Ver catálogo como cliente</button>
     <p class="login-note">El sistema mostrará automáticamente tu catálogo según tu usuario.</p>
   </div></div>
 </main>
@@ -977,7 +975,6 @@ showRestoreOverlay("Cargando…");
 restoreSafetyTimer=setTimeout(()=>{if(document.getElementById("portal").classList.contains("hidden"))hideRestoreOverlay()},8000);
 if(window.fbOnAuth)window.appFirebaseReady();
 async function login(event){event.preventDefault();if(!window.fbAuth||!window.fbSignIn){alert("El sistema sigue cargando, espera un momento e intenta de nuevo.");return}const email=document.getElementById("usernameInput").value.trim().toLowerCase();const password=document.getElementById("passwordInput").value;const submitBtn=event.target.querySelector(".login-btn");const originalLabel=submitBtn.textContent;submitBtn.disabled=true;submitBtn.textContent="Ingresando...";suppressAutoRestore=true;try{await window.fbSignIn(window.fbAuth,email,password);const profile=await resolveProfile(email);currentRole=profile.role;currentUser=profile.name;currentUserEmail=email;currentProfile=profile;await loadInventory();applyRoleVisibility();enterPortal()}catch(error){console.error(error);const code=String(error&&error.code||"");if(code.startsWith("auth/"))alert("Correo o contraseña incorrectos");else alert(inventoryErrorMessage(error))}finally{submitBtn.disabled=false;submitBtn.textContent=originalLabel}}
-async function enterPublic(){const btn=document.querySelector(".public-btn");const original=btn.textContent;btn.disabled=true;btn.textContent="Cargando catálogo...";try{currentRole="cliente";currentUser="Cliente";currentUserEmail="";currentProfile=null;await loadInventory();applyRoleVisibility();enterPortal()}catch(error){console.error(error);alert(inventoryErrorMessage(error))}finally{btn.disabled=false;btn.textContent=original}}
 function logout(){resetSessionUiState();currentRole="";currentUser="";currentUserEmail="";currentProfile=null;inventoryData=[];stopQuotesWatch();updateCartFab();document.getElementById("passwordInput").value="";document.getElementById("portal").classList.add("hidden");document.getElementById("home").classList.remove("hidden");if(window.fbSignOut&&window.fbAuth)window.fbSignOut(window.fbAuth).catch(()=>{})}
 /* ===== Precios por rol ===== */
 function priceKey(o){return `${(o.marca||"").trim().toUpperCase()}|${(o.modelo||"").trim().toUpperCase()}|${(o.capacidad||"").trim().toUpperCase()}|${(o.chip||"").trim().toUpperCase()}|${(o.estado||"").trim().toUpperCase()}`}

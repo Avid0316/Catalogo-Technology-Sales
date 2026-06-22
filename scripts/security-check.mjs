@@ -293,6 +293,12 @@ forbidMatch(
   "la aplicación no debe bloquear el zoom accesible"
 );
 
+forbidMatch(
+  "index.html",
+  /Ver catálogo como cliente|class="public-btn"|function enterPublic\(/,
+  "el acceso público al catálogo debe permanecer deshabilitado temporalmente"
+);
+
 requireMatch(
   "index.html",
   /recordId:c\.recordId\|\|""[\s\S]*chip:c\.chip\|\|""[\s\S]*sucursal:c\.sucursal\|\|""/,
