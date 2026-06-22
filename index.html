@@ -10,7 +10,7 @@
 <style>
 :root{--black:#0f172a;--blue:#38bdf8;--yellow:#e4c441;--text:#111827;--muted:#64748b;--border:#dbe7f5}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif}
-html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:none}
 body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .hidden{display:none!important}
 .env-banner{background:#7c2d12;color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:800;letter-spacing:.03em}
@@ -161,7 +161,7 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 .modal-header h2{font-size:24px}
 .close-btn{border:none;background:#ef4444;color:white;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:18px;flex-shrink:0}
-.modal-scroll{flex:1;overflow:auto;padding:0 24px}
+.modal-scroll{flex:1;overflow:auto;padding:0 24px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .modal-scroll table{width:100%;border-collapse:collapse;min-width:560px}
 .modal-scroll th,.modal-scroll td{padding:13px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:14px;white-space:nowrap}
 .modal-scroll th{background:#0f172a;color:white;position:sticky;top:0}
