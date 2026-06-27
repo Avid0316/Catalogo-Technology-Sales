@@ -1272,7 +1272,7 @@ _sheet.addEventListener("click",e=>{if(e.target===_sheet){closeModSheet();return
 _sheet.addEventListener("change",e=>{const rec=e.target.closest("input[data-trrec]");if(rec&&rec.files&&rec.files.length){const id=rec.dataset.trrec,files=rec.files;closeModSheet();trRecibir(id,files)}});
 window.saveEquipo=saveEquipo;window.saveTraslado=saveTraslado;window.saveTarea=saveTarea;window.eqToggle=eqToggle;window.renderTraslados=renderTraslados;window.renderTareas=renderTareas;window.renderEquipos=renderEquipos;
 window.showView=showView;window.closeCotiz=closeCotiz;
-window.login=login;window.enterPublic=enterPublic;window.logout=logout;window.setCategory=setCategory;window.openCart=openCart;window.closeCart=closeCart;window.closeModal=closeModal;window.modalQtyChange=modalQtyChange;window.addFromModal=addFromModal;window.goToQuoteForm=goToQuoteForm;window.backToCart=backToCart;window.submitPublicQuote=submitPublicQuote;window.finishQuote=finishQuote;window.clearAllFilters=clearAllFilters;
+window.login=login;window.logout=logout;window.setCategory=setCategory;window.openCart=openCart;window.closeCart=closeCart;window.closeModal=closeModal;window.modalQtyChange=modalQtyChange;window.addFromModal=addFromModal;window.goToQuoteForm=goToQuoteForm;window.backToCart=backToCart;window.submitPublicQuote=submitPublicQuote;window.finishQuote=finishQuote;window.clearAllFilters=clearAllFilters;
 </script>
 </body>
 </html>

@@ -295,7 +295,7 @@ forbidMatch(
 
 forbidMatch(
   "index.html",
-  /Ver catálogo como cliente|class="public-btn"|function enterPublic\(/,
+  /Ver catálogo como cliente|class="public-btn"|function enterPublic\(|window\.enterPublic/,
   "el acceso público al catálogo debe permanecer deshabilitado temporalmente"
 );
 
