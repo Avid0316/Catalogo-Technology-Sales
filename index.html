@@ -459,6 +459,66 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .pd-total{font-weight:800;color:#0f172a;font-size:14px}
 @media(max-width:900px){.hero-inner{flex-direction:column;gap:16px;text-align:center}.hero-text{text-align:center}.logo{width:190px}.hero h1{font-size:32px}.hero p{font-size:15px}.stats{grid-template-columns:1fr}.stats.cols-2{grid-template-columns:1fr}.filter-row{flex-direction:column;align-items:stretch}.dd,.price-range,.search-box{min-width:0;width:100%}}
 @media(max-width:650px){.hero{padding:12px 14px}.hero-inner{gap:10px}.logo{width:132px}.hero-badge{font-size:12px;padding:6px 12px;margin-bottom:7px}.hero h1{font-size:26px;letter-spacing:-.03em}.hero p{font-size:13px;line-height:1.35}.container{padding:14px 18px}.login-card{margin-top:2px}.card{padding:20px;border-radius:22px}.access-title{font-size:27px;line-height:1.08}.access-sub{font-size:14px;line-height:1.35;margin-bottom:18px}.grid{grid-template-columns:1fr}.product-img{height:150px}.cart-fab{bottom:16px;right:16px;padding:13px 18px}.admin-nav{padding:6px;gap:6px}.anav-btn{flex-direction:row;gap:6px;font-size:12.5px;padding:10px 13px;white-space:nowrap}.anav-ico{font-size:18px;line-height:1}.anav-badge{position:static;margin-left:1px;font-size:10px;min-width:17px;height:17px;padding:0 5px}}
+@media(max-width:650px){
+  #portal>.container{padding:12px 14px 88px}
+  #portal>.container>.card:first-child{padding:16px 18px;margin-bottom:14px}
+  .portal-head{gap:10px}
+  .portal-head h2{font-size:24px;line-height:1.12;letter-spacing:-.03em}
+  .portal-head p{font-size:13px;line-height:1.35;margin-top:6px}
+  .sync-status{font-size:12px;padding:7px 10px}
+  .logout-btn,.profile-btn{padding:8px 11px;border-radius:11px;font-size:12.5px}
+  .admin-nav{margin-bottom:12px;border-radius:18px;background:#eef3f8;position:sticky;top:0;z-index:30;box-shadow:0 10px 22px rgba(15,23,42,.08)}
+  .admin-nav .anav-btn{padding:9px 13px;border-radius:12px}
+  .breadcrumb{font-size:13px;margin:4px 0 10px}
+  #catalogView>.card{padding:16px;margin-bottom:14px}
+  .categories{gap:8px;padding-bottom:4px}
+  .cat-btn{padding:10px 14px;font-size:13px}
+  .filter-row{gap:10px}
+  .search-box input,.dd-btn,.pr-inputs input{padding-top:12px;padding-bottom:12px;border-radius:13px}
+  .f-cap{font-size:11px;margin-bottom:5px}
+  .active-filters{margin-top:12px}
+  .result-row{margin-top:12px}
+  .result-count{font-size:13px;margin-top:0}
+  .view-toggle{width:100%;padding:4px;border-radius:13px}
+  .vt-btn{flex:1;padding:9px 10px}
+  #catalogView .stats{grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}
+  #catalogView .stat-box{padding:12px 8px;border-radius:16px}
+  #catalogView .stat-box h3{font-size:22px;margin-bottom:2px}
+  #catalogView .stat-box p{font-size:11px;line-height:1.15}
+  .grid{gap:12px;margin-top:12px}
+  .product-card{padding:14px;border-radius:18px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+  .product-card:hover{transform:none}
+  .product-img{height:128px;margin-bottom:10px}
+  .product-title{font-size:18px;line-height:1.15;margin-bottom:5px}
+  .product-meta{font-size:12.5px;line-height:1.35;margin-bottom:8px}
+  .pc-foot{padding-top:10px}
+  .pc-pricerow{align-items:stretch;margin-bottom:9px}
+  .pc-units{align-self:flex-start;font-size:12px;padding:5px 9px}
+  .pc-prices{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:7px 9px;font-size:12px;gap:1px;min-width:118px}
+  .btn-add{min-height:44px;border-radius:13px}
+  .list-row{padding:12px 13px;border-radius:14px}
+  .li-title{font-size:14.5px}
+  .li-meta{font-size:11.5px;line-height:1.35}
+  .li-price{font-size:12px}
+  .modal{align-items:flex-end;padding:0}
+  .modal-content{max-height:92dvh;border-radius:24px 24px 0 0}
+  .modal-top{padding:18px 20px 0}
+  .modal-header{margin-bottom:12px}
+  .modal-header h2{font-size:22px;line-height:1.15}
+  .modal-header-b{gap:12px;margin-bottom:8px}
+  .modal-img-b{width:58px;height:58px;border-radius:13px}
+  .modal-hb-info h2{font-size:18px;line-height:1.15}
+  .modal-sub{font-size:12px;line-height:1.35;margin-bottom:6px}
+  .mp-multi{display:inline-block;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:7px 9px;font-size:12.5px;line-height:1.35}
+  .mp-big{font-size:22px}
+  .close-btn{width:40px;height:40px}
+  .modal-scroll{padding:0 20px}
+  .modal-breakdown{margin-top:12px}
+  .modal-add-row{padding:12px 20px max(12px,env(safe-area-inset-bottom));gap:10px}
+  .modal-add-row .btn-add{min-height:48px;border-radius:13px}
+  .modal-add-row .qsel button{width:42px;height:42px}
+  .modal-add-row .qsel input{width:52px}
+}
 </style>
 </head>
 <body>
