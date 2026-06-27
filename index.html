@@ -135,16 +135,19 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .pc-units{background:#eef2ff;color:#4338ca;padding:5px 11px;border-radius:999px;font-weight:800;font-size:13px;white-space:nowrap}
 .pc-price{font-size:19px;font-weight:800;color:#0f172a;white-space:nowrap;text-align:right}
 .pc-price-tba{font-size:13px;font-weight:700;color:#94a3b8;white-space:normal}
-.prc-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.prc-card.prc-missing{border-color:#fca5a5;background:#fef2f2}
+.prc-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.prc-title{margin:0;font-size:22px}
+.prc-help{padding:13px 16px;font-size:13px;color:var(--muted);border-left:4px solid #38bdf8}
+.prc-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 4px 14px rgba(15,23,42,.04)}
+.prc-card.prc-missing{border-color:#fca5a5;background:linear-gradient(135deg,#fff,#fff7f7)}
 .prc-info{min-width:200px;flex:1}
-.prc-name{font-weight:800;color:#0f172a;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.prc-name{font-weight:800;color:#0f172a;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .prc-sub{color:#64748b;font-size:12.5px;margin-top:4px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .prc-inputs{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
 .prc-inputs label{display:flex;flex-direction:column;font-size:11px;font-weight:700;color:#64748b;gap:3px}
-.prc-inputs input{width:90px;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;font-weight:600}
+.prc-inputs input{width:98px;padding:10px 11px;border:1.5px solid #e2e8f0;border-radius:11px;font-size:15px;font-weight:700;background:#fff}
 .prc-inputs input:focus{outline:none;border-color:#6366f1}
-.prc-save{padding:9px 16px;background:#6366f1;color:#fff;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-size:13px;align-self:flex-end}
+.prc-save{padding:11px 18px;background:#6366f1;color:#fff;border:none;border-radius:11px;font-weight:800;cursor:pointer;font-size:13px;align-self:flex-end;min-height:40px}
 .prc-save:hover{background:#4f46e5}
 .prc-save.saved{background:#16a34a}
 .prc-save:disabled{opacity:.7;cursor:default}
@@ -365,6 +368,9 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .wa-btn:hover{background:#1da851}
 /* Panel administrativo */
 .admin-nav{display:flex;gap:6px;padding:6px;background:#eef2f7;border-radius:16px;box-shadow:none}
+.anav-group{display:flex;gap:6px;flex:1}
+.anav-group:not(:has(.anav-btn:not(.hidden))){display:none}
+.anav-group-label{display:none}
 .anav-btn{flex:1;border:none;background:transparent;color:#64748b;font-weight:800;font-size:14px;padding:12px 6px;border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.2s;position:relative}
 .anav-btn:hover{color:#0f172a}
 .anav-btn.active{background:white;color:#0f172a;box-shadow:0 3px 10px rgba(15,23,42,.10)}
@@ -382,8 +388,8 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .bar-track{flex:1;height:10px;background:#eef2f7;border-radius:999px;overflow:hidden}
 .bar-fill{height:100%;background:#6366f1;border-radius:999px}
 .bar-val{width:54px;text-align:right;font-weight:800;font-size:13px;color:#0f172a;flex:none}
-@media(min-width:901px){.admin-nav{flex-direction:column;align-items:stretch;width:212px;flex:none;position:sticky;top:18px;padding:10px}.admin-nav .anav-btn{flex:none;flex-direction:row;justify-content:flex-start;gap:11px;font-size:14px;padding:12px 14px;text-align:left}.admin-nav .anav-ico{font-size:19px}}
-@media(max-width:900px){.dash-wrap,.dash-content{display:contents}.admin-nav{width:auto;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.admin-nav::-webkit-scrollbar{display:none}.admin-nav .anav-btn{flex:0 0 auto;min-width:62px}.kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}.kpi-card{padding:13px;gap:10px;border-radius:15px}.kpi-ico{width:38px;height:38px;font-size:18px}.kpi-val{font-size:20px}.kpi-lbl{font-size:11px}.bar-lbl{width:96px;font-size:11px}.bar-val{width:46px;font-size:12px}}
+@media(min-width:901px){.admin-nav{flex-direction:column;align-items:stretch;width:212px;flex:none;position:sticky;top:18px;padding:10px;gap:13px}.anav-group{flex:none;flex-direction:column;gap:5px}.anav-group+.anav-group{border-top:1px solid #dbe4f0;padding-top:12px}.anav-group-label{display:block;color:#94a3b8;font-size:10.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:0 10px 1px}.admin-nav .anav-btn{flex:none;flex-direction:row;justify-content:flex-start;gap:11px;font-size:14px;padding:12px 14px;text-align:left}.admin-nav .anav-ico{font-size:19px}}
+@media(max-width:900px){.dash-wrap,.dash-content{display:contents}.admin-nav{width:auto;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.admin-nav::-webkit-scrollbar{display:none}.anav-group{flex:0 0 auto}.anav-group+.anav-group{border-left:1px solid #dbe4f0;padding-left:6px}.admin-nav .anav-btn{flex:0 0 auto;min-width:62px}.kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}.kpi-card{padding:13px;gap:10px;border-radius:15px}.kpi-ico{width:38px;height:38px;font-size:18px}.kpi-val{font-size:20px}.kpi-lbl{font-size:11px}.bar-lbl{width:96px;font-size:11px}.bar-val{width:46px;font-size:12px}}
 .anav-badge{background:#ef4444;color:white;border-radius:999px;font-size:11px;font-weight:800;padding:0 6px;min-width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center}
 .cotiz-toolbar{padding:14px}
 .cotiz-filter{display:flex;gap:8px;flex-wrap:wrap}
@@ -458,7 +464,77 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .pd-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:9px;padding-top:9px;border-top:1px solid #f1f5f9;font-size:12.5px;color:#64748b;font-weight:600}
 .pd-total{font-weight:800;color:#0f172a;font-size:14px}
 @media(max-width:900px){.hero-inner{flex-direction:column;gap:16px;text-align:center}.hero-text{text-align:center}.logo{width:190px}.hero h1{font-size:32px}.hero p{font-size:15px}.stats{grid-template-columns:1fr}.stats.cols-2{grid-template-columns:1fr}.filter-row{flex-direction:column;align-items:stretch}.dd,.price-range,.search-box{min-width:0;width:100%}}
-@media(max-width:650px){.hero{padding:18px 14px}.logo{width:170px}.hero-badge{font-size:13px;padding:8px 13px}.hero h1{font-size:30px}.hero p{font-size:14px}.container{padding:18px}.card{padding:20px;border-radius:22px}.access-title{font-size:28px}.grid{grid-template-columns:1fr}.product-img{height:150px}.cart-fab{bottom:16px;right:16px;padding:13px 18px}.admin-nav{padding:6px;gap:6px}.anav-btn{flex-direction:row;gap:6px;font-size:12.5px;padding:10px 13px;white-space:nowrap}.anav-ico{font-size:18px;line-height:1}.anav-badge{position:static;margin-left:1px;font-size:10px;min-width:17px;height:17px;padding:0 5px}}
+@media(max-width:650px){.hero{padding:12px 14px}.hero-inner{gap:10px}.logo{width:132px}.hero-badge{font-size:12px;padding:6px 12px;margin-bottom:7px}.hero h1{font-size:26px;letter-spacing:-.03em}.hero p{font-size:13px;line-height:1.35}.container{padding:14px 18px}.login-card{margin-top:2px}.card{padding:20px;border-radius:22px}.access-title{font-size:27px;line-height:1.08}.access-sub{font-size:14px;line-height:1.35;margin-bottom:18px}.grid{grid-template-columns:1fr}.product-img{height:150px}.cart-fab{bottom:16px;right:16px;padding:13px 18px}.admin-nav{padding:6px;gap:6px}.anav-btn{flex-direction:row;gap:6px;font-size:12.5px;padding:10px 13px;white-space:nowrap}.anav-ico{font-size:18px;line-height:1}.anav-badge{position:static;margin-left:1px;font-size:10px;min-width:17px;height:17px;padding:0 5px}}
+@media(max-width:650px){
+  #portal>.container{padding:12px 14px 88px}
+  #portal>.container>.card:first-child{padding:16px 18px;margin-bottom:14px}
+  .portal-head{gap:10px}
+  .portal-head h2{font-size:24px;line-height:1.12;letter-spacing:-.03em}
+  .portal-head p{font-size:13px;line-height:1.35;margin-top:6px}
+  .sync-status{font-size:12px;padding:7px 10px}
+  .logout-btn,.profile-btn{padding:8px 11px;border-radius:11px;font-size:12.5px}
+  .admin-nav{margin-bottom:12px;border-radius:18px;background:#eef3f8;position:sticky;top:0;z-index:30;box-shadow:0 10px 22px rgba(15,23,42,.08)}
+  .admin-nav .anav-btn{padding:9px 13px;border-radius:12px}
+  .breadcrumb{font-size:13px;margin:4px 0 10px}
+  #catalogView>.card{padding:16px;margin-bottom:14px}
+  .categories{gap:8px;padding-bottom:4px}
+  .cat-btn{padding:10px 14px;font-size:13px}
+  .filter-row{gap:10px}
+  .search-box input,.dd-btn,.pr-inputs input{padding-top:12px;padding-bottom:12px;border-radius:13px}
+  .f-cap{font-size:11px;margin-bottom:5px}
+  .active-filters{margin-top:12px}
+  .result-row{margin-top:12px}
+  .result-count{font-size:13px;margin-top:0}
+  .view-toggle{width:100%;padding:4px;border-radius:13px}
+  .vt-btn{flex:1;padding:9px 10px}
+  #catalogView .stats{grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}
+  #catalogView .stat-box{padding:12px 8px;border-radius:16px}
+  #catalogView .stat-box h3{font-size:22px;margin-bottom:2px}
+  #catalogView .stat-box p{font-size:11px;line-height:1.15}
+  .grid{gap:12px;margin-top:12px}
+  .product-card{padding:14px;border-radius:18px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+  .product-card:hover{transform:none}
+  .product-img{height:128px;margin-bottom:10px}
+  .product-title{font-size:18px;line-height:1.15;margin-bottom:5px}
+  .product-meta{font-size:12.5px;line-height:1.35;margin-bottom:8px}
+  .pc-foot{padding-top:10px}
+  .pc-pricerow{align-items:stretch;margin-bottom:9px}
+  .pc-units{align-self:flex-start;font-size:12px;padding:5px 9px}
+  .pc-prices{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:7px 9px;font-size:12px;gap:1px;min-width:118px}
+  .btn-add{min-height:44px;border-radius:13px}
+  .list-row{padding:12px 13px;border-radius:14px}
+  .li-title{font-size:14.5px}
+  .li-meta{font-size:11.5px;line-height:1.35}
+  .li-price{font-size:12px}
+  .prc-head{align-items:flex-start}
+  .prc-title{font-size:21px}
+  .prc-help{font-size:12.5px;line-height:1.4;padding:12px 14px}
+  .prc-card{padding:14px;border-radius:18px;gap:12px}
+  .prc-info{min-width:0;flex-basis:100%}
+  .prc-name{font-size:15.5px;line-height:1.25}
+  .prc-sub{font-size:12px;line-height:1.35}
+  .prc-inputs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}
+  .prc-inputs input{width:100%;font-size:14px;padding:10px 9px}
+  .prc-save{grid-column:1/-1;width:100%;min-height:44px}
+  .modal{align-items:flex-end;padding:0}
+  .modal-content{max-height:92dvh;border-radius:24px 24px 0 0}
+  .modal-top{padding:18px 20px 0}
+  .modal-header{margin-bottom:12px}
+  .modal-header h2{font-size:22px;line-height:1.15}
+  .modal-header-b{gap:12px;margin-bottom:8px}
+  .modal-img-b{width:58px;height:58px;border-radius:13px}
+  .modal-hb-info h2{font-size:18px;line-height:1.15}
+  .modal-sub{font-size:12px;line-height:1.35;margin-bottom:6px}
+  .mp-multi{display:inline-block;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:7px 9px;font-size:12.5px;line-height:1.35}
+  .mp-big{font-size:22px}
+  .close-btn{width:40px;height:40px}
+  .modal-scroll{padding:0 20px}
+  .modal-breakdown{margin-top:12px}
+  .modal-add-row{padding:12px 20px max(12px,env(safe-area-inset-bottom));gap:10px}
+  .modal-add-row .btn-add{min-height:48px;border-radius:13px}
+  .modal-add-row .qsel button{width:42px;height:42px}
+  .modal-add-row .qsel input{width:52px}
+}
 </style>
 </head>
 <body>
@@ -482,7 +558,11 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 <main id="portal" class="hidden"><div class="container">
   <div class="card"><div class="portal-head"><div><h2 id="roleTitle">Catálogo</h2><p id="updatedText">Cargando inventario...</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="profile-btn hidden" id="profileBtn" onclick="openPerfil()">👤 Mi perfil</button><button class="profile-btn hidden" id="pedidosBtn" onclick="openPedidos()">📦 Mis pedidos</button><button class="logout-btn" style="margin-top:0" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div></div><div class="sync-status"><span class="sync-dot"></span>Catálogo conectado</div></div></div>
   <div class="dash-wrap">
-  <div class="card admin-nav hidden" id="adminNav"><button class="anav-btn" id="navResumen" onclick="showView('resumen')"><span class="anav-ico">📊</span><span class="anav-lbl">Resumen</span></button><button class="anav-btn active" id="navCat" onclick="showView('catalogo')"><span class="anav-ico">📦</span><span class="anav-lbl">Catálogo</span></button><button class="anav-btn" id="navCot" onclick="showView('cotizaciones')"><span class="anav-ico">📋</span><span class="anav-lbl">Cotizaciones</span><span class="anav-badge hidden" id="cotBadge">0</span></button><button class="anav-btn hidden" id="navPrc" onclick="showView('precios')"><span class="anav-ico">💲</span><span class="anav-lbl">Precios</span></button><button class="anav-btn hidden" id="navFotos" onclick="showView('fotos')"><span class="anav-ico">📸</span><span class="anav-lbl">Fotos</span></button><button class="anav-btn hidden" id="navHist" onclick="showView('historial')"><span class="anav-ico">🕑</span><span class="anav-lbl">Historial</span></button><button class="anav-btn hidden" id="navUsr" onclick="showView('usuarios')"><span class="anav-ico">👥</span><span class="anav-lbl">Usuarios</span></button><button class="anav-btn hidden" id="navEquipos" onclick="showView('equipos')"><span class="anav-ico">🔄</span><span class="anav-lbl">Equipos</span></button><button class="anav-btn hidden" id="navTraslados" onclick="showView('traslados')"><span class="anav-ico">🚚</span><span class="anav-lbl">Traslados</span></button><button class="anav-btn hidden" id="navTareas" onclick="showView('tareas')"><span class="anav-ico">✅</span><span class="anav-lbl">Tareas</span><span class="anav-badge hidden" id="tareasBadge">0</span></button></div>
+  <div class="card admin-nav hidden" id="adminNav">
+    <div class="anav-group" aria-label="Ventas"><span class="anav-group-label">Ventas</span><button class="anav-btn" id="navResumen" onclick="showView('resumen')"><span class="anav-ico">📊</span><span class="anav-lbl">Resumen</span></button><button class="anav-btn active" id="navCat" onclick="showView('catalogo')"><span class="anav-ico">📦</span><span class="anav-lbl">Catálogo</span></button><button class="anav-btn" id="navCot" onclick="showView('cotizaciones')"><span class="anav-ico">📋</span><span class="anav-lbl">Cotizaciones</span><span class="anav-badge hidden" id="cotBadge">0</span></button><button class="anav-btn hidden" id="navPrc" onclick="showView('precios')"><span class="anav-ico">💲</span><span class="anav-lbl">Precios</span></button></div>
+    <div class="anav-group" aria-label="Operación"><span class="anav-group-label">Operación</span><button class="anav-btn hidden" id="navEquipos" onclick="showView('equipos')"><span class="anav-ico">🔄</span><span class="anav-lbl">Equipos</span></button><button class="anav-btn hidden" id="navTraslados" onclick="showView('traslados')"><span class="anav-ico">🚚</span><span class="anav-lbl">Traslados</span></button><button class="anav-btn hidden" id="navTareas" onclick="showView('tareas')"><span class="anav-ico">✅</span><span class="anav-lbl">Tareas</span><span class="anav-badge hidden" id="tareasBadge">0</span></button></div>
+    <div class="anav-group" aria-label="Control"><span class="anav-group-label">Control</span><button class="anav-btn hidden" id="navFotos" onclick="showView('fotos')"><span class="anav-ico">📸</span><span class="anav-lbl">Fotos</span></button><button class="anav-btn hidden" id="navHist" onclick="showView('historial')"><span class="anav-ico">🕑</span><span class="anav-lbl">Historial</span></button><button class="anav-btn hidden" id="navUsr" onclick="showView('usuarios')"><span class="anav-ico">👥</span><span class="anav-lbl">Usuarios</span></button></div>
+  </div>
   <div class="dash-content">
   <div id="resumenView" class="hidden">
     <div class="kpi-grid" id="kpiGrid"></div>
@@ -556,10 +636,10 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     <div id="usrList"></div>
   </div>
   <div id="preciosView" class="hidden">
-    <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-      <div><h3 style="margin:0;font-size:22px">💲 Precios</h3><p style="margin:4px 0 0;color:var(--muted);font-size:14px" id="prcCount"></p></div>
+    <div class="card prc-head">
+      <div><h3 class="prc-title">💲 Precios</h3><p style="margin:4px 0 0;color:var(--muted);font-size:14px" id="prcCount"></p></div>
     </div>
-    <div class="card" style="padding:12px 16px;font-size:13px;color:var(--muted)">💡 Lo que edites aquí se <b>guarda directo en tu hoja Precios</b> de Google Sheets. Solo admins pueden guardar.</div>
+    <div class="card prc-help">💡 Lo que edites aquí se <b>guarda directo en tu hoja Precios</b> de Google Sheets. Solo admins pueden guardar.</div>
     <div class="card cotiz-toolbar">
       <input type="text" id="prcSearch" class="usr-search" placeholder="Buscar modelo, marca, capacidad...">
       <div class="cotiz-filter" id="prcFilter" style="margin-top:12px">
@@ -1272,7 +1352,7 @@ _sheet.addEventListener("click",e=>{if(e.target===_sheet){closeModSheet();return
 _sheet.addEventListener("change",e=>{const rec=e.target.closest("input[data-trrec]");if(rec&&rec.files&&rec.files.length){const id=rec.dataset.trrec,files=rec.files;closeModSheet();trRecibir(id,files)}});
 window.saveEquipo=saveEquipo;window.saveTraslado=saveTraslado;window.saveTarea=saveTarea;window.eqToggle=eqToggle;window.renderTraslados=renderTraslados;window.renderTareas=renderTareas;window.renderEquipos=renderEquipos;
 window.showView=showView;window.closeCotiz=closeCotiz;
-window.login=login;window.enterPublic=enterPublic;window.logout=logout;window.setCategory=setCategory;window.openCart=openCart;window.closeCart=closeCart;window.closeModal=closeModal;window.modalQtyChange=modalQtyChange;window.addFromModal=addFromModal;window.goToQuoteForm=goToQuoteForm;window.backToCart=backToCart;window.submitPublicQuote=submitPublicQuote;window.finishQuote=finishQuote;window.clearAllFilters=clearAllFilters;
+window.login=login;window.logout=logout;window.setCategory=setCategory;window.openCart=openCart;window.closeCart=closeCart;window.closeModal=closeModal;window.modalQtyChange=modalQtyChange;window.addFromModal=addFromModal;window.goToQuoteForm=goToQuoteForm;window.backToCart=backToCart;window.submitPublicQuote=submitPublicQuote;window.finishQuote=finishQuote;window.clearAllFilters=clearAllFilters;
 </script>
 </body>
 </html>
