@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Mockup · Catálogo rediseñado</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',-apple-system,Segoe UI,Roboto,sans-serif}
+:root{--mono:ui-monospace,'SF Mono',Menlo,monospace}
+body{background:#F3F5F8;color:#0E1116}
+.stripe{height:3px;display:flex}.stripe i{flex:1}.stripe i:nth-child(1){flex:1.6;background:#0E1116}.stripe i:nth-child(2){background:#F0CF18}.stripe i:nth-child(3){background:#2B9FE0}
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #E4E9F0}
+.hwrap{max-width:1200px;margin:0 auto;padding:11px 16px;display:flex;align-items:center;gap:12px}
+.logo{font-size:16px;font-weight:800}.logo s{color:#2B9FE0;text-decoration:none}
+.sub{display:flex;flex-direction:column;line-height:1.15}.sub b{font-size:12px;font-weight:800}.sub span{font-size:10.5px;color:#8A94A3;font-weight:600}
+.search{flex:1;max-width:330px;margin-left:auto;position:relative}
+.search input{width:100%;padding:10px 14px 10px 14px;border:1.5px solid #E4E9F0;border-radius:11px;font-size:13.5px;background:#F8FAFC;outline:none}
+.role{display:inline-flex;align-items:center;gap:7px;background:#0E1116;color:#fff;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:800}
+.av{width:34px;height:34px;border-radius:10px;background:#0E1116;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:none}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 16px 60px}
+h1{font-size:21px;font-weight:800}.lead{font-size:13px;color:#5A6675;margin-top:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;color:#3D4757;border:1px solid #E4E9F0}
+.chip.on{background:#1488D8;color:#fff;border-color:#1488D8}.chip small{opacity:.6;font-weight:800}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid #E4E9F0;border-radius:14px;padding:10px 14px;margin-bottom:18px;font-size:13.5px}
+.bar b{font-weight:800}.bar .muted{color:#8A94A3;font-weight:600}
+.toggle{display:inline-flex;background:#EEF1F5;border-radius:10px;padding:3px;margin-left:auto}
+.toggle button{border:none;background:transparent;border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:700;color:#5A6675;cursor:pointer;font-family:inherit}
+.toggle button.on{background:#fff;color:#0E1116;box-shadow:0 1px 3px rgba(15,23,42,.14)}
+/* === tarjetas (igual a la Fase 1) === */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:16px}
+.pcard{background:#fff;border:1px solid #E4E9F0;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:.18s}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(15,23,42,.10);border-color:#CFE3F4}
+.pcard-img{position:relative;height:128px;background:#F6F8FB;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pcard-img img{max-width:88%;max-height:88%;object-fit:contain}
+.pcard-img.noimg{background:repeating-linear-gradient(135deg,#F6F8FB,#F6F8FB 9px,#EEF1F6 9px,#EEF1F6 18px)}
+.pcard-cat{display:none;font-family:var(--mono);font-size:10px;color:#9AA4B2;letter-spacing:.06em;text-transform:uppercase}
+.pcard-img.noimg .pcard-cat{display:block}
+.pcard-warr{position:absolute;top:8px;right:8px;font-size:10px;background:#E9F7EF;color:#16A34A;border-radius:999px;padding:3px 8px;font-weight:700}
+.pcard-grade{position:absolute;top:8px;left:8px;font-size:10px;font-weight:800;padding:3px 9px;border-radius:999px}
+.g-nuevo{background:#E9F7EF;color:#16A34A}.g-usado{background:#FEF3C7;color:#92660E}
+.pcard-body{padding:13px 14px 14px;display:flex;flex-direction:column;flex:1}
+.pcard-brand{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;color:#9AA4B2;text-transform:uppercase}
+.pcard-name{font-size:15px;font-weight:800;line-height:1.25;margin-top:3px}
+.pcard-specs{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.pcard-spec{font-family:var(--mono);font-size:10.5px;font-weight:500;color:#5C6675;background:#F4F6F9;border:1px solid #E9EDF3;border-radius:6px;padding:3px 8px}
+.pcard-colors{display:flex;align-items:center;gap:5px;margin-top:10px}
+.pcd-dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(15,23,42,.18)}
+.pcard-clabel{font-size:12px;font-weight:600;color:#8A94A3;margin-left:3px}
+.pcard-div{height:1px;background:#F0F2F5;margin:12px 0 10px}
+.pcard-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:auto}
+.pcard-stockpill{font-family:var(--mono);font-size:11px;font-weight:600;color:#0E6FB8;background:#E8F3FC;border-radius:999px;padding:4px 9px}
+.pcard-priceblock{text-align:right}
+.pcard-pricelabel{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;color:#A6AEB9;text-transform:uppercase}
+.pcard-price{font-size:18px;font-weight:800;line-height:1.15}
+.pcard-add{margin-top:12px;width:100%;border:none;border-radius:11px;padding:10px;font-size:13.5px;font-weight:800;cursor:pointer;color:#fff;background:#1488D8;font-family:inherit}
+.note{max-width:1200px;margin:0 auto;padding:0 16px 30px;font-size:12.5px;color:#8A94A3}
+@media(max-width:650px){.grid{grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px}.pcard-img{height:106px}.pcard-name{font-size:13.5px}.pcard-body{padding:11px}.search{max-width:none}.sub{display:none}}
+</style></head>
+<body>
+<div class="stripe"><i></i><i></i><i></i></div>
+<header><div class="hwrap">
+  <div class="logo">Technology<s>Sales</s></div>
+  <div class="sub"><b>Mayoristas &amp; Revendedores</b><span>Inventario en tiempo real</span></div>
+  <div class="search"><input placeholder="Buscar modelo, marca o SKU…"></div>
+  <div class="role">🛒 Cotización · 2</div>
+  <div class="av">DZ</div>
+</div></header>
+
+<div class="wrap">
+  <h1>Catálogo</h1>
+  <div class="lead">Vista del rol <b>Mayorista</b> · precios y stock por sucursal.</div>
+
+  <div class="chips">
+    <div class="chip on">Todos <small>214</small></div>
+    <div class="chip">Celulares <small>96</small></div>
+    <div class="chip">Tablets <small>22</small></div>
+    <div class="chip">Computadoras <small>18</small></div>
+    <div class="chip">Relojes <small>14</small></div>
+    <div class="chip">Consolas <small>9</small></div>
+    <div class="chip">Accesorios <small>41</small></div>
+  </div>
+
+  <div class="bar">
+    <b>214</b> <span class="muted">productos · Todos</span>
+    <div class="toggle"><button class="on">▦ Grid</button><button>☰ Tabla</button></div>
+  </div>
+
+  <div class="grid">
+    <div class="pcard"><div class="pcard-img"><img src="https://picsum.photos/seed/s24/400" alt=""><span class="pcard-grade g-nuevo">Nuevo</span><span class="pcard-warr">✓ Garantía</span></div>
+      <div class="pcard-body"><div class="pcard-brand">Samsung</div><div class="pcard-name">Galaxy S24 Ultra 256GB</div>
+        <div class="pcard-specs"><span class="pcard-spec">256GB</span><span class="pcard-spec">12GB RAM</span><span class="pcard-spec">Nuevo</span></div>
+        <div class="pcard-colors"><span class="pcd-dot" style="background:#1C1C1E"></span><span class="pcd-dot" style="background:#8E8E93"></span><span class="pcd-dot" style="background:#B3A4D4"></span><span class="pcard-clabel">3 colores</span></div>
+        <div class="pcard-div"></div>
+        <div class="pcard-foot"><span class="pcard-stockpill">24 unid.</span><div class="pcard-priceblock"><div class="pcard-pricelabel">Mayorista</div><div class="pcard-price">L 28,500</div></div></div>
+        <button class="pcard-add">Agregar a cotización</button></div></div>
+
+    <div class="pcard"><div class="pcard-img"><img src="https://picsum.photos/seed/ip15/400" alt=""><span class="pcard-grade g-nuevo">Nuevo</span><span class="pcard-warr">✓ Garantía</span></div>
+      <div class="pcard-body"><div class="pcard-brand">Apple</div><div class="pcard-name">iPhone 15 Pro 256GB</div>
+        <div class="pcard-specs"><span class="pcard-spec">256GB</span><span class="pcard-spec">A17 Pro</span></div>
+        <div class="pcard-colors"><span class="pcd-dot" style="background:#6E6E73"></span><span class="pcd-dot" style="background:#1C1C1E"></span><span class="pcd-dot" style="background:#F2F2F2"></span><span class="pcd-dot" style="background:#3A5B8C"></span><span class="pcard-clabel">4 colores</span></div>
+        <div class="pcard-div"></div>
+        <div class="pcard-foot"><span class="pcard-stockpill">16 unid.</span><div class="pcard-priceblock"><div class="pcard-pricelabel">Mayorista</div><div class="pcard-price">L 31,200</div></div></div>
+        <button class="pcard-add">Agregar a cotización</button></div></div>
+
+    <div class="pcard"><div class="pcard-img noimg"><span class="pcard-cat">Celulares</span><span class="pcard-grade g-usado">Usado</span></div>
+      <div class="pcard-body"><div class="pcard-brand">Apple</div><div class="pcard-name">iPhone 13 128GB (Grado A+)</div>
+        <div class="pcard-specs"><span class="pcard-spec">128GB</span><span class="pcard-spec">Usado</span></div>
+        <div class="pcard-colors"><span class="pcd-dot" style="background:#1C1C2E"></span><span class="pcd-dot" style="background:#F2F2F2"></span><span class="pcard-clabel">2 colores</span></div>
+        <div class="pcard-div"></div>
+        <div class="pcard-foot"><span class="pcard-stockpill">7 unid.</span><div class="pcard-priceblock"><div class="pcard-pricelabel">Mayorista</div><div class="pcard-price">L 11,300</div></div></div>
+        <button class="pcard-add">Agregar a cotización</button></div></div>
+
+    <div class="pcard"><div class="pcard-img"><img src="https://picsum.photos/seed/redmi/400" alt=""><span class="pcard-grade g-nuevo">Nuevo</span></div>
+      <div class="pcard-body"><div class="pcard-brand">Xiaomi</div><div class="pcard-name">Redmi Note 13 128GB</div>
+        <div class="pcard-specs"><span class="pcard-spec">128GB</span><span class="pcard-spec">8GB RAM</span></div>
+        <div class="pcard-colors"><span class="pcd-dot" style="background:#1C1C1E"></span><span class="pcd-dot" style="background:#2B9FE0"></span><span class="pcd-dot" style="background:#7CC6A0"></span><span class="pcard-clabel">3 colores</span></div>
+        <div class="pcard-div"></div>
+        <div class="pcard-foot"><span class="pcard-stockpill">Varios</span><div class="pcard-priceblock"><div class="pcard-pricelabel">Mayorista</div><div class="pcard-price">L 5,200</div></div></div>
+        <button class="pcard-add">Agregar a cotización</button></div></div>
+
+    <div class="pcard"><div class="pcard-img"><img src="https://picsum.photos/seed/ipad/400" alt=""><span class="pcard-grade g-nuevo">Nuevo</span></div>
+      <div class="pcard-body"><div class="pcard-brand">Apple</div><div class="pcard-name">iPad Air 11" 128GB</div>
+        <div class="pcard-specs"><span class="pcard-spec">128GB</span><span class="pcard-spec">M2</span></div>
+        <div class="pcard-colors"><span class="pcd-dot" style="background:#8E8E93"></span><span class="pcd-dot" style="background:#3A5B8C"></span><span class="pcard-clabel">2 colores</span></div>
+        <div class="pcard-div"></div>
+        <div class="pcard-foot"><span class="pcard-stockpill">14 unid.</span><div class="pcard-priceblock"><div class="pcard-pricelabel">Mayorista</div><div class="pcard-price">L 14,800</div></div></div>
+        <button class="pcard-add">Agregar a cotización</button></div></div>
+
+    <div class="pcard"><div class="pcard-img noimg"><span class="pcard-cat">Audio</span><span class="pcard-grade g-nuevo">Nuevo</span></div>
+      <div class="pcard-body"><div class="pcard-brand">Apple</div><div class="pcard-name">AirPods Pro 2 USB-C</div>
+        <div class="pcard-specs"><span class="pcard-spec">ANC</span><span class="pcard-spec">USB-C</span></div>
+        <div class="pcard-colors"><span class="pcd-dot" style="background:#F2F2F2"></span><span class="pcard-clabel">1 color</span></div>
+        <div class="pcard-div"></div>
+        <div class="pcard-foot"><span class="pcard-stockpill">Varios</span><div class="pcard-priceblock"><div class="pcard-pricelabel">Mayorista</div><div class="pcard-price">L 4,400</div></div></div>
+        <button class="pcard-add">Agregar a cotización</button></div></div>
+  </div>
+</div>
+<div class="note">Mockup con datos de ejemplo · Vista del rol <b>Mayorista</b> (un solo precio). Un cliente vería el precio público; un interno (admin/asesor/vendedor) vería los 3 precios. El stock muestra "Varios" cuando es mucho, igual que ahora.</div>
+</body></html>
