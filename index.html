@@ -538,6 +538,35 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .pcard-add.added{background:#16A34A}
 .pcard .eq-fiche{margin-top:9px}
 @media(max-width:650px){.grid{grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px}.pcard-img{height:106px}.pcard-name{font-size:13.5px}.pcard-body{padding:11px}.pcard-add{font-size:12.5px;padding:9px}.pcard-priceblock .pc-price{font-size:16px}}
+/* ===== Detalle del producto rediseñado (Fase 4) ===== */
+#detailModal .modal-content{max-width:580px;border-radius:22px}
+#detailModal .modal-top{padding:20px 22px 2px}
+#detailModal .modal-header-b{align-items:flex-start;gap:15px;margin-bottom:4px}
+#detailModal .modal-img-b{width:90px;height:90px;border-radius:16px;object-fit:contain;background:#F6F8FB;border:1px solid #EEF1F6;padding:7px}
+#detailModal .modal-hb-info h2{font-size:20px;font-weight:800;letter-spacing:-.01em;color:#0E1116}
+#detailModal .modal-sub{font-size:12.5px;color:#8A94A3;font-weight:600;margin-bottom:9px}
+#detailModal .modal-price-b{font-weight:800;font-size:18px;color:#0E1116}
+#detailModal .modal-price-b .mp-multi{font-size:13px;font-weight:700;color:#5A6675}
+#detailModal .modal-price-b .mp-tba,#detailModal .modal-price-b .mp-price-tba{font-size:13px;color:#8A94A3;font-weight:700}
+#detailModal .close-btn{background:#F1F5F9;border:none;width:34px;height:34px;border-radius:50%;color:#475569;font-size:15px;flex:none}
+#detailModal .pick-label{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-weight:700;color:#64748B;margin:16px 0 9px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+#detailModal .swatch{border:1.5px solid #E4E9F0;border-radius:13px;padding:9px 12px;min-width:74px;transition:.15s}
+#detailModal .swatch:hover{border-color:#CFE3F4}
+#detailModal .swatch.sel{border-color:#1488D8;background:#EAF4FD;box-shadow:0 0 0 1px #1488D8}
+#detailModal .sw-dot{width:24px;height:24px;border:1px solid rgba(15,23,42,.18)}
+#detailModal .sw-name{font-size:12px;font-weight:700;color:#0E1116}
+#detailModal .sw-stock{font-size:10px;color:#94A3B8;font-weight:600}
+#detailModal .pills{display:flex;flex-wrap:wrap;gap:8px}
+#detailModal .pill{border:1.5px solid #E4E9F0;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:#3D4757;cursor:pointer;transition:.15s}
+#detailModal .pill:hover{border-color:#CFE3F4}
+#detailModal .pill.sel{background:#1488D8;border-color:#1488D8;color:#fff}
+#detailModal .modal-breakdown{border-top:1px solid #EEF1F6;margin-top:18px}
+#detailModal .modal-breakdown summary{color:#5A6675;font-size:13px;font-weight:700}
+#detailModal .modal-add-row{border-top:1px solid #EEF1F6}
+#detailModal .modal-add-row .btn-add,#modalAddBtn{background:#1488D8;color:#fff;border-radius:12px}
+#detailModal .modal-add-row .btn-add.added,#modalAddBtn.added{background:#16A34A}
+#detailModal .qsel{border:1.5px solid #E4E9F0;border-radius:12px}
+#detailModal .qsel button{background:#F4F6F9}
 </style>
 </head>
 <body>
