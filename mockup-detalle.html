@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Mockup · Detalle del producto</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',-apple-system,Segoe UI,Roboto,sans-serif}
+:root{--mono:ui-monospace,'SF Mono',Menlo,monospace}
+body{background:rgba(15,23,42,.55);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;color:#0E1116}
+.modal-content{background:#fff;width:100%;max-width:580px;border-radius:22px;max-height:94vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-top{padding:20px 22px 2px}
+.modal-header-b{display:flex;align-items:flex-start;gap:15px;margin-bottom:4px}
+.modal-img-b{width:90px;height:90px;border-radius:16px;object-fit:contain;background:#F6F8FB;border:1px solid #EEF1F6;padding:7px;flex:none}
+.modal-hb-info{flex:1;min-width:0}
+.modal-hb-info h2{font-size:20px;font-weight:800;letter-spacing:-.01em}
+.modal-sub{font-size:12.5px;color:#8A94A3;font-weight:600;margin:3px 0 9px}
+.modal-price-b{font-weight:800;font-size:18px}
+.close-btn{background:#F1F5F9;border:none;width:34px;height:34px;border-radius:50%;color:#475569;font-size:15px;cursor:pointer;flex:none}
+.modal-scroll{overflow:auto;padding:6px 22px 4px}
+.pick-label{font-family:var(--mono);font-weight:700;color:#64748B;margin:16px 0 9px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:3px;border:1.5px solid #E4E9F0;background:#fff;border-radius:13px;padding:9px 12px;cursor:pointer;min-width:74px}
+.swatch.sel{border-color:#1488D8;background:#EAF4FD;box-shadow:0 0 0 1px #1488D8}
+.sw-dot{width:24px;height:24px;border-radius:50%;border:1px solid rgba(15,23,42,.18)}
+.sw-name{font-size:12px;font-weight:700}
+.sw-stock{font-size:10px;color:#94A3B8;font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1.5px solid #E4E9F0;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:#3D4757;cursor:pointer}
+.pill.sel{background:#1488D8;border-color:#1488D8;color:#fff}
+.modal-breakdown{border-top:1px solid #EEF1F6;margin-top:18px;padding-top:6px}
+.modal-breakdown summary{cursor:pointer;color:#5A6675;font-size:13px;font-weight:700;list-style:none;padding:8px 0}
+.modal-breakdown summary::-webkit-details-marker{display:none}
+.bd-table{overflow:auto}
+.bd-table table{width:100%;border-collapse:collapse;margin-top:4px}
+.bd-table th{text-align:left;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#9AA4B2;padding:8px 10px;border-bottom:1px solid #EEF1F6}
+.bd-table td{font-size:12.5px;padding:9px 10px;border-bottom:1px solid #F4F6F9}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px;background:#E9F7EF;color:#16A34A}
+.modal-add-row{flex:none;display:flex;gap:12px;align-items:center;padding:14px 22px;border-top:1px solid #EEF1F6;background:#fff}
+.qsel{display:flex;align-items:center;border:1.5px solid #E4E9F0;border-radius:12px;overflow:hidden}
+.qsel button{border:none;background:#F4F6F9;width:42px;height:44px;font-size:20px;font-weight:800;cursor:pointer}
+.qsel input{width:54px;text-align:center;border:none;border-left:1px solid #EEF1F6;border-right:1px solid #EEF1F6;padding:12px 0;font-size:16px;font-weight:800}
+.btn-add{flex:1;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;background:#1488D8;color:#fff}
+.note{position:fixed;bottom:10px;left:0;right:0;text-align:center;font-size:12px;color:#cbd5e1}
+</style></head>
+<body>
+<div class="modal-content">
+  <div class="modal-top">
+    <div class="modal-header-b">
+      <img class="modal-img-b" src="https://picsum.photos/seed/s24det/200" alt="">
+      <div class="modal-hb-info">
+        <h2>Galaxy S24 Ultra 256GB</h2>
+        <div class="modal-sub">256GB · Dual SIM · 🛡️ Garantía 1 año (fábrica)</div>
+        <div class="modal-price-b">L 28,500 <span style="font-size:12px;color:#A6AEB9;font-weight:600">· Mayorista</span></div>
+      </div>
+      <button class="close-btn">✕</button>
+    </div>
+  </div>
+  <div class="modal-scroll">
+    <div class="pick-label">Color</div>
+    <div class="swatches">
+      <button class="swatch sel"><span class="sw-dot" style="background:#1C1C1E"></span><span class="sw-name">Negro</span><span class="sw-stock">12 disp</span></button>
+      <button class="swatch"><span class="sw-dot" style="background:#8E8E93"></span><span class="sw-name">Gris</span><span class="sw-stock">7 disp</span></button>
+      <button class="swatch"><span class="sw-dot" style="background:#B3A4D4"></span><span class="sw-name">Violeta</span><span class="sw-stock">5 disp</span></button>
+      <button class="swatch"><span class="sw-dot" style="background:#F0CF18"></span><span class="sw-name">Amarillo</span><span class="sw-stock">Varios</span></button>
+    </div>
+    <div class="pick-label">Estado</div>
+    <div class="pills">
+      <button class="pill sel">Nuevo · 24 disp</button>
+      <button class="pill">En caja · 6 disp</button>
+    </div>
+    <details class="modal-breakdown" open><summary>Ver desglose por sucursal</summary>
+      <div class="bd-table"><table>
+        <thead><tr><th>Sucursal</th><th>Color</th><th>Cantidad</th><th>Precio</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td>City Plaza</td><td>Negro</td><td>8</td><td>L 28,500</td><td><span class="badge">Nuevo</span></td></tr>
+          <tr><td>Town Center</td><td>Negro</td><td>4</td><td>L 28,500</td><td><span class="badge">Nuevo</span></td></tr>
+          <tr><td>Agalta</td><td>Gris</td><td>7</td><td>L 28,500</td><td><span class="badge">Nuevo</span></td></tr>
+        </tbody>
+      </table></div>
+    </details>
+  </div>
+  <div class="modal-add-row">
+    <div class="qsel"><button>−</button><input value="1" readonly><button>+</button></div>
+    <button class="btn-add">🛒 Agregar al carrito</button>
+  </div>
+</div>
+<div class="note">Mockup · vista del rol Mayorista (un precio). Un cliente vería el precio público; un interno, los 3 precios. La lógica (color/estado/stock/carrito) no cambia.</div>
+</body></html>
