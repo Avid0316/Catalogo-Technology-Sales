@@ -503,16 +503,17 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   .cat-table{min-width:0;display:block}
   .cat-table thead{display:none}
   .cat-table tbody{display:block}
-  .cat-table tr{display:grid;grid-template-columns:1fr auto;gap:7px 12px;align-items:center;background:#fff;border:1px solid #E4E9F0;border-radius:14px;padding:14px;margin-bottom:10px}
+  .cat-table tr{display:grid;grid-template-columns:1fr auto;gap:10px 12px;align-items:center;background:#fff;border:1px solid #E4E9F0;border-radius:16px;padding:16px 16px 17px;margin-bottom:12px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
   .cat-table td{border:none;padding:0;text-align:left !important}
   .ct-c-modelo,.ct-c-specs{grid-column:1/-1}
-  .ct-c-specs .ct-specs{max-width:none}
-  .ct-c-colors{grid-column:1;justify-self:start}
-  .ct-c-stock{grid-column:2;justify-self:end}
-  .ct-c-price{grid-column:1;justify-self:start;margin-top:5px}
-  .ct-c-add{grid-column:2;justify-self:end;margin-top:5px}
+  .ct-c-specs .ct-specs{max-width:none;gap:6px}
+  .ct-c-colors{grid-column:1;justify-self:start;align-self:center}
+  .ct-c-stock{grid-column:2;justify-self:end;align-self:center}
+  .ct-c-price{grid-column:1;justify-self:start;align-self:center;margin-top:10px}
+  .ct-c-add{grid-column:2;justify-self:end;align-self:center;margin-top:10px}
   .ct-c-price .pc-prices{align-items:flex-start}
-  .ct-name{font-size:15px}
+  .ct-name{font-size:15.5px}
+  .ct-c-add .ct-add{padding:11px 22px}
 }
 .pcard-body{padding:13px 14px 14px;display:flex;flex-direction:column;flex:1}
 .pcard-brand{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:600;letter-spacing:.06em;color:#9AA4B2;text-transform:uppercase}
