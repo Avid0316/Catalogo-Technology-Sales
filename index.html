@@ -633,7 +633,11 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .upd-pill{display:inline-flex;align-items:center;gap:8px;background:#E9F7EF;color:#16A34A;font-weight:700;border-radius:999px;padding:7px 13px;font-size:13px}
 @media(min-width:901px){.anav-section{display:block}.sidebar-sync{display:block}}
 @media(max-width:900px){.anav-section,.sidebar-sync{display:none}}
-@media(max-width:760px){.topbar{flex-wrap:wrap;gap:10px;padding:10px 14px}.tb-brand{order:1}.tb-actions{order:2;margin-left:auto}.tb-search{order:3;flex-basis:100%;max-width:none;margin:0}.tb-logo{height:34px}.tb-brand-txt strong{max-width:46vw;font-size:15px}.tb-cot-btn span:first-child{font-size:0}.tb-cot-btn span:first-child::after{content:'🧾';font-size:15px}.page-head h1{font-size:21px}}
+.filters-toggle{display:none}
+@media(max-width:760px){.topbar{display:grid;grid-template-columns:1fr auto;grid-template-areas:'brand actions' 'search search';gap:10px;padding:10px 14px;align-items:center}.tb-brand{grid-area:brand;min-width:0}.tb-actions{grid-area:actions;gap:9px}.tb-search{grid-area:search;max-width:none;margin:0}.tb-logo{height:34px}.tb-brand-txt strong{font-size:15px}.tb-cot-btn{padding:9px 11px}.tb-cot-btn span:first-child{font-size:0}.tb-cot-btn span:first-child::after{content:'🧾';font-size:16px}.page-head h1{font-size:21px}
+.filters-toggle{display:inline-flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:1px solid #E4E9F0;background:#fff;border-radius:12px;padding:12px 14px;font-size:14px;font-weight:800;color:#0E1116;cursor:pointer}
+.filters-toggle .ft-arrow{color:#8A94A3;font-size:13px}
+.filter-row{display:none;margin-top:12px}.filter-row.open{display:flex}}
 </style>
 </head>
 <body>
@@ -686,6 +690,7 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     <button class="cat-btn" data-cat="Audio" onclick="setCategory('Audio',event)">🔊 Audio <span class="cat-count" data-catcount="Audio"></span></button>
   </div></div>
   <div class="card">
+    <button class="filters-toggle" type="button" onclick="toggleFilters(this)" aria-expanded="false">⚙️ Filtros <span class="ft-arrow">▾</span></button>
     <div class="filter-row">
       <div><div class="f-cap">MARCA</div><div class="dd" id="dd-marca" data-name="marca"><button class="dd-btn" type="button"><span class="dd-text">Todas las marcas</span><span class="dd-chev"></span></button><div class="dd-panel hidden"><input class="dd-search" placeholder="Buscar marca..."><div class="dd-options"></div></div></div></div>
       <div><div class="f-cap">ESTADO</div><div class="dd" id="dd-estado" data-name="estado"><button class="dd-btn" type="button"><span class="dd-text">Todos los estados</span><span class="dd-chev"></span></button><div class="dd-panel hidden"><div class="dd-options"></div></div></div></div>
@@ -1123,6 +1128,7 @@ document.getElementById("cartBody").addEventListener("click",e=>{const dec=e.tar
 document.addEventListener("click",e=>{if(!e.target.closest(".dd"))closeAllDD()});
 document.addEventListener("click",()=>{const m=document.getElementById("avatarMenu");if(m&&!m.classList.contains("hidden"))m.classList.add("hidden")});
 function toggleAvatarMenu(e){if(e)e.stopPropagation();const m=document.getElementById("avatarMenu");if(m)m.classList.toggle("hidden")}
+function toggleFilters(btn){const fr=document.querySelector(".filter-row");if(!fr)return;const open=fr.classList.toggle("open");if(btn){btn.setAttribute("aria-expanded",open?"true":"false");const ar=btn.querySelector(".ft-arrow");if(ar)ar.textContent=open?"▴":"▾"}}
 function initials(name){const s=String(name||"").trim();if(!s)return "TS";const p=s.split(/\s+/);const r=((p[0]&&p[0][0])||"")+((p[1]&&p[1][0])||"");return r.toUpperCase()||"TS"}
 /* ===== Carga e ingreso ===== */
 async function supabaseError_(res,operation){const text=await res.text().catch(()=>"");let detail="";try{const body=JSON.parse(text);detail=body.message||body.error_description||body.hint||""}catch(e){detail=text}throw new Error(`Supabase respondió ${res.status} en ${operation}${detail?": "+detail:""}`)}
