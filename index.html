@@ -599,6 +599,41 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 #detailModal .modal-add-row .btn-add.added,#modalAddBtn.added{background:#16A34A}
 #detailModal .qsel{border:1.5px solid #E4E9F0;border-radius:12px}
 #detailModal .qsel button{background:#F4F6F9}
+/* ===== Nuevo shell: topbar + sidebar ===== */
+.topbar{position:sticky;top:0;z-index:80;background:#fff;border-bottom:1px solid #E4E9F0;display:flex;align-items:center;gap:18px;padding:11px 22px}
+.tb-brand{display:flex;align-items:center;gap:12px;flex:none;min-width:0}
+.tb-logo{height:38px;width:auto;flex:none}
+.tb-brand-txt{display:flex;flex-direction:column;min-width:0}
+.tb-brand-txt strong{font-size:16px;font-weight:800;letter-spacing:-.01em;color:#0E1116;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+.tb-brand-txt span{font-size:12px;color:#8A94A3;font-weight:600;white-space:nowrap}
+.tb-search{flex:1;max-width:560px;margin:0 auto;position:relative;display:flex;align-items:center}
+.tb-search .tb-ico{position:absolute;left:13px;font-size:14px;opacity:.5;pointer-events:none}
+.tb-search input{width:100%;border:1px solid #E4E9F0;background:#F6F8FB;border-radius:12px;padding:11px 14px 11px 37px;font-size:14px;font-weight:600;color:#0E1116;outline:none}
+.tb-search input:focus{border-color:#1488D8;background:#fff;box-shadow:0 0 0 3px rgba(20,136,216,.12)}
+.tb-actions{display:flex;align-items:center;gap:11px;flex:none;margin-left:auto}
+.tb-cot-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid #E4E9F0;background:#fff;border-radius:12px;padding:10px 15px;font-size:14px;font-weight:800;color:#0E1116;cursor:pointer}
+.tb-cot-btn:hover{background:#F6F8FB}
+.tb-cot-count{background:#1488D8;color:#fff;border-radius:999px;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0 6px}
+.tb-avatar-wrap{position:relative;flex:none}
+.tb-avatar{width:40px;height:40px;border-radius:11px;border:none;background:#0E1116;color:#fff;font-weight:800;font-size:13px;cursor:pointer;letter-spacing:.02em}
+.tb-menu{position:absolute;right:0;top:48px;background:#fff;border:1px solid #E4E9F0;border-radius:14px;box-shadow:0 14px 34px rgba(15,23,42,.16);padding:8px;display:flex;flex-direction:column;gap:6px;min-width:196px;z-index:95}
+.tb-menu .profile-btn{background:#fff;color:#0E1116;border:1px solid #E4E9F0;font-weight:700;padding:9px 12px;border-radius:10px;text-align:left}
+.tb-menu .profile-btn:hover{background:#F6F8FB}
+.tb-menu .logout-btn{background:#FEF2F2;color:#B91C1C;border:1px solid #FECACA;font-weight:800;padding:9px 12px;border-radius:10px;margin-top:0;text-align:left}
+.admin-nav{background:#fff;border:1px solid #E4E9F0;border-radius:18px}
+.anav-section{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9AA4B2;padding:4px 14px 9px}
+.anav-btn.active{background:#1488D8;color:#fff;box-shadow:0 4px 12px rgba(20,136,216,.28)}
+.anav-btn.active:hover{color:#fff}
+.sidebar-sync{margin-top:12px;padding:12px 6px 4px;border-top:1px solid #EEF1F6}
+.ss-cap{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:700;letter-spacing:.07em;color:#9AA4B2;margin-bottom:7px;padding:0 8px}
+.sidebar-sync .sync-status{margin:0 4px;display:inline-flex}
+.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.page-head h1{margin:0;font-size:25px;font-weight:800;letter-spacing:-.015em;color:#0E1116}
+.page-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.upd-pill{display:inline-flex;align-items:center;gap:8px;background:#E9F7EF;color:#16A34A;font-weight:700;border-radius:999px;padding:7px 13px;font-size:13px}
+@media(min-width:901px){.anav-section{display:block}.sidebar-sync{display:block}}
+@media(max-width:900px){.anav-section,.sidebar-sync{display:none}}
+@media(max-width:760px){.topbar{flex-wrap:wrap;gap:10px;padding:10px 14px}.tb-brand{order:1}.tb-actions{order:2;margin-left:auto}.tb-search{order:3;flex-basis:100%;max-width:none;margin:0}.tb-logo{height:34px}.tb-brand-txt strong{max-width:46vw;font-size:15px}.tb-cot-btn span:first-child{font-size:0}.tb-cot-btn span:first-child::after{content:'🧾';font-size:15px}.page-head h1{font-size:21px}}
 </style>
 </head>
 <body>
@@ -619,10 +654,15 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     <p class="login-note">El sistema mostrará automáticamente tu catálogo según tu usuario.</p>
   </div></div>
 </main>
-<main id="portal" class="hidden"><div class="brand-stripe"><i></i><i></i><i></i></div><div class="container">
-  <div class="card"><div class="portal-head"><img class="ph-logo" src="logo.png" alt="Technology Sales"><div class="ph-main"><h2 id="roleTitle">Catálogo</h2><p id="updatedText">Cargando inventario...</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="profile-btn hidden" id="profileBtn" onclick="openPerfil()">👤 Mi perfil</button><button class="profile-btn hidden" id="pedidosBtn" onclick="openPedidos()">📦 Mis pedidos</button><button class="logout-btn" style="margin-top:0" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div></div><div class="sync-status"><span class="sync-dot"></span>Catálogo conectado</div></div></div>
+<main id="portal" class="hidden"><div class="brand-stripe"><i></i><i></i><i></i></div>
+  <header class="topbar">
+    <div class="tb-brand"><img class="tb-logo" src="logo.png" alt="Technology Sales"><div class="tb-brand-txt"><strong id="roleTitle">Catálogo</strong><span>Inventario en tiempo real</span></div></div>
+    <div class="tb-search"><span class="tb-ico">🔍</span><input type="text" id="searchInput" placeholder="Buscar modelo, marca o SKU…" aria-label="Buscar modelo"></div>
+    <div class="tb-actions"><button class="tb-cot-btn hidden" id="cartTopBtn" onclick="openCart()"><span>🧾 Cotización</span><span class="tb-cot-count hidden" id="cartTopCount">0</span></button><div class="tb-avatar-wrap"><button class="tb-avatar" id="avatarBtn" onclick="toggleAvatarMenu(event)" aria-label="Cuenta" aria-haspopup="true">TS</button><div class="tb-menu hidden" id="avatarMenu"><button class="profile-btn hidden" id="profileBtn" onclick="openPerfil()">👤 Mi perfil</button><button class="profile-btn hidden" id="pedidosBtn" onclick="openPedidos()">📦 Mis pedidos</button><button class="logout-btn" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div></div></div>
+  </header>
+  <div class="container">
   <div class="dash-wrap">
-  <div class="card admin-nav hidden" id="adminNav"><button class="anav-btn" id="navResumen" onclick="showView('resumen')"><span class="anav-ico">📊</span><span class="anav-lbl">Resumen</span></button><button class="anav-btn active" id="navCat" onclick="showView('catalogo')"><span class="anav-ico">📦</span><span class="anav-lbl">Catálogo</span></button><button class="anav-btn" id="navCot" onclick="showView('cotizaciones')"><span class="anav-ico">📋</span><span class="anav-lbl">Cotizaciones</span><span class="anav-badge hidden" id="cotBadge">0</span></button><button class="anav-btn hidden" id="navPrc" onclick="showView('precios')"><span class="anav-ico">💲</span><span class="anav-lbl">Precios</span></button><button class="anav-btn hidden" id="navFotos" onclick="showView('fotos')"><span class="anav-ico">📸</span><span class="anav-lbl">Fotos</span></button><button class="anav-btn hidden" id="navHist" onclick="showView('historial')"><span class="anav-ico">🕑</span><span class="anav-lbl">Historial</span></button><button class="anav-btn hidden" id="navUsr" onclick="showView('usuarios')"><span class="anav-ico">👥</span><span class="anav-lbl">Usuarios</span></button><button class="anav-btn hidden" id="navEquipos" onclick="showView('equipos')"><span class="anav-ico">🔄</span><span class="anav-lbl">Equipos</span></button><button class="anav-btn hidden" id="navTraslados" onclick="showView('traslados')"><span class="anav-ico">🚚</span><span class="anav-lbl">Traslados</span></button><button class="anav-btn hidden" id="navTareas" onclick="showView('tareas')"><span class="anav-ico">✅</span><span class="anav-lbl">Tareas</span><span class="anav-badge hidden" id="tareasBadge">0</span></button></div>
+  <div class="card admin-nav hidden" id="adminNav"><div class="anav-section">Principal</div><button class="anav-btn" id="navResumen" onclick="showView('resumen')"><span class="anav-ico">📊</span><span class="anav-lbl">Resumen</span></button><button class="anav-btn active" id="navCat" onclick="showView('catalogo')"><span class="anav-ico">📦</span><span class="anav-lbl">Catálogo</span></button><button class="anav-btn" id="navCot" onclick="showView('cotizaciones')"><span class="anav-ico">📋</span><span class="anav-lbl">Cotizaciones</span><span class="anav-badge hidden" id="cotBadge">0</span></button><button class="anav-btn hidden" id="navPrc" onclick="showView('precios')"><span class="anav-ico">💲</span><span class="anav-lbl">Precios</span></button><button class="anav-btn hidden" id="navFotos" onclick="showView('fotos')"><span class="anav-ico">📸</span><span class="anav-lbl">Fotos</span></button><button class="anav-btn hidden" id="navHist" onclick="showView('historial')"><span class="anav-ico">🕑</span><span class="anav-lbl">Historial</span></button><button class="anav-btn hidden" id="navUsr" onclick="showView('usuarios')"><span class="anav-ico">👥</span><span class="anav-lbl">Usuarios</span></button><button class="anav-btn hidden" id="navEquipos" onclick="showView('equipos')"><span class="anav-ico">🔄</span><span class="anav-lbl">Equipos</span></button><button class="anav-btn hidden" id="navTraslados" onclick="showView('traslados')"><span class="anav-ico">🚚</span><span class="anav-lbl">Traslados</span></button><button class="anav-btn hidden" id="navTareas" onclick="showView('tareas')"><span class="anav-ico">✅</span><span class="anav-lbl">Tareas</span><span class="anav-badge hidden" id="tareasBadge">0</span></button><div class="sidebar-sync"><div class="ss-cap">Sincronizado</div><div class="sync-status"><span class="sync-dot"></span>Catálogo en línea</div></div></div>
   <div class="dash-content">
   <div id="resumenView" class="hidden">
     <div class="kpi-grid" id="kpiGrid"></div>
@@ -631,6 +671,7 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     <div class="card"><h3 class="dash-h3">📋 Cotizaciones</h3><div class="kpi-grid" id="kpiCotiz"></div><div class="dash-sub">🙋 Atendidas por</div><div id="kpiAtiende"></div><div class="dash-sub">👤 Quién más ha pedido</div><div id="kpiClientes"></div></div>
   </div>
   <div id="catalogView">
+  <div class="page-head"><div><h1>Catálogo de inventario</h1><p>Disponibilidad, precios y colores por sucursal.</p></div><span class="upd-pill"><span class="sync-dot"></span><span id="updatedText">Cargando…</span></span></div>
   <nav class="breadcrumb" id="breadcrumb" aria-label="Ruta"></nav>
   <div class="card"><div class="categories" id="categories" role="group" aria-label="Filtrar por categoría">
     <button class="cat-btn active" data-cat="" onclick="setCategory('',event)">Todos <span class="cat-count" data-catcount=""></span></button>
@@ -646,7 +687,6 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   </div></div>
   <div class="card">
     <div class="filter-row">
-      <div class="search-box"><span class="search-ico"></span><input type="text" id="searchInput" placeholder="Buscar modelo..." aria-label="Buscar modelo"></div>
       <div><div class="f-cap">MARCA</div><div class="dd" id="dd-marca" data-name="marca"><button class="dd-btn" type="button"><span class="dd-text">Todas las marcas</span><span class="dd-chev"></span></button><div class="dd-panel hidden"><input class="dd-search" placeholder="Buscar marca..."><div class="dd-options"></div></div></div></div>
       <div><div class="f-cap">ESTADO</div><div class="dd" id="dd-estado" data-name="estado"><button class="dd-btn" type="button"><span class="dd-text">Todos los estados</span><span class="dd-chev"></span></button><div class="dd-panel hidden"><div class="dd-options"></div></div></div></div>
       <div><div class="f-cap">SUCURSAL</div><div class="dd" id="dd-sucursal" data-name="sucursal"><button class="dd-btn" type="button"><span class="dd-text">Todas las sucursales</span><span class="dd-chev"></span></button><div class="dd-panel hidden"><div class="dd-options"></div></div></div></div>
@@ -1071,7 +1111,7 @@ function colorHex(name){return COLOR_HEX[String(name||"").trim().toUpperCase()]|
 const searchInput=document.getElementById("searchInput");
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
 /* ===== Listeners ===== */
-searchInput.addEventListener("input",()=>{renderCards()});
+searchInput.addEventListener("input",()=>{if(isInternal()){const cv=document.getElementById("catalogView");if(cv&&cv.classList.contains("hidden"))showView("catalogo")}renderCards()});
 document.getElementById("priceMin").addEventListener("input",e=>{fMin=e.target.value;renderCards()});
 document.getElementById("priceMax").addEventListener("input",e=>{fMax=e.target.value;renderCards()});
 document.getElementById("productGrid").addEventListener("click",event=>{const addBtn=event.target.closest("[data-add]");if(addBtn){event.stopPropagation();quickAdd(addBtn.dataset.add);return}const card=event.target.closest("[data-key]");if(card&&card.dataset.key)openDetail(card.dataset.key)});
@@ -1081,6 +1121,9 @@ document.getElementById("activeFilters").addEventListener("click",e=>{const chip
 document.getElementById("modalPicker").addEventListener("click",e=>{const c=e.target.closest("[data-color]");if(c){selectColor(c.dataset.color);return}const s=e.target.closest("[data-estado]");if(s)selectEstado(s.dataset.estado)});
 document.getElementById("cartBody").addEventListener("click",e=>{const dec=e.target.closest("[data-dec]");if(dec){changeCartQty(dec.dataset.dec,-1);return}const inc=e.target.closest("[data-inc]");if(inc){changeCartQty(inc.dataset.inc,1);return}const rm=e.target.closest("[data-remove]");if(rm)removeFromCart(rm.dataset.remove)});
 document.addEventListener("click",e=>{if(!e.target.closest(".dd"))closeAllDD()});
+document.addEventListener("click",()=>{const m=document.getElementById("avatarMenu");if(m&&!m.classList.contains("hidden"))m.classList.add("hidden")});
+function toggleAvatarMenu(e){if(e)e.stopPropagation();const m=document.getElementById("avatarMenu");if(m)m.classList.toggle("hidden")}
+function initials(name){const s=String(name||"").trim();if(!s)return "TS";const p=s.split(/\s+/);const r=((p[0]&&p[0][0])||"")+((p[1]&&p[1][0])||"");return r.toUpperCase()||"TS"}
 /* ===== Carga e ingreso ===== */
 async function supabaseError_(res,operation){const text=await res.text().catch(()=>"");let detail="";try{const body=JSON.parse(text);detail=body.message||body.error_description||body.hint||""}catch(e){detail=text}throw new Error(`Supabase respondió ${res.status} en ${operation}${detail?": "+detail:""}`)}
 async function sbFetch(path,token=""){const bearer=token||SUPABASE_KEY;const res=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+bearer}});if(!res.ok)return supabaseError_(res,path);return res.json()}
@@ -1110,7 +1153,7 @@ function resetSessionUiState(){
   const toast=document.getElementById("toast");if(toast){toast.classList.remove("show");toast.textContent=""}
   clearTimeout(showToast._t);clearTimeout(addFromModal._t);
 }
-function enterPortal(){resetSessionUiState();document.getElementById("home").classList.add("hidden");document.getElementById("portal").classList.remove("hidden");document.getElementById("roleTitle").textContent=roleTitleText();document.getElementById("updatedText").textContent="Catálogo cargado: "+new Date().toLocaleString("es-HN");document.getElementById("statUnitsBox").classList.toggle("hidden",!isInternal());document.getElementById("statsRow").classList.toggle("cols-2",!isInternal());document.getElementById("statsRow").classList.toggle("hidden",isAdminPanel());document.getElementById("portal").classList.toggle("dash-mode",isAdminPanel());updateCartFab();renderCart();buildDropdowns();updateCategoryCounts();renderCards();document.getElementById("adminNav").classList.toggle("hidden",!isInternal());document.getElementById("navCot").classList.toggle("hidden",!isAdminPanel());document.getElementById("navEquipos").classList.toggle("hidden",!isInternal());document.getElementById("navTraslados").classList.toggle("hidden",!isInternal());document.getElementById("navTareas").classList.toggle("hidden",!isInternal());document.getElementById("navUsr").classList.toggle("hidden",!isAdminRole());document.getElementById("navPrc").classList.toggle("hidden",!isAdminRole());document.getElementById("navResumen").classList.toggle("hidden",!isAdminPanel());document.getElementById("navFotos").classList.toggle("hidden",!isAdminPanel());document.getElementById("navHist").classList.toggle("hidden",!isAdminPanel());document.getElementById("profileBtn").classList.toggle("hidden",!canHaveProfile());document.getElementById("pedidosBtn").classList.toggle("hidden",!canHaveProfile());if(isAdminPanel())startQuotesWatch();else stopQuotesWatch();showView(isAdminPanel()?"resumen":"catalogo")}
+function enterPortal(){resetSessionUiState();document.getElementById("home").classList.add("hidden");document.getElementById("portal").classList.remove("hidden");document.getElementById("roleTitle").textContent=roleTitleText();const _av=document.getElementById("avatarBtn");if(_av)_av.textContent=initials(currentUser);document.getElementById("updatedText").textContent="Actualizado: "+new Date().toLocaleString("es-HN");document.getElementById("statUnitsBox").classList.toggle("hidden",!isInternal());document.getElementById("statsRow").classList.toggle("cols-2",!isInternal());document.getElementById("statsRow").classList.toggle("hidden",isAdminPanel());document.getElementById("portal").classList.toggle("dash-mode",isAdminPanel());updateCartFab();renderCart();buildDropdowns();updateCategoryCounts();renderCards();document.getElementById("adminNav").classList.toggle("hidden",!isInternal());document.getElementById("navCot").classList.toggle("hidden",!isAdminPanel());document.getElementById("navEquipos").classList.toggle("hidden",!isInternal());document.getElementById("navTraslados").classList.toggle("hidden",!isInternal());document.getElementById("navTareas").classList.toggle("hidden",!isInternal());document.getElementById("navUsr").classList.toggle("hidden",!isAdminRole());document.getElementById("navPrc").classList.toggle("hidden",!isAdminRole());document.getElementById("navResumen").classList.toggle("hidden",!isAdminPanel());document.getElementById("navFotos").classList.toggle("hidden",!isAdminPanel());document.getElementById("navHist").classList.toggle("hidden",!isAdminPanel());document.getElementById("profileBtn").classList.toggle("hidden",!canHaveProfile());document.getElementById("pedidosBtn").classList.toggle("hidden",!canHaveProfile());if(isAdminPanel())startQuotesWatch();else stopQuotesWatch();showView(isAdminPanel()?"resumen":"catalogo")}
 let suppressAutoRestore=false,restoreSafetyTimer=null;
 function showRestoreOverlay(text){let ov=document.getElementById("restoreOverlay");if(!ov){ov=document.createElement("div");ov.id="restoreOverlay";ov.style.cssText="position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(248,250,252,.98);color:#0f172a;font-weight:800;font-size:16px";ov.innerHTML='<div style="width:38px;height:38px;border:4px solid #cbd5e1;border-top-color:#0f172a;border-radius:50%;animation:rspin 1s linear infinite"></div><div id="restoreOverlayTxt"></div>';document.body.appendChild(ov);if(!document.getElementById("rspinStyle")){const st=document.createElement("style");st.id="rspinStyle";st.textContent="@keyframes rspin{to{transform:rotate(360deg)}}";document.head.appendChild(st)}}const t=document.getElementById("restoreOverlayTxt");if(t)t.textContent=text||"Cargando…";return ov}
 function hideRestoreOverlay(){if(restoreSafetyTimer){clearTimeout(restoreSafetyTimer);restoreSafetyTimer=null}const ov=document.getElementById("restoreOverlay");if(ov)ov.remove()}
@@ -1207,7 +1250,7 @@ function removeFromCart(cartKey){cart=cart.filter(c=>c.cartKey!==cartKey);update
 function changeCartQty(cartKey,delta){const it=cart.find(c=>c.cartKey===cartKey);if(!it)return;const stock=availStock(it.key,it.color,it.estado,it.sucursal);it.stock=stock;let nq=it.qty+delta;if(delta>0&&stock>0&&nq>stock){nq=stock;showToast("Máx. disponible: "+stock)}if(nq<=0){removeFromCart(cartKey);return}it.qty=nq;updateCartFab();renderCart()}
 function cartCountTotal(){return cart.reduce((s,c)=>s+c.qty,0)}
 function cartMoney(){let total=0,hasUnknown=false;cart.forEach(c=>{if(isNaN(c.precioNum))hasUnknown=true;else total+=c.precioNum*c.qty});return{total,hasUnknown}}
-function updateCartFab(){const fab=document.getElementById("cartFab");const count=cartCountTotal();document.getElementById("cartCount").textContent=count;if(canQuote()&&count>0)fab.classList.remove("hidden");else fab.classList.add("hidden")}
+function updateCartFab(){const fab=document.getElementById("cartFab");const count=cartCountTotal();document.getElementById("cartCount").textContent=count;if(canQuote()&&count>0)fab.classList.remove("hidden");else fab.classList.add("hidden");const topBtn=document.getElementById("cartTopBtn");if(topBtn){topBtn.classList.toggle("hidden",!canQuote());const tc=document.getElementById("cartTopCount");if(tc){tc.textContent=count;tc.classList.toggle("hidden",count<=0)}}}
 function openCart(){cartStage="cart";renderCart();document.getElementById("cartOverlay").classList.add("open");document.getElementById("cartPanel").classList.add("open");lockScroll()}
 function closeCart(){document.getElementById("cartOverlay").classList.remove("open");document.getElementById("cartPanel").classList.remove("open");unlockScroll()}
 function updateHeadCount(){const el=document.getElementById("cartHeadCount");const n=cartCountTotal();if(n>0){el.textContent=n;el.classList.remove("hidden")}else el.classList.add("hidden")}
