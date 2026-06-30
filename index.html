@@ -634,7 +634,7 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 @media(min-width:901px){.anav-section{display:block}.sidebar-sync{display:block}}
 @media(max-width:900px){.anav-section,.sidebar-sync{display:none}}
 .filters-toggle{display:none}
-@media(max-width:760px){.topbar{display:grid;grid-template-columns:1fr auto;grid-template-areas:'brand actions' 'search search';gap:10px;padding:10px 14px;align-items:center}.tb-brand{grid-area:brand;min-width:0}.tb-actions{grid-area:actions;gap:9px}.tb-search{grid-area:search;max-width:none;margin:0}.tb-logo{height:34px}.tb-brand-txt strong{font-size:15px}.tb-cot-btn{padding:9px 11px}.tb-cot-btn span:first-child{font-size:0}.tb-cot-btn span:first-child::after{content:'🧾';font-size:16px}.page-head h1{font-size:21px}
+@media(max-width:760px){.topbar{display:grid;grid-template-columns:1fr auto;grid-template-areas:'brand actions' 'search search';gap:10px;padding:10px 14px;align-items:center}.tb-brand{grid-area:brand;min-width:0}.tb-actions{grid-area:actions;gap:9px}.tb-search{grid-area:search;max-width:none;margin:0}.tb-logo{height:34px}.tb-brand-txt strong{font-size:15px}.tb-cot-btn{padding:9px 11px}.tb-cot-btn span:first-child{font-size:0}.tb-cot-btn span:first-child::after{content:'🛒';font-size:16px}.page-head h1{font-size:21px}
 .filters-toggle{display:inline-flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:1px solid #E4E9F0;background:#fff;border-radius:12px;padding:12px 14px;font-size:14px;font-weight:800;color:#0E1116;cursor:pointer}
 .filters-toggle .ft-arrow{color:#8A94A3;font-size:13px}
 .filter-row{display:none;margin-top:12px}.filter-row.open{display:flex}}
@@ -662,7 +662,7 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   <header class="topbar">
     <div class="tb-brand"><img class="tb-logo" src="logo.png" alt="Technology Sales"><div class="tb-brand-txt"><strong id="roleTitle">Catálogo</strong><span>Inventario en tiempo real</span></div></div>
     <div class="tb-search"><span class="tb-ico">🔍</span><input type="text" id="searchInput" placeholder="Buscar modelo, marca o SKU…" aria-label="Buscar modelo"></div>
-    <div class="tb-actions"><button class="tb-cot-btn hidden" id="cartTopBtn" onclick="openCart()"><span>🧾 Cotización</span><span class="tb-cot-count hidden" id="cartTopCount">0</span></button><div class="tb-avatar-wrap"><button class="tb-avatar" id="avatarBtn" onclick="toggleAvatarMenu(event)" aria-label="Cuenta" aria-haspopup="true">TS</button><div class="tb-menu hidden" id="avatarMenu"><button class="profile-btn hidden" id="profileBtn" onclick="openPerfil()">👤 Mi perfil</button><button class="profile-btn hidden" id="pedidosBtn" onclick="openPedidos()">📦 Mis pedidos</button><button class="logout-btn" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div></div></div>
+    <div class="tb-actions"><button class="tb-cot-btn hidden" id="cartTopBtn" onclick="openCart()"><span>🛒 Cotización</span><span class="tb-cot-count hidden" id="cartTopCount">0</span></button><div class="tb-avatar-wrap"><button class="tb-avatar" id="avatarBtn" onclick="toggleAvatarMenu(event)" aria-label="Cuenta" aria-haspopup="true">TS</button><div class="tb-menu hidden" id="avatarMenu"><button class="profile-btn hidden" id="profileBtn" onclick="openPerfil()">👤 Mi perfil</button><button class="profile-btn hidden" id="pedidosBtn" onclick="openPedidos()">📦 Mis pedidos</button><button class="logout-btn" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div></div></div>
   </header>
   <div class="container">
   <div class="dash-wrap">
@@ -1140,7 +1140,7 @@ function inventoryErrorMessage(error){const detail=String(error&&error.message||
 async function resolveProfile(email){if(window.fbGetUser){const u=await window.fbGetUser(email);if(u&&u.role)return{...u,role:normalizeRole(u.role),name:u.name||email}}return{role:"cliente",name:email}}
 function isAdminRole(){return currentRole==="admin"}
 function canHaveProfile(){return currentRole==="mayorista"||currentRole==="revendedor"||currentRole==="vendedor"||currentRole==="comisionista"}
-function roleTitleText(){const t={admin:"Panel Administración",asesor:"Catálogo Asesor",vendedor:"Catálogo Vendedor",comisionista:"Catálogo Comisionista",mayorista:"Catálogo Mayorista",revendedor:"Catálogo Revendedor",cliente:"Catálogo"};return currentRole==="cliente"?"Catálogo · Cliente":`${t[currentRole]||"Catálogo"} · ${currentUser}`}
+function roleTitleText(){return (currentUser&&currentUser.trim())||"Catálogo"}
 function resetSessionUiState(){
   cart=[];cartStage="cart";currentCategory="";currentModalKey="";modalProduct=null;selectedColor="";selectedEstado="";
   fMarca=fEstado=fSucursal=fChip=fMin=fMax="";prcSearch=prcFilter=fotSearch=usrSearch=usrRoleFilter="";
