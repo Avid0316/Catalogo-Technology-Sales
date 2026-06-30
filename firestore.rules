@@ -7,7 +7,11 @@ service cloud.firestore {
     }
 
     function email() {
-      return request.auth.token.email;
+      // Normalizamos a minúsculas: los documentos de usuarios y los correos
+      // que envía la app usan minúsculas, pero el token de Firebase puede
+      // traer mayúsculas. Sin esto, un usuario con correo en mayúsculas no
+      // resuelve su rol y se le niega guardar cotizaciones.
+      return request.auth.token.email.lower();
     }
 
     function profile() {
