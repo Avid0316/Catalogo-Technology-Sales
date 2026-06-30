@@ -37,6 +37,17 @@ body{background:linear-gradient(to bottom,#f8fbff,#eef2f7);color:var(--text)}
 .portal-head h2{margin:0;font-size:28px}.portal-head p{margin:7px 0 0;color:var(--muted)}
 .sync-status{display:inline-flex;align-items:center;gap:8px;background:#ecfeff;color:#0369a1;font-weight:bold;border-radius:999px;padding:8px 12px;font-size:13px}
 .sync-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.15)}
+.brand-stripe{height:3px;display:flex}
+.brand-stripe i{flex:1}
+.brand-stripe i:nth-child(1){flex:1.6;background:#0E1116}
+.brand-stripe i:nth-child(2){background:#F0CF18}
+.brand-stripe i:nth-child(3){background:#2B9FE0}
+.portal-head{align-items:center}
+.ph-logo{height:42px;width:auto;flex:none}
+.ph-main{flex:1;min-width:200px}
+.portal-head h2{font-size:23px;font-weight:800;letter-spacing:-.01em;color:#0E1116}
+.sync-status{background:#E9F7EF;color:#16A34A}
+@media(max-width:650px){.ph-logo{height:34px}.portal-head h2{font-size:20px}}
 .logout-btn{border:none;background:#ef4444;color:white;border-radius:12px;padding:9px 13px;font-weight:800;cursor:pointer;margin-top:10px}
 /* breadcrumb */
 .breadcrumb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:14px;padding:0 4px}
@@ -608,8 +619,8 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
     <p class="login-note">El sistema mostrará automáticamente tu catálogo según tu usuario.</p>
   </div></div>
 </main>
-<main id="portal" class="hidden"><div class="container">
-  <div class="card"><div class="portal-head"><div><h2 id="roleTitle">Catálogo</h2><p id="updatedText">Cargando inventario...</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="profile-btn hidden" id="profileBtn" onclick="openPerfil()">👤 Mi perfil</button><button class="profile-btn hidden" id="pedidosBtn" onclick="openPedidos()">📦 Mis pedidos</button><button class="logout-btn" style="margin-top:0" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div></div><div class="sync-status"><span class="sync-dot"></span>Catálogo conectado</div></div></div>
+<main id="portal" class="hidden"><div class="brand-stripe"><i></i><i></i><i></i></div><div class="container">
+  <div class="card"><div class="portal-head"><img class="ph-logo" src="logo.png" alt="Technology Sales"><div class="ph-main"><h2 id="roleTitle">Catálogo</h2><p id="updatedText">Cargando inventario...</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="profile-btn hidden" id="profileBtn" onclick="openPerfil()">👤 Mi perfil</button><button class="profile-btn hidden" id="pedidosBtn" onclick="openPedidos()">📦 Mis pedidos</button><button class="logout-btn" style="margin-top:0" onclick="logout()" aria-label="Cerrar sesión">Cerrar sesión</button></div></div><div class="sync-status"><span class="sync-dot"></span>Catálogo conectado</div></div></div>
   <div class="dash-wrap">
   <div class="card admin-nav hidden" id="adminNav"><button class="anav-btn" id="navResumen" onclick="showView('resumen')"><span class="anav-ico">📊</span><span class="anav-lbl">Resumen</span></button><button class="anav-btn active" id="navCat" onclick="showView('catalogo')"><span class="anav-ico">📦</span><span class="anav-lbl">Catálogo</span></button><button class="anav-btn" id="navCot" onclick="showView('cotizaciones')"><span class="anav-ico">📋</span><span class="anav-lbl">Cotizaciones</span><span class="anav-badge hidden" id="cotBadge">0</span></button><button class="anav-btn hidden" id="navPrc" onclick="showView('precios')"><span class="anav-ico">💲</span><span class="anav-lbl">Precios</span></button><button class="anav-btn hidden" id="navFotos" onclick="showView('fotos')"><span class="anav-ico">📸</span><span class="anav-lbl">Fotos</span></button><button class="anav-btn hidden" id="navHist" onclick="showView('historial')"><span class="anav-ico">🕑</span><span class="anav-lbl">Historial</span></button><button class="anav-btn hidden" id="navUsr" onclick="showView('usuarios')"><span class="anav-ico">👥</span><span class="anav-lbl">Usuarios</span></button><button class="anav-btn hidden" id="navEquipos" onclick="showView('equipos')"><span class="anav-ico">🔄</span><span class="anav-lbl">Equipos</span></button><button class="anav-btn hidden" id="navTraslados" onclick="showView('traslados')"><span class="anav-ico">🚚</span><span class="anav-lbl">Traslados</span></button><button class="anav-btn hidden" id="navTareas" onclick="showView('tareas')"><span class="anav-ico">✅</span><span class="anav-lbl">Tareas</span><span class="anav-badge hidden" id="tareasBadge">0</span></button></div>
   <div class="dash-content">
