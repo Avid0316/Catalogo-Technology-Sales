@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Mockup · Mi cotización</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',-apple-system,Segoe UI,Roboto,sans-serif}
+:root{--mono:ui-monospace,'SF Mono',Menlo,monospace}
+body{background:rgba(15,23,42,.45);min-height:100vh;display:flex;justify-content:flex-end}
+.cart-panel{background:#F3F5F8;height:100vh;width:100%;max-width:440px;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.2)}
+.cart-head{background:#0E1116;color:#fff;padding:20px;display:flex;justify-content:space-between;align-items:center}
+.cart-head h3{font-size:20px;display:flex;align-items:center;gap:8px}
+.cart-head-count{background:rgba(255,255,255,.18);border-radius:999px;font-size:12px;font-weight:800;padding:2px 10px}
+.close-btn{width:38px;height:38px;border:none;background:rgba(255,255,255,.12);color:#fff;border-radius:50%;font-size:16px;cursor:pointer}
+.cart-body{flex:1;overflow:auto;padding:16px}
+.cart-prelabel{font-family:var(--mono);font-size:10.5px;font-weight:800;letter-spacing:.06em;color:#A6AEB9;margin:2px 4px 12px}
+.cart-item{background:#fff;border:1px solid #E4E9F0;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.ci-row{display:flex;gap:12px;align-items:flex-start}
+.ci-thumb{width:54px;height:54px;object-fit:contain;background:#F6F8FB;border:1px solid #EEF1F6;border-radius:12px;flex:none}
+.ci-info{flex:1;min-width:0}
+.ci-title{font-weight:800;font-size:15px;color:#0E1116}
+.ci-meta{color:#8A94A3;font-size:12px;margin-top:1px}
+.ci-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.ci-pill{display:inline-flex;align-items:center;gap:6px;background:#F4F6F9;border:1px solid #E9EDF3;color:#5C6675;font-family:var(--mono);border-radius:999px;padding:3px 9px;font-size:10.5px;font-weight:600}
+.cdot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.ci-badge{border-radius:999px;padding:3px 9px;font-size:10.5px;font-weight:800;color:#16A34A;background:#E9F7EF}
+.ci-unit{color:#A6AEB9;font-size:12px;font-weight:600;margin-top:7px}
+.ci-amount{font-weight:800;color:#0E1116;font-size:15.5px;white-space:nowrap}
+.ci-actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.qsel{display:flex;align-items:center;border:1.5px solid #E4E9F0;border-radius:11px;overflow:hidden}
+.qsel button{border:none;background:#F4F6F9;width:34px;height:34px;font-size:18px;font-weight:800;cursor:pointer}
+.qsel span{min-width:38px;text-align:center;font-weight:800}
+.ci-trash{border:none;background:none;color:#DC2626;font-weight:800;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.cart-foot{flex:none;padding:16px;background:#F3F5F8;border-top:1px solid #E4E9F0}
+.cart-summary{background:#fff;border:1px solid #E4E9F0;border-radius:16px;padding:14px 16px;margin-bottom:14px}
+.cs-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#475569;font-weight:600}
+.cs-total{margin-top:6px;font-size:17px;font-weight:800;color:#0E1116}
+.cs-note{font-size:11px;color:#A6AEB9;margin-top:8px}
+.quote-btn{width:100%;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;background:#16A34A;color:#fff}
+</style></head>
+<body>
+<div class="cart-panel">
+  <div class="cart-head"><h3>🛒 Mi cotización <span class="cart-head-count">3</span></h3><button class="close-btn">✕</button></div>
+  <div class="cart-body">
+    <div class="cart-prelabel">COTIZACIÓN PRELIMINAR</div>
+
+    <div class="cart-item">
+      <div class="ci-row">
+        <img class="ci-thumb" src="https://picsum.photos/seed/s24c/120" alt="">
+        <div class="ci-info">
+          <div class="ci-title">Galaxy S24 Ultra 256GB</div>
+          <div class="ci-meta">Samsung · 256GB</div>
+          <div class="ci-pills"><span class="ci-pill"><span class="cdot" style="background:#1C1C1E"></span>Negro</span><span class="ci-badge">Nuevo</span></div>
+          <div class="ci-unit">L 28,500 c/u</div>
+        </div>
+        <div class="ci-amount">L 57,000</div>
+      </div>
+      <div class="ci-actions"><div class="qsel"><button>−</button><span>2</span><button>+</button></div><button class="ci-trash">🗑️ Eliminar</button></div>
+    </div>
+
+    <div class="cart-item">
+      <div class="ci-row">
+        <img class="ci-thumb" src="https://picsum.photos/seed/a17c/120" alt="">
+        <div class="ci-info">
+          <div class="ci-title">A17 4G 128GB/6RAM</div>
+          <div class="ci-meta">Samsung · 128GB</div>
+          <div class="ci-pills"><span class="ci-pill"><span class="cdot" style="background:#7CC6E8"></span>Azul</span><span class="ci-badge">Nuevo</span></div>
+          <div class="ci-unit">L 4,500 c/u</div>
+        </div>
+        <div class="ci-amount">L 4,500</div>
+      </div>
+      <div class="ci-actions"><div class="qsel"><button>−</button><span>1</span><button>+</button></div><button class="ci-trash">🗑️ Eliminar</button></div>
+    </div>
+
+    <div class="cart-item">
+      <div class="ci-row">
+        <div class="ci-thumb"></div>
+        <div class="ci-info">
+          <div class="ci-title">AirPods Pro 2 USB-C</div>
+          <div class="ci-meta">Apple · ANC</div>
+          <div class="ci-pills"><span class="ci-pill"><span class="cdot" style="background:#F2F2F2"></span>Blanco</span><span class="ci-badge">Nuevo</span></div>
+          <div class="ci-unit">L 4,400 c/u</div>
+        </div>
+        <div class="ci-amount">L 8,800</div>
+      </div>
+      <div class="ci-actions"><div class="qsel"><button>−</button><span>2</span><button>+</button></div><button class="ci-trash">🗑️ Eliminar</button></div>
+    </div>
+  </div>
+  <div class="cart-foot">
+    <div class="cart-summary">
+      <div class="cs-row"><span>Productos</span><span>5</span></div>
+      <div class="cs-row cs-total"><span>Total estimado</span><span>L 70,300</span></div>
+      <div class="cs-note">* Precios sujetos a confirmación</div>
+    </div>
+    <button class="quote-btn">Solicitar cotización →</button>
+  </div>
+</div>
+</body></html>
