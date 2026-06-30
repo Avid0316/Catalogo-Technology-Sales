@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Mockup · Encabezado en móvil (antes vs. después)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,'Segoe UI',Roboto,sans-serif}
+:root{--muted:#6B7280}
+body{background:#EAEDF2;color:#0E1116;padding:24px 14px 40px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.lead{max-width:420px;text-align:center;color:#475569;font-size:13.5px;margin-bottom:6px}
+.row{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.col{display:flex;flex-direction:column;align-items:center;gap:10px}
+.tag{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.tag.bad{color:#B4530A}.tag.good{color:#16A34A}
+
+/* Marco de teléfono ~360px */
+.phone{width:340px;background:#F3F5F8;border:8px solid #0E1116;border-radius:30px;overflow:hidden;box-shadow:0 14px 34px rgba(15,23,42,.18)}
+.brand-stripe{height:3px;display:flex}
+.brand-stripe i{flex:1}
+.brand-stripe i:nth-child(1){flex:1.6;background:#0E1116}
+.brand-stripe i:nth-child(2){background:#F0CF18}
+.brand-stripe i:nth-child(3){background:#2B9FE0}
+.container{padding:14px}
+.card{background:#fff;border:1px solid #E4E9F0;border-radius:16px;padding:16px}
+.portal-head{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.ph-logo{width:auto;flex:none}
+.ph-main{flex:1}
+.portal-head h2{margin:0;font-weight:800;letter-spacing:-.01em;color:#0E1116}
+.portal-head p{margin:7px 0 0;color:var(--muted)}
+.sync-status{display:inline-flex;align-items:center;gap:8px;background:#E9F7EF;color:#16A34A;font-weight:bold;border-radius:999px;padding:8px 12px;font-size:13px}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#16A34A}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.profile-btn,.logout-btn{border:1px solid #E4E9F0;background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;color:#3D4757;cursor:pointer}
+.logout-btn{background:#FEF2F2;border-color:#FECACA;color:#B91C1C}
+
+/* === ANTES === */
+.before .portal-head h2{font-size:23px}
+.before .ph-logo{height:34px}
+/* (todo centrado vertical; el título de 2 líneas deja el logo "flotando") */
+
+/* === DESPUÉS (PR #85, <=650px) === */
+.after .portal-head{align-items:flex-start;gap:12px}
+.after .ph-logo{height:40px;margin-top:1px}
+.after .ph-main{min-width:0}
+.after .portal-head h2{font-size:18.5px;line-height:1.2}
+.after .portal-head p{font-size:13px;margin-top:5px}
+.after .sync-status{font-size:12px;padding:6px 10px}
+</style></head>
+<body>
+<div class="lead">Encabezado del portal en móvil (~360&nbsp;px). Izquierda: como estaba. Derecha: la propuesta del PR&nbsp;#85 — logo alineado arriba y un poco más grande, título más compacto.</div>
+<div class="row">
+
+  <div class="col">
+    <span class="tag bad">Antes</span>
+    <div class="phone before">
+      <div class="brand-stripe"><i></i><i></i><i></i></div>
+      <div class="container">
+        <div class="card">
+          <div class="portal-head">
+            <img class="ph-logo" src="logo.png" alt="Technology Sales">
+            <div class="ph-main">
+              <h2>Panel Administración · David</h2>
+              <p>Catálogo cargado: 30/6/2026, 9:14</p>
+              <div class="btns">
+                <button class="profile-btn">👤 Mi perfil</button>
+                <button class="logout-btn">Cerrar sesión</button>
+              </div>
+            </div>
+            <div class="sync-status"><span class="sync-dot"></span>Catálogo conectado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <span class="tag good">Después · PR #85</span>
+    <div class="phone after">
+      <div class="brand-stripe"><i></i><i></i><i></i></div>
+      <div class="container">
+        <div class="card">
+          <div class="portal-head">
+            <img class="ph-logo" src="logo.png" alt="Technology Sales">
+            <div class="ph-main">
+              <h2>Panel Administración · David</h2>
+              <p>Catálogo cargado: 30/6/2026, 9:14</p>
+              <div class="btns">
+                <button class="profile-btn">👤 Mi perfil</button>
+                <button class="logout-btn">Cerrar sesión</button>
+              </div>
+            </div>
+            <div class="sync-status"><span class="sync-dot"></span>Catálogo conectado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body></html>
