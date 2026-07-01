@@ -16,19 +16,7 @@ jobs:
       - name: Descargar el codigo
         uses: actions/checkout@v4
 
-      # El sitio web va PRIMERO: es lo crítico y debe publicarse siempre.
-      - name: Desplegar a Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          channelId: live
-          projectId: technology-sales-web
-
-      # Las reglas de Firestore van al final y NO bloquean el deploy:
-      # si la cuenta de servicio no tiene permiso (403), se publican aparte.
       - name: Preparar credenciales para reglas
-        continue-on-error: true
         shell: bash
         env:
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
@@ -36,7 +24,14 @@ jobs:
           node -e "require('fs').writeFileSync(process.env.RUNNER_TEMP + '/firebase-service-account.json', process.env.FIREBASE_SERVICE_ACCOUNT_JSON)"
 
       - name: Desplegar reglas de Firestore
-        continue-on-error: true
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
         run: npx --yes firebase-tools@14 deploy --only firestore:rules --project technology-sales-web --non-interactive
+
+      - name: Desplegar a Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: technology-sales-web
