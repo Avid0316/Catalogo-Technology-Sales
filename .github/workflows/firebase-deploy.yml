@@ -15,13 +15,37 @@ jobs:
     steps:
       - name: Descargar el codigo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Autenticar Google Cloud para Firebase CLI
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
+      - name: Revisar si cambiaron reglas de Firestore
+        id: firestore_changes
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "deploy_rules=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BEFORE="${{ github.event.before }}"
+          if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then
+            echo "deploy_rules=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if git diff --name-only "$BEFORE" "${{ github.sha }}" | grep -Eq '^(firestore\.rules|firebase\.json)$'; then
+            echo "deploy_rules=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy_rules=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Desplegar reglas de Firestore
+        if: steps.firestore_changes.outputs.deploy_rules == 'true'
         run: npx --yes firebase-tools@14 deploy --only firestore:rules --project technology-sales-web --non-interactive
 
       - name: Desplegar a Firebase Hosting
