@@ -295,7 +295,7 @@ forbidMatch(
 
 forbidMatch(
   "index.html",
-  /Ver catálogo como cliente|class="public-btn"|function enterPublic\(/,
+  /Ver catálogo como cliente|class="public-btn"|function enterPublic\(|window\.enterPublic/,
   "el acceso público al catálogo debe permanecer deshabilitado temporalmente"
 );
 
@@ -313,7 +313,7 @@ requireMatch(
 
 requireMatch(
   "index.html",
-  /const warTxt=war\?\("Garantía Apple"\+\(p\.vence\?/,
+  /Garantía Apple "\+escapeHtml\(f\.until\)|Garantía Apple "\+f\.until/,
   "la fecha de garantía de equipos individuales debe identificarse como Garantía Apple"
 );
 
