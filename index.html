@@ -599,6 +599,51 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 #detailModal .modal-add-row .btn-add.added,#modalAddBtn.added{background:#16A34A}
 #detailModal .qsel{border:1.5px solid #E4E9F0;border-radius:12px}
 #detailModal .qsel button{background:#F4F6F9}
+/* ===== Modal 1A integrado ===== */
+#detailModal{background:rgba(15,23,42,.55)}
+#detailModal .modal-content{max-width:560px;border-radius:22px;max-height:94vh;box-shadow:0 24px 60px rgba(15,23,42,.28)}
+#detailModal .modal-scroll{padding:20px 22px 6px}
+#detailModal .md-head{display:flex;gap:15px;align-items:flex-start}
+#detailModal .md-img{width:104px;height:104px;border-radius:17px;object-fit:contain;background:#F6F8FB;border:1px solid #EEF1F6;padding:8px;flex:none}
+#detailModal .md-img.ph{background:repeating-linear-gradient(135deg,#F6F8FB,#F6F8FB 8px,#EEF1F6 8px,#EEF1F6 16px)}
+#detailModal .md-info{flex:1;min-width:0;padding-top:2px}
+#detailModal .md-brand{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:600;letter-spacing:.08em;color:#9AA4B2;text-transform:uppercase}
+#detailModal .md-title{font-size:24px;font-weight:800;letter-spacing:-.01em;line-height:1.08;margin:1px 0 0;color:#0E1116}
+#detailModal .md-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+#detailModal .md-tag{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:500;color:#5C6675;background:#F4F6F9;border:1px solid #E9EDF3;border-radius:6px;padding:3px 8px}
+#detailModal .md-tag.new{font-weight:600;color:#16A34A;background:#E9F7EF;border:none}
+#detailModal .close-btn{width:34px;height:34px;border-radius:50%;border:none;background:#F1F4F8;color:#5A6675;font-size:15px;display:flex;align-items:center;justify-content:center}
+#detailModal .close-btn:hover{background:#0E1116;color:#fff}
+#detailModal .md-warr{display:flex;align-items:center;gap:8px;margin-top:13px;background:#FFFBEB;border:1px solid #FBE7A2;border-radius:11px;padding:9px 12px;color:#8A6D0F;font-size:12.5px;font-weight:700}
+#detailModal .md-price-block{margin-top:17px}
+#detailModal .md-price-one{display:flex;align-items:baseline;justify-content:space-between;background:#F6F9FC;border:1px solid #E4E9F0;border-radius:15px;padding:15px 17px}
+#detailModal .md-price-one .lbl{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:600;letter-spacing:.08em;color:#A6AEB9}
+#detailModal .md-price-one .val{font-size:30px;font-weight:800;line-height:1.05;margin-top:2px;letter-spacing:-.02em;color:#0E1116}
+#detailModal .md-price-one .unit{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:500;color:#8A94A3}
+#detailModal .md-tiers-lbl{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:600;letter-spacing:.1em;color:#A6AEB9;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+#detailModal .md-tiers-lbl .only{background:#0E1116;color:#fff;font-size:8.5px;letter-spacing:.06em;padding:2px 7px;border-radius:999px}
+#detailModal .md-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#detailModal .md-tier{border:1.4px solid #E4E9F0;border-radius:14px;padding:13px 8px 11px;text-align:center}
+#detailModal .md-tier .t{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:9.5px;font-weight:600;color:#A6AEB9}
+#detailModal .md-tier.may .t{color:#0E6FB8}
+#detailModal .md-tier .v{font-size:18px;font-weight:800;margin-top:3px;color:#0E1116}
+#detailModal .pick-label{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-weight:600;color:#A6AEB9;margin:19px 0 9px;font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+#detailModal .swatch{display:flex;align-items:center;gap:9px;border:1.6px solid #E4E9F0;background:#fff;border-radius:13px;padding:9px 13px 9px 10px}
+#detailModal .swatch.sel{border-color:#1488D8;background:#EAF4FC;box-shadow:none}
+#detailModal .sw-dot{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(15,23,42,.15);box-shadow:0 1px 3px rgba(15,23,42,.12);flex:none}
+#detailModal .sw-name{font-size:13px;font-weight:800}
+#detailModal .sw-stock{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:500;color:#8A94A3}
+#detailModal .avail-line{margin-top:13px;background:#EAF8F0;border:1px solid #B7E6CB;border-radius:13px;padding:11px 13px;color:#15693C;font-size:12px;line-height:1.5;font-weight:600}
+#detailModal .modal-breakdown{margin-top:6px;border-top:none;padding-top:0}
+#detailModal .modal-breakdown summary{display:flex;align-items:center;gap:7px;color:#0E6FB8;font-size:13.5px;font-weight:700;padding:10px 0}
+#detailModal .modal-breakdown summary::before{content:"›";font-weight:900}
+#detailModal .modal-add-row{align-items:center;padding:13px 20px 18px;border-top:1px solid #EDF0F4;background:#fff}
+#detailModal .modal-add-row .qsel{border:1.5px solid #E4E9F0;border-radius:13px}
+#detailModal .modal-add-row .qsel button{background:#F6F8FB;width:42px;height:48px;font-weight:600}
+#detailModal .modal-add-row .qsel input{width:44px;border:none;font-size:17px;font-weight:800}
+#detailModal .modal-add-row .btn-add{height:52px;border-radius:14px;font-size:15px;background:#1488D8;color:#fff;box-shadow:0 8px 20px rgba(20,136,216,.32)}
+#detailModal .qmax{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;color:#A6AEB9;margin-top:4px}
+@media(max-width:650px){#detailModal{align-items:flex-end;padding:0}#detailModal .modal-content{border-radius:22px 22px 0 0;max-height:92dvh}#detailModal .modal-scroll{padding:18px 20px 6px}#detailModal .md-img{width:72px;height:72px;border-radius:15px}#detailModal .md-title{font-size:21px}#detailModal .md-tiers{gap:6px}#detailModal .md-tier{padding:10px 6px}#detailModal .md-tier .v{font-size:15px}}
 /* ===== Nuevo shell: topbar + sidebar ===== */
 .topbar{position:sticky;top:0;z-index:80;background:#fff;border-bottom:1px solid #E4E9F0;display:flex;align-items:center;gap:18px;padding:11px 22px}
 .tb-brand{display:flex;align-items:center;gap:12px;flex:none;min-width:0}
@@ -991,14 +1036,18 @@ body.modal-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   </div></div>
 </div></main>
 <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-content">
-  <div class="modal-top">
-    <div class="modal-header-b">
-      <img id="modalImg" class="modal-img-b" alt="" onerror="this.style.display='none'">
-      <div class="modal-hb-info"><h2 id="modalTitle"></h2><div class="modal-sub" id="modalSub"></div><div class="modal-price-b" id="modalPrice"></div></div>
+  <div class="modal-scroll">
+    <div class="md-head">
+      <img id="modalImg" class="md-img" alt="" onerror="this.onerror=null;this.removeAttribute('src');this.classList.add('ph')">
+      <div class="md-info">
+        <div class="md-brand" id="modalBrand"></div>
+        <h2 class="md-title" id="modalTitle"></h2>
+        <div class="md-tags" id="modalSub"></div>
+      </div>
       <button class="close-btn" onclick="closeModal()" aria-label="Cerrar detalle">✕</button>
     </div>
-  </div>
-  <div class="modal-scroll">
+    <div class="md-warr" id="modalWarranty"></div>
+    <div class="modal-price-b md-price-block" id="modalPrice"></div>
     <div id="modalEqFiche"></div>
     <div class="modal-picker" id="modalPicker"></div>
     <details class="modal-breakdown" id="modalBreakdown"><summary>Ver desglose por sucursal</summary>
@@ -1259,16 +1308,16 @@ function renderActiveFilters(){const c=document.getElementById("activeFilters");
 function clearFilter(k){if(k==="categoria"){currentCategory="";document.querySelectorAll(".cat-btn").forEach(b=>b.classList.remove("active"));const def=document.querySelector('.cat-btn[data-cat=""]');if(def)def.classList.add("active")}else if(k==="marca")setDDValue("marca","");else if(k==="estado")setDDValue("estado","");else if(k==="sucursal")setDDValue("sucursal","");else if(k==="chip")setDDValue("chip","");else if(k==="search")searchInput.value="";else if(k==="price"){fMin=fMax="";document.getElementById("priceMin").value="";document.getElementById("priceMax").value=""}renderCards()}
 function clearAllFilters(){currentCategory="";fMarca=fEstado=fSucursal=fChip=fMin=fMax="";searchInput.value="";document.getElementById("priceMin").value="";document.getElementById("priceMax").value="";document.querySelectorAll(".cat-btn").forEach(b=>b.classList.remove("active"));const def=document.querySelector('.cat-btn[data-cat=""]');if(def)def.classList.add("active");buildDropdowns();renderCards()}
 /* ===== Detalle / selección ===== */
-function openDetail(key){const products=groupProducts(getFilteredData()),product=products.find(p=>p.key===key);if(!product)return;currentModalKey=key;modalProduct=product;document.getElementById("detailModal").style.display="flex";lockScroll();document.getElementById("modalTitle").textContent=product.modelo;const subEl=document.getElementById("modalSub");if(subEl)subEl.textContent=`${product.estado?product.estado+" · ":""}${product.capacidad||""}${product.chip?" · "+product.chip:""} · 🛡️ ${warrantyInfo(product).full}`;const efEl=document.getElementById("modalEqFiche");if(efEl)efEl.innerHTML=product.individual?eqFicheHtml(product):"";const imgEl=document.getElementById("modalImg");if(imgEl){if(product.imagen){imgEl.src=product.imagen;imgEl.style.display="";}else{imgEl.removeAttribute("src");imgEl.style.display="none";}}const internal=isInternal();document.getElementById("modalHeadRow").innerHTML=`<th>Sucursal</th><th>Color</th><th>Cantidad</th>${internal?"<th>Consig.</th><th>En proforma</th>":""}<th>Precio</th>`;document.getElementById("modalBody").innerHTML=product.items.map(item=>{const estadoClass=(item.estado||"").toLowerCase().replace(/\s/g,"");return `<tr><td>${escapeHtml(item.sucursal)}</td><td>${escapeHtml(item.color)}</td><td>${qtyTxt(item.cantidad)}</td>${internal?`<td>${escapeHtml(item.consignacion||0)}</td><td>${escapeHtml(item.comprometido||0)}</td>`:""}<td>${escapeHtml(priceCell(item))}</td></tr>`}).join("");const combos=productCombos(product);if(combos.length){selectedColor=combos[0].color;selectedEstado=combos[0].estado}else{selectedColor="";selectedEstado=""}renderPicker();updateModalPrice();const bd=document.getElementById("modalBreakdown");if(bd)bd.open=false;const addRow=document.getElementById("modalAddRow");if(canQuote()){addRow.classList.remove("hidden");document.getElementById("modalQty").value=1;updateModalAddBtn();updateModalQtyMax()}else{addRow.classList.add("hidden")}}
+function openDetail(key){const products=groupProducts(getFilteredData()),product=products.find(p=>p.key===key);if(!product)return;currentModalKey=key;modalProduct=product;document.getElementById("detailModal").style.display="flex";lockScroll();document.getElementById("modalTitle").textContent=product.modelo;const brandEl=document.getElementById("modalBrand");if(brandEl)brandEl.textContent=product.marca||product.categoria||"";const subEl=document.getElementById("modalSub");if(subEl){const tags=[];if(product.estado)tags.push(`<span class="md-tag new">${escapeHtml(product.estado)}</span>`);if(product.capacidad)tags.push(`<span class="md-tag">${escapeHtml(product.capacidad)}</span>`);if(product.chip)tags.push(`<span class="md-tag">${escapeHtml(product.chip)}</span>`);subEl.innerHTML=tags.join("")}const warrEl=document.getElementById("modalWarranty");if(warrEl){const w=warrantyInfo(product);warrEl.innerHTML=`<span>🛡️ ${escapeHtml(w.full)}</span>`;warrEl.classList.toggle("hidden",!w.full)}const efEl=document.getElementById("modalEqFiche");if(efEl)efEl.innerHTML=product.individual?eqFicheHtml(product):"";const imgEl=document.getElementById("modalImg");if(imgEl){imgEl.classList.remove("ph");if(product.imagen){imgEl.src=product.imagen;imgEl.style.display="";}else{imgEl.removeAttribute("src");imgEl.classList.add("ph");imgEl.style.display="";}}const internal=isInternal();document.getElementById("modalHeadRow").innerHTML=`<th>Sucursal</th><th>Color</th><th>Cantidad</th>${internal?"<th>Consig.</th><th>En proforma</th>":""}<th>Precio</th>`;document.getElementById("modalBody").innerHTML=product.items.map(item=>`<tr><td>${escapeHtml(item.sucursal)}</td><td>${escapeHtml(item.color)}</td><td>${qtyTxt(item.cantidad)}</td>${internal?`<td>${escapeHtml(item.consignacion||0)}</td><td>${escapeHtml(item.comprometido||0)}</td>`:""}<td>${escapeHtml(priceCell(item))}</td></tr>`).join("");const combos=productCombos(product);if(combos.length){selectedColor=combos[0].color;selectedEstado=combos[0].estado}else{selectedColor="";selectedEstado=""}renderPicker();updateModalPrice();const bd=document.getElementById("modalBreakdown");if(bd)bd.open=false;const addRow=document.getElementById("modalAddRow");if(canQuote()){addRow.classList.remove("hidden");document.getElementById("modalQty").value=1;updateModalAddBtn();updateModalQtyMax()}else{addRow.classList.add("hidden")}}
 function modalMax(){return availStock(currentModalKey,selectedColor,selectedEstado)||1}
 function clampModalQty(){const q=document.getElementById("modalQty");q.value=Math.max(1,Math.min(parseInt(q.value)||1,modalMax()))}
 function updateModalQtyMax(){document.getElementById("modalQtyMax").textContent="Máx: "+qtyTxt(modalMax())}
-function renderPicker(){const product=modalProduct;if(!product)return;const combos=productCombos(product),colors=colorsOf(combos),estados=estadosForColor(combos,selectedColor);let html="";if(colors.length>1){html+=`<div class="pick-label">Color</div><div class="swatches">`+colors.map(c=>`<button class="swatch${c.color===selectedColor?" sel":""}" type="button" data-color="${escapeHtml(c.color)}"><span class="sw-dot" style="background:${colorHex(c.color)}"></span><span class="sw-name">${escapeHtml(c.color)}</span><span class="sw-stock">${qtyTxt(c.stock)} disp</span></button>`).join("")+`</div>`}const sucs=sucursalesFor(product,selectedColor,selectedEstado);if(sucs.length){html+=`<div class="avail-line"><b>${escapeHtml(selectedColor||"")}${selectedEstado?" · "+escapeHtml(selectedEstado):""}</b> disponible en: <span>${escapeHtml(sucs.join(", "))}</span></div>`}document.getElementById("modalPicker").innerHTML=html}
+function renderPicker(){const product=modalProduct;if(!product)return;const combos=productCombos(product),colors=colorsOf(combos);let html="";if(colors.length>1){html+=`<div class="pick-label">Color${selectedColor?` · <span>${escapeHtml(selectedColor)}</span>`:""}</div><div class="swatches">`+colors.map(c=>`<button class="swatch${c.color===selectedColor?" sel":""}" type="button" data-color="${escapeHtml(c.color)}"><span class="sw-dot" style="background:${colorHex(c.color)}"></span><span class="sw-txt"><span class="sw-name">${escapeHtml(c.color)}</span><span class="sw-stock">${qtyTxt(c.stock)} disp</span></span></button>`).join("")+`</div>`}const sucs=sucursalesFor(product,selectedColor,selectedEstado);if(sucs.length){html+=`<div class="avail-line"><b>${escapeHtml(selectedColor||"")}${selectedEstado?" · "+escapeHtml(selectedEstado):""}</b> disponible en: <span>${escapeHtml(sucs.join(", "))}</span></div>`}document.getElementById("modalPicker").innerHTML=html}
 function modalSelectedItem(){if(!modalProduct)return null;const its=modalProduct.items||[];return its.find(it=>(it.color||"Único")===selectedColor&&(it.estado||"")===selectedEstado)||its[0]||null}
-function updateModalPrice(){const el=document.getElementById("modalPrice");if(!el)return;const it=modalSelectedItem();if(!it){el.innerHTML="";return}if(canSeeAllPrices()){const p=priceFor(it);el.innerHTML=p?`<span class="mp-multi">May ${escapeHtml(fmtPrice(p.mayoreo)||"—")} · Rev ${escapeHtml(fmtPrice(p.reventa)||"—")} · CF ${escapeHtml(fmtPrice(p.cliente)||"—")}</span>`:`<span class="mp-tba">Sin precio</span>`}else{const s=ownPriceStr(it);el.innerHTML=s?`<span class="mp-big">${escapeHtml(fmtPrice(s))}</span>`:`<span class="mp-tba">Precio a confirmar</span>`}}
+function updateModalPrice(){const el=document.getElementById("modalPrice");if(!el)return;const it=modalSelectedItem();if(!it){el.innerHTML="";return}if(canSeeAllPrices()){const p=priceFor(it);el.innerHTML=p?`<div class="md-tiers-lbl">PRECIOS POR CANAL <span class="only">SOLO INTERNO</span></div><div class="md-tiers"><div class="md-tier may"><div class="t">MAYORISTA</div><div class="v">${escapeHtml(fmtPrice(p.mayoreo)||"—")}</div></div><div class="md-tier"><div class="t">REVENDEDOR</div><div class="v">${escapeHtml(fmtPrice(p.reventa)||"—")}</div></div><div class="md-tier"><div class="t">CLIENTE F.</div><div class="v">${escapeHtml(fmtPrice(p.cliente)||"—")}</div></div></div>`:`<span class="mp-tba">Sin precio</span>`}else{const s=ownPriceStr(it);el.innerHTML=s?`<div class="md-price-one"><div><div class="lbl">PRECIO</div><div class="val">${escapeHtml(fmtPrice(s))}</div></div><div class="unit">por unidad</div></div>`:`<span class="mp-tba">Precio a confirmar</span>`}}
 function selectColor(color){selectedColor=color;const ests=estadosForColor(productCombos(modalProduct),color);if(!ests.some(e=>e.estado===selectedEstado))selectedEstado=ests.length?ests[0].estado:"";clampModalQty();renderPicker();updateModalPrice();updateModalAddBtn();updateModalQtyMax()}
 function selectEstado(estado){selectedEstado=estado;clampModalQty();renderPicker();updateModalPrice();updateModalAddBtn();updateModalQtyMax()}
-function updateModalAddBtn(){const btn=document.getElementById("modalAddBtn");let label="🛒 Agregar al carrito";if(selectedColor)label+=` · ${selectedColor}`+(selectedEstado?` · ${selectedEstado}`:"");btn.textContent=label}
+function updateModalAddBtn(){const btn=document.getElementById("modalAddBtn");const qty=document.getElementById("modalQty");const n=qty?(parseInt(qty.value)||1):1;let label="🛒 Agregar · "+n;if(selectedColor)label+=` · ${selectedColor}`+(selectedEstado?` · ${selectedEstado}`:"");btn.textContent=label}
 let _modalScrollY=0;
 function anyModalOpen(){return ["detailModal","cotizModal","perfilModal"].some(id=>{const el=document.getElementById(id);return el&&el.style.display==="flex"})||(document.getElementById("cartPanel")&&document.getElementById("cartPanel").classList.contains("open"))}
 function lockScroll(){if(document.body.classList.contains("modal-open"))return;_modalScrollY=window.scrollY||window.pageYOffset||0;document.body.style.top="-"+_modalScrollY+"px";document.body.classList.add("modal-open")}
@@ -1277,7 +1326,7 @@ function closeModal(){document.getElementById("detailModal").style.display="none
 /* ===== Carrito ===== */
 let cartStage="cart";
 function findProduct(key){return groupProducts(inventoryData).find(p=>p.key===key)}
-function modalQtyChange(delta){const input=document.getElementById("modalQty");const val=Math.max(1,Math.min((parseInt(input.value)||1)+delta,modalMax()));input.value=val}
+function modalQtyChange(delta){const input=document.getElementById("modalQty");const val=Math.max(1,Math.min((parseInt(input.value)||1)+delta,modalMax()));input.value=val;updateModalAddBtn()}
 function quickAdd(key){const products=groupProducts(getFilteredData()),product=products.find(p=>p.key===key);if(!product)return;const combos=productCombos(product);if(combos.length<=1){const c=combos[0]||{color:"",estado:""};addToCart(key,1,c.color,c.estado)}else openDetail(key)}
 function addFromModal(){const qty=Math.max(1,Math.min(parseInt(document.getElementById("modalQty").value)||1,modalMax()));if(!currentModalKey)return;addToCart(currentModalKey,qty,selectedColor,selectedEstado);document.getElementById("modalQty").value=1;updateModalQtyMax();const btn=document.getElementById("modalAddBtn");btn.classList.add("added");clearTimeout(addFromModal._t);addFromModal._t=setTimeout(()=>{btn.classList.remove("added");updateModalAddBtn()},1300)}
 function addToCart(key,qty,color,estado){const product=findProduct(key);if(!product)return;const sucursal=fSucursal||"",stock=availStock(key,color,estado,sucursal),cartKey=`${key}|${color}|${estado}|${sucursal}`;const existing=cart.find(c=>c.cartKey===cartKey);if(existing){existing.stock=stock;existing.qty=stock?Math.min(existing.qty+qty,stock):existing.qty+qty}else{const ps=ownPriceStr({marca:product.marca,modelo:product.modelo,capacidad:product.capacidad,estado:estado||product.estado,precioMayorista:product.precioMayorista,precioReventa:product.precioReventa,precioPublico:product.precioPublico});cart.push({cartKey,key,recordId:product.individual?(product.recordId||""):"",modelo:product.modelo,marca:product.marca,capacidad:product.capacidad,chip:product.chip||"",color:color||"",estado:estado||"",sucursal,imagen:product.imagen,precioStr:ps?fmtPrice(ps):"Precio a confirmar",precioNum:parsePrice(ps),stock,qty:stock?Math.min(qty,stock):qty})}updateCartFab();renderCards();if(document.getElementById("cartPanel").classList.contains("open"))renderCart();showToast(existing?"Cantidad actualizada en la cotización":"✓ Agregado a la cotización")}
